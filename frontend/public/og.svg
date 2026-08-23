@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" role="img">
+<defs>
+  <linearGradient id="og-bg" x1="0" y1="0" x2="0.6" y2="1">
+    <stop offset="0%" stop-color="#101014"/><stop offset="100%" stop-color="#050507"/>
+  </linearGradient>
+  <radialGradient id="og-glow" cx="0.5" cy="0.28" r="0.75">
+    <stop offset="0%" stop-color="#C6A87C" stop-opacity="0.16"/>
+    <stop offset="100%" stop-color="#C6A87C" stop-opacity="0"/>
+  </radialGradient>
+  <linearGradient id="og-img" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#35353E"/><stop offset="55%" stop-color="#232329"/><stop offset="100%" stop-color="#17171C"/>
+  </linearGradient>
+  <linearGradient id="og-brass" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#C6A87C" stop-opacity="0.9"/><stop offset="100%" stop-color="#8C7554" stop-opacity="0.35"/>
+  </linearGradient>
+</defs>
+<rect x="0" y="0" width="1200" height="630" rx="0" fill="#050507"/>
+<rect x="0" y="0" width="1200" height="630" rx="0" fill="url(#og-bg)"/>
+<rect x="0" y="0" width="1200" height="630" rx="0" fill="url(#og-glow)"/>
+<rect x="0" y="0" width="1200" height="630" rx="0" fill="#050507"/>
+<text x="72" y="120" font-family="Inter, system-ui, sans-serif" font-size="22" font-weight="700" fill="#C6A87C" text-anchor="start" letter-spacing="8">GROWKYNOS</text>
+<text x="72" y="300" font-family="Inter, system-ui, sans-serif" font-size="118" font-weight="800" fill="#E6E6EA" text-anchor="start" letter-spacing="-5">BUILD</text>
+<text x="72" y="410" font-family="Inter, system-ui, sans-serif" font-size="118" font-weight="800" fill="#E6E6EA" text-anchor="start" letter-spacing="-5">DIGITAL</text>
+<text x="72" y="520" font-family="Inter, system-ui, sans-serif" font-size="118" font-weight="800" fill="#C6A87C" text-anchor="start" letter-spacing="-5">WORLDS.</text>
+<line x1="72" y1="560" x2="1128" y2="560" stroke="#232329" stroke-width="1"/>
+<text x="72" y="592" font-family="JetBrains Mono, ui-monospace, monospace" font-size="13" font-weight="500" fill="#9C9CA8" text-anchor="start" letter-spacing="1.2">DESIGN · CODE · MOTION — UNDER ONE ROOF</text>
+</svg>

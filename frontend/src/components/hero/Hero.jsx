@@ -1,0 +1,222 @@
+import { useEffect, useRef } from 'react'
+import { gsap } from '../../lib/gsap'
+import { brand } from '../../data/brand'
+import { services } from '../../data/services'
+import { HeroField } from './HeroField'
+import { Button } from '../ui/Button'
+import { useExperience } from '../../context/ExperienceContext'
+import { useTransition } from '../transitions/TransitionProvider'
+import { scrollTo } from '../../hooks/useLenis'
+import { buildHeroIntro, buildHeroScrollHandoff, floatFragments } from '../../animations/heroAnimations'
+
+/* Small floating digital elements — real artefacts of the work, not decoration. */
+const FRAGMENTS = [
+  { id: 'f1', label: 'build.status', value: 'PASSING', top: '18%', left: '7%', tone: 'sage' },
+  { id: 'f2', label: 'frame.budget', value: '16.6 ms', top: '30%', right: '8%', tone: 'brass' },
+  { id: 'f3', label: 'lighthouse', value: '98 / 100', bottom: '30%', left: '11%', tone: 'brass' },
+  { id: 'f4', label: 'projects.live', value: '90+', top: '62%', right: '12%', tone: 'bone' },
+]
+
+const TONE = {
+  sage: '#A8C0A0',
+  brass: '#C6A87C',
+  bone: '#E6E6EA',
+}
+
+export function Hero() {
+  const rootRef = useRef(null)
+  const progress = useRef(0)
+  const { reducedMotion, booted, isMobile } = useExperience()
+  const { go } = useTransition()
+
+  useEffect(() => {
+    if (!booted) return undefined
+    const el = rootRef.current
+    if (!el) return undefined
+
+    const ctx = gsap.context(() => {
+      buildHeroIntro(el, { reducedMotion, delay: 0.15 })
+      buildHeroScrollHandoff(el, {
+        reducedMotion,
+        onProgress: (p) => {
+          progress.current = p
+        },
+      })
+      floatFragments(gsap.utils.toArray('[data-hero-frag]'), { reducedMotion })
+    }, el)
+
+    return () => ctx.revert()
+  }, [booted, reducedMotion])
+
+  return (
+    <section
+      id="hero"
+      ref={rootRef}
+      aria-label="Introduction"
+      className="section relative min-h-[100svh] w-full overflow-hidden perspective-far"
+    >
+      {/* Environment */}
+      <HeroField scrollProgress={progress} />
+      <div className="pointer-events-none absolute inset-0 grid-field opacity-[0.55] mask-fade-edges" />
+      <div
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-64"
+        style={{ background: 'linear-gradient(180deg, rgba(5,5,7,0) 0%, #050507 92%)' }}
+      />
+
+      {/* Floating fragments */}
+      {!isMobile &&
+        FRAGMENTS.map((f) => (
+          <div
+            key={f.id}
+            data-hero-frag
+            className="pointer-events-none absolute z-10 hidden select-none lg:block"
+            style={{ top: f.top, left: f.left, right: f.right, bottom: f.bottom }}
+          >
+            <div className="surface flex items-center gap-3 rounded-full px-4 py-2.5">
+              <span
+                className="h-1.5 w-1.5 rounded-full"
+                style={{ backgroundColor: TONE[f.tone], boxShadow: `0 0 10px ${TONE[f.tone]}88` }}
+              />
+              <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-mist">{f.label}</span>
+              <span className="font-mono text-[10px] tabular-nums" style={{ color: TONE[f.tone] }}>
+                {f.value}
+              </span>
+            </div>
+          </div>
+        ))}
+
+      {/* Type */}
+      <div className="shell relative z-20 flex min-h-[100svh] flex-col justify-center pb-24 pt-32 md:pb-32">
+        <div data-hero-type className="preserve-3d">
+          <div data-hero-eyebrow className="mb-6 flex flex-wrap items-center gap-x-4 gap-y-2 overflow-hidden md:mb-9">
+            <span className="inline-block overflow-hidden">
+              <span className="label-brass inline-block">{brand.wordmark}</span>
+            </span>
+            <span className="inline-block overflow-hidden">
+              <span className="label inline-block">— {brand.descriptor}</span>
+            </span>
+            <span className="inline-block overflow-hidden">
+              <span className="label inline-block">EST. {brand.since}</span>
+            </span>
+          </div>
+
+          <h1 className="preserve-3d" aria-label={brand.statement.join(' ')}>
+            {brand.statement.map((line, li) => (
+              <span
+                key={line}
+                data-hero-line
+                className="relative block overflow-hidden pb-[0.06em] preserve-3d"
+              >
+                <span className="relative flex preserve-3d" aria-hidden="true">
+                  {Array.from(line).map((ch, ci) => (
+                    <span
+                      key={`${line}-${ci}`}
+                      data-hero-char
+                      className="inline-block font-display text-display-1 font-extrabold text-gradient-bone will-change-transform"
+                      style={{ transformOrigin: '50% 100%' }}
+                    >
+                      {ch}
+                    </span>
+                  ))}
+                </span>
+                {/* Light pass */}
+                <span
+                  data-hero-sweep
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-y-0 left-0 w-[28%] opacity-0 mix-blend-overlay"
+                  style={{
+                    background:
+                      'linear-gradient(100deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.85) 48%, rgba(198,168,124,0.5) 62%, rgba(255,255,255,0) 100%)',
+                    filter: 'blur(2px)',
+                  }}
+                />
+              </span>
+            ))}
+          </h1>
+
+          <div className="mt-8 flex flex-col gap-8 md:mt-12 md:flex-row md:items-end md:justify-between">
+            <div data-hero-meta className="flex max-w-md flex-col gap-4">
+              <div data-hero-rule className="rule-brass h-px w-32 origin-left" />
+              <p className="text-[15px] leading-relaxed text-silver md:text-base">
+                We build apps, websites, storefronts and platforms for companies that need the work to be
+                right. {brand.tagline}
+              </p>
+              <dl className="flex flex-wrap gap-x-8 gap-y-3 pt-1">
+                {[
+                  ['90+', 'Projects'],
+                  ['14', 'Countries'],
+                  ['10', 'Disciplines'],
+                ].map(([v, k]) => (
+                  <div key={k} className="flex flex-col gap-1">
+                    <dt className="label">{k}</dt>
+                    <dd className="font-display text-2xl font-semibold tabular-nums text-bone">{v}</dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+
+            <div data-hero-actions className="flex flex-wrap items-center gap-3 md:gap-4">
+              <Button onClick={() => go('/contact', { label: 'BEGIN A PROJECT' })} size="lg">
+                Begin a project
+              </Button>
+              <Button variant="ghost" size="lg" onClick={() => scrollTo('#services', { duration: 1.8 })}>
+                Explore the work
+                <span aria-hidden="true" className="transition-transform duration-500 group-hover:translate-y-0.5">
+                  ↓
+                </span>
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        {/* Scroll cue */}
+        <div
+          data-hero-scroll
+          className="pointer-events-none absolute inset-x-0 bottom-6 flex items-center justify-center gap-3 md:bottom-8"
+        >
+          <span className="label">SCROLL TO ENTER</span>
+          <span className="relative block h-8 w-px overflow-hidden bg-smoke">
+            <span
+              className="absolute inset-x-0 top-0 h-3 bg-brass"
+              style={{ animation: 'gk-scanline 2.2s cubic-bezier(0.4,0,0.1,1) infinite' }}
+            />
+          </span>
+        </div>
+      </div>
+
+      {/* The interface the typography becomes — the first world's index */}
+      <div
+        data-hero-interface
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 z-30 flex items-center opacity-0"
+      >
+        <div className="shell w-full">
+          <div className="surface-raised overflow-hidden rounded-2xl">
+            <div className="flex items-center justify-between border-b border-smoke/60 px-5 py-3.5 md:px-8">
+              <span className="label-brass">GROWKYNOS / SERVICE INDEX</span>
+              <span className="label hidden md:block">SELECT A WORLD</span>
+              <span className="font-mono text-[10px] text-mist tabular-nums">{services.length} MODULES</span>
+            </div>
+            <ul className="max-h-[52svh] overflow-hidden">
+              {services.slice(0, 6).map((s) => (
+                <li
+                  key={s.id}
+                  data-hero-interface-row
+                  className="flex items-center gap-4 border-b border-smoke/40 px-5 py-3 last:border-0 md:gap-8 md:px-8 md:py-4"
+                >
+                  <span className="font-mono text-[10px] text-brass tabular-nums">{s.index}</span>
+                  <span className="font-display text-[clamp(0.95rem,2.6vw,1.5rem)] font-medium text-bone">
+                    {s.title}
+                  </span>
+                  <span className="ml-auto hidden font-mono text-[10px] uppercase tracking-[0.14em] text-mist md:block">
+                    {s.verb}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}

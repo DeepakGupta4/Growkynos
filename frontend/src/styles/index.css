@@ -1,0 +1,364 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+   GROWKYNOS — Design System
+   Luxury technology · creative studio · cinematic experience
+   ============================================================ */
+
+@layer base {
+  :root {
+    --gutter: 1.25rem;
+
+    /* Depth / atmosphere */
+    --atmos-x: 50%;
+    --atmos-y: 40%;
+    --atmos-intensity: 0.55;
+
+    /* Motion tokens */
+    --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-in-out-expo: cubic-bezier(0.87, 0, 0.13, 1);
+    --ease-swift: cubic-bezier(0.4, 0, 0.1, 1);
+    --dur-fast: 0.28s;
+    --dur-base: 0.6s;
+    --dur-slow: 1.1s;
+
+    /* Layout */
+    --nav-h: 4.5rem;
+
+    color-scheme: dark;
+  }
+
+  @media (min-width: 768px) {
+    :root {
+      --gutter: 2.5rem;
+      --nav-h: 5.25rem;
+    }
+  }
+
+  @media (min-width: 1440px) {
+    :root {
+      --gutter: 4rem;
+    }
+  }
+
+  * {
+    @apply border-smoke/40;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    scrollbar-width: none;
+  }
+
+  html::-webkit-scrollbar {
+    display: none;
+  }
+
+  body {
+    @apply bg-void text-bone font-sans antialiased;
+    margin: 0;
+    overflow-x: hidden;
+    font-synthesis-weight: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Lock scroll during boot / cinematic transitions */
+  body[data-scroll-locked='true'] {
+    overflow: hidden;
+    height: 100vh;
+  }
+
+  ::selection {
+    background: theme('colors.brass.DEFAULT');
+    color: theme('colors.void');
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-display font-medium;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  button,
+  a {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Accessible focus — visible, on-brand, never on mouse users */
+  :focus {
+    outline: none;
+  }
+
+  :focus-visible {
+    outline: 2px solid theme('colors.brass.DEFAULT');
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  img,
+  video,
+  canvas,
+  svg {
+    display: block;
+    max-width: 100%;
+  }
+
+  input,
+  textarea,
+  select,
+  button {
+    font: inherit;
+    color: inherit;
+  }
+}
+
+/* ============================================================
+   COMPONENT LAYER
+   ============================================================ */
+
+@layer components {
+  .shell {
+    width: 100%;
+    max-width: theme('maxWidth.shell');
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+  }
+
+  /* Small technical label — the connective tissue of the whole site */
+  .label {
+    @apply font-mono text-label uppercase tracking-[0.18em] text-mist;
+  }
+
+  .label-brass {
+    @apply font-mono text-label uppercase tracking-[0.18em] text-brass;
+  }
+
+  /* Editorial rule used between metadata rows */
+  .hairline {
+    @apply h-px w-full bg-gradient-to-r from-smoke via-smoke/40 to-transparent;
+  }
+
+  /* Materiality: a surface that reads as machined metal, not glass */
+  .surface {
+    background: linear-gradient(
+      168deg,
+      rgba(28, 28, 34, 0.92) 0%,
+      rgba(16, 16, 20, 0.94) 46%,
+      rgba(10, 10, 13, 0.96) 100%
+    );
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.05),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.5),
+      0 24px 60px -28px rgba(0, 0, 0, 0.9);
+  }
+
+  .surface-raised {
+    background: linear-gradient(
+      168deg,
+      rgba(36, 36, 43, 0.96) 0%,
+      rgba(22, 22, 27, 0.97) 55%,
+      rgba(14, 14, 18, 0.98) 100%
+    );
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.07),
+      0 40px 90px -40px rgba(0, 0, 0, 0.95);
+  }
+
+  /* Brass hairline used as a precision accent */
+  .rule-brass {
+    background: linear-gradient(
+      90deg,
+      rgba(198, 168, 124, 0) 0%,
+      rgba(198, 168, 124, 0.65) 18%,
+      rgba(198, 168, 124, 0.65) 82%,
+      rgba(198, 168, 124, 0) 100%
+    );
+  }
+
+  /* Typographic mask-reveal primitives (GSAP drives the inner element) */
+  .line-mask {
+    display: block;
+    overflow: hidden;
+    padding-bottom: 0.08em;
+    margin-bottom: -0.08em;
+  }
+
+  .line-mask > * {
+    display: block;
+    will-change: transform;
+  }
+
+  /* Section framing */
+  .section {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .stage {
+    position: relative;
+    height: 100svh;
+    width: 100%;
+    overflow: hidden;
+    display: grid;
+    place-items: center;
+  }
+}
+
+/* ============================================================
+   UTILITY LAYER
+   ============================================================ */
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .preserve-3d {
+    transform-style: preserve-3d;
+  }
+
+  .perspective-near {
+    perspective: 900px;
+  }
+
+  .perspective-far {
+    perspective: 2200px;
+  }
+
+  .backface-hidden {
+    backface-visibility: hidden;
+  }
+
+  .gpu {
+    transform: translateZ(0);
+    will-change: transform;
+  }
+
+  /* Fine technical grid — atmospheric, never decorative noise */
+  .grid-field {
+    background-image:
+      linear-gradient(to right, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+    background-size: 5.5rem 5.5rem;
+  }
+
+  .grid-field-fine {
+    background-image:
+      linear-gradient(to right, rgba(255, 255, 255, 0.022) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.022) 1px, transparent 1px);
+    background-size: 1.5rem 1.5rem;
+  }
+
+  .mask-fade-y {
+    -webkit-mask-image: linear-gradient(to bottom, transparent, black 12%, black 88%, transparent);
+    mask-image: linear-gradient(to bottom, transparent, black 12%, black 88%, transparent);
+  }
+
+  .mask-fade-edges {
+    -webkit-mask-image: radial-gradient(ellipse 78% 78% at 50% 50%, black 40%, transparent 100%);
+    mask-image: radial-gradient(ellipse 78% 78% at 50% 50%, black 40%, transparent 100%);
+  }
+
+  .text-gradient-bone {
+    background: linear-gradient(180deg, #ffffff 0%, #cfcfd6 42%, #74747f 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .text-gradient-brass {
+    background: linear-gradient(180deg, #e9d6b4 0%, #c6a87c 48%, #7a6544 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+
+  .tnum {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* ============================================================
+   CURSOR — desktop only, pointer-fine only
+   ============================================================ */
+
+@media (hover: hover) and (pointer: fine) {
+  html[data-cursor='custom'],
+  html[data-cursor='custom'] * {
+    cursor: none !important;
+  }
+}
+
+/* ============================================================
+   REDUCED MOTION
+   Content must remain fully reachable without animation.
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+html[data-reduced-motion='true'] .line-mask > * {
+  transform: none !important;
+  opacity: 1 !important;
+}
+
+/* Keyframes used sparingly, for ambient system-life only */
+@keyframes gk-pulse {
+  0%,
+  100% {
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes gk-scanline {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes gk-drift {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(0, -50%, 0);
+  }
+}
+
+.anim-pulse {
+  animation: gk-pulse 2.4s var(--ease-swift) infinite;
+}

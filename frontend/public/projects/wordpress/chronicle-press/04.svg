@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 900" width="1440" height="900" role="img">
+<defs>
+  <linearGradient id="g-bg" x1="0" y1="0" x2="0.6" y2="1">
+    <stop offset="0%" stop-color="#101014"/><stop offset="100%" stop-color="#050507"/>
+  </linearGradient>
+  <radialGradient id="g-glow" cx="0.5" cy="0.28" r="0.75">
+    <stop offset="0%" stop-color="#C6A87C" stop-opacity="0.16"/>
+    <stop offset="100%" stop-color="#C6A87C" stop-opacity="0"/>
+  </radialGradient>
+  <linearGradient id="g-img" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#35353E"/><stop offset="55%" stop-color="#232329"/><stop offset="100%" stop-color="#17171C"/>
+  </linearGradient>
+  <linearGradient id="g-brass" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#C6A87C" stop-opacity="0.9"/><stop offset="100%" stop-color="#8C7554" stop-opacity="0.35"/>
+  </linearGradient>
+</defs>
+<rect x="0" y="0" width="1440" height="900" rx="0" fill="#050507"/>
+<rect x="0" y="0" width="1440" height="900" rx="0" fill="url(#g-bg)"/>
+<rect x="0" y="0" width="1440" height="900" rx="0" fill="url(#g-glow)"/>
+<rect x="0" y="0" width="1440" height="52" rx="0" fill="#101014"/><line x1="0" y1="52" x2="1440" y2="52" stroke="#232329" stroke-width="1"/><rect x="24" y="18" width="16" height="16" rx="4" fill="#B0A8C8" opacity="0.8"/><text x="52" y="32" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="600" fill="#E6E6EA" text-anchor="start">Chronicle Press</text><text x="1310" y="32" font-family="JetBrains Mono, ui-monospace, monospace" font-size="9" font-weight="500" fill="#A8C0A0" text-anchor="start" letter-spacing="1.2">PUBLISHED</text><circle cx="1294" cy="28" r="3" fill="#A8C0A0"/><rect x="0" y="52" width="1440" height="848" rx="0" fill="#050507"/><text x="64" y="200" font-family="Inter, system-ui, sans-serif" font-size="96" font-weight="800" fill="#E6E6EA" text-anchor="start" letter-spacing="-4">THE</text><text x="64" y="300" font-family="Inter, system-ui, sans-serif" font-size="96" font-weight="800" fill="#B0A8C8" text-anchor="start" letter-spacing="-4">CHRONICLE</text><line x1="64" y1="340" x2="1376" y2="340" stroke="#232329" stroke-width="1"/><rect x="64" y="380" width="404" height="230" rx="4" fill="url(#g-img)"/><text x="64" y="650" font-family="JetBrains Mono, ui-monospace, monospace" font-size="9" font-weight="500" fill="#B0A8C8" text-anchor="start" letter-spacing="1.2">POLITICS</text><text x="64" y="686" font-family="Inter, system-ui, sans-serif" font-size="21" font-weight="600" fill="#E6E6EA" text-anchor="start">The long road back</text><rect x="64" y="706" width="244.88" height="5" rx="2.5" fill="#35353E" opacity="0.75"/><rect x="64" y="721" width="308.24" height="5" rx="2.5" fill="#35353E" opacity="0.69"/><rect x="64" y="736" width="344.68" height="5" rx="2.5" fill="#35353E" opacity="0.63"/><rect x="508" y="380" width="404" height="230" rx="4" fill="url(#g-img)"/><text x="508" y="650" font-family="JetBrains Mono, ui-monospace, monospace" font-size="9" font-weight="500" fill="#B0A8C8" text-anchor="start" letter-spacing="1.2">CULTURE</text><text x="508" y="686" font-family="Inter, system-ui, sans-serif" font-size="21" font-weight="600" fill="#E6E6EA" text-anchor="start">A quiet revolution</text><rect x="508" y="706" width="221.92" height="5" rx="2.5" fill="#35353E" opacity="0.75"/><rect x="508" y="721" width="376.45" height="5" rx="2.5" fill="#35353E" opacity="0.69"/><rect x="508" y="736" width="297.42" height="5" rx="2.5" fill="#35353E" opacity="0.63"/><rect x="952" y="380" width="404" height="230" rx="4" fill="url(#g-img)"/><text x="952" y="650" font-family="JetBrains Mono, ui-monospace, monospace" font-size="9" font-weight="500" fill="#B0A8C8" text-anchor="start" letter-spacing="1.2">SCIENCE</text><text x="952" y="686" font-family="Inter, system-ui, sans-serif" font-size="21" font-weight="600" fill="#E6E6EA" text-anchor="start">What the ice knows</text><rect x="952" y="706" width="349" height="5" rx="2.5" fill="#35353E" opacity="0.75"/><rect x="952" y="721" width="274.98" height="5" rx="2.5" fill="#35353E" opacity="0.69"/><rect x="952" y="736" width="270.32" height="5" rx="2.5" fill="#35353E" opacity="0.63"/>
+</svg>

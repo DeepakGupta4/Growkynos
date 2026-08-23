@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 900" width="1440" height="900" role="img">
+<defs>
+  <linearGradient id="g-bg" x1="0" y1="0" x2="0.6" y2="1">
+    <stop offset="0%" stop-color="#101014"/><stop offset="100%" stop-color="#050507"/>
+  </linearGradient>
+  <radialGradient id="g-glow" cx="0.5" cy="0.28" r="0.75">
+    <stop offset="0%" stop-color="#C6A87C" stop-opacity="0.16"/>
+    <stop offset="100%" stop-color="#C6A87C" stop-opacity="0"/>
+  </radialGradient>
+  <linearGradient id="g-img" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#35353E"/><stop offset="55%" stop-color="#232329"/><stop offset="100%" stop-color="#17171C"/>
+  </linearGradient>
+  <linearGradient id="g-brass" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#C6A87C" stop-opacity="0.9"/><stop offset="100%" stop-color="#8C7554" stop-opacity="0.35"/>
+  </linearGradient>
+</defs>
+<rect x="0" y="0" width="1440" height="900" rx="0" fill="#050507"/>
+<rect x="0" y="0" width="1440" height="900" rx="0" fill="url(#g-bg)"/>
+<rect x="0" y="0" width="1440" height="900" rx="0" fill="url(#g-glow)"/>
+<rect x="0" y="0" width="1440" height="900" rx="0" fill="#050507"/><line x1="120" y1="60" x2="120" y2="840" stroke="#35353E" stroke-width="1" opacity="0.25"/><line x1="220" y1="60" x2="220" y2="840" stroke="#35353E" stroke-width="1" opacity="0.25"/><line x1="320" y1="60" x2="320" y2="840" stroke="#35353E" stroke-width="1" opacity="0.25"/><line x1="420" y1="60" x2="420" y2="840" stroke="#35353E" stroke-width="1" opacity="0.25"/><line x1="520" y1="60" x2="520" y2="840" stroke="#35353E" stroke-width="1" opacity="0.25"/><line x1="620" y1="60" x2="620" y2="840" stroke="#35353E" stroke-width="1" opacity="0.25"/><line x1="720" y1="60" x2="720" y2="840" stroke="#35353E" stroke-width="1" opacity="0.25"/><line x1="820" y1="60" x2="820" y2="840" stroke="#35353E" stroke-width="1" opacity="0.25"/><line x1="920" y1="60" x2="920" y2="840" stroke="#35353E" stroke-width="1" opacity="0.25"/><line x1="1020" y1="60" x2="1020" y2="840" stroke="#35353E" stroke-width="1" opacity="0.25"/><line x1="1120" y1="60" x2="1120" y2="840" stroke="#35353E" stroke-width="1" opacity="0.25"/><line x1="1220" y1="60" x2="1220" y2="840" stroke="#35353E" stroke-width="1" opacity="0.25"/><line x1="120" y1="60" x2="1320" y2="60" stroke="#35353E" stroke-width="1" opacity="0.25"/><line x1="120" y1="172" x2="1320" y2="172" stroke="#35353E" stroke-width="1" opacity="0.25"/><line x1="120" y1="284" x2="1320" y2="284" stroke="#35353E" stroke-width="1" opacity="0.25"/><line x1="120" y1="396" x2="1320" y2="396" stroke="#35353E" stroke-width="1" opacity="0.25"/><line x1="120" y1="508" x2="1320" y2="508" stroke="#35353E" stroke-width="1" opacity="0.25"/><line x1="120" y1="620" x2="1320" y2="620" stroke="#35353E" stroke-width="1" opacity="0.25"/><line x1="120" y1="732" x2="1320" y2="732" stroke="#35353E" stroke-width="1" opacity="0.25"/><line x1="120" y1="844" x2="1320" y2="844" stroke="#35353E" stroke-width="1" opacity="0.25"/><rect x="220" y="172" width="400" height="400" rx="0" fill="#C6A87C" opacity="0.9"/><circle cx="820" cy="372" r="200" fill="#E6E6EA" opacity="0.9"/><rect x="420" y="620" width="600" height="112" rx="0" fill="#9FB4C9" opacity="0.75"/><text x="120" y="830" font-family="Inter, system-ui, sans-serif" font-size="20" font-weight="600" fill="#E6E6EA" text-anchor="start" letter-spacing="4">COMPOSITION 04</text>
+</svg>
