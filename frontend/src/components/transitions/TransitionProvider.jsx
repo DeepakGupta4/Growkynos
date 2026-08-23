@@ -131,9 +131,7 @@ export function TransitionProvider({ children }) {
 
   return (
     <TransitionContext.Provider value={value}>
-      <div ref={pageRef} className="relative will-change-transform">
-        {children}
-      </div>
+      {children}
 
       <div
         ref={overlayRef}
@@ -171,4 +169,18 @@ export function useTransition() {
   const ctx = useContext(TransitionContext)
   if (!ctx) throw new Error('useTransition must be used inside <TransitionProvider>')
   return ctx
+}
+
+/**
+ * The element the transition physically moves. Only the routed page belongs
+ * here — persistent chrome (nav, cursor, grain) must stay outside it so it
+ * doesn't recede along with the page it is navigating.
+ */
+export function TransitionStage({ children, className }) {
+  const { pageRef } = useTransition()
+  return (
+    <div ref={pageRef} className={className ?? 'relative will-change-transform'}>
+      {children}
+    </div>
+  )
 }

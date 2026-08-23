@@ -5,6 +5,10 @@ import { WebShowcase } from '../components/showcases/WebShowcase'
 import { ShopifyShowcase } from '../components/showcases/ShopifyShowcase'
 import { WordPressShowcase } from '../components/showcases/WordPressShowcase'
 import { SaaSShowcase } from '../components/showcases/SaaSShowcase'
+import { DesignShowcase } from '../components/showcases/DesignShowcase'
+import { PhotoEditingShowcase } from '../components/showcases/PhotoEditingShowcase'
+import { VideoEditingShowcase } from '../components/showcases/VideoEditingShowcase'
+import { AIShowcase } from '../components/showcases/AIShowcase'
 import { useSEO } from '../hooks/useSEO'
 import { brand } from '../data/brand'
 
@@ -20,11 +24,17 @@ export default function Home() {
     <>
       <Hero />
       <ServiceUniverse />
+
+      {/* The ten worlds, in journey order */}
       <AppShowcase />
       <WebShowcase />
       <ShopifyShowcase />
       <WordPressShowcase />
       <SaaSShowcase />
+      <DesignShowcase />
+      <PhotoEditingShowcase />
+      <VideoEditingShowcase />
+      <AIShowcase />
     </>
   )
 }

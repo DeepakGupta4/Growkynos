@@ -2,7 +2,7 @@ import { Suspense, lazy, useEffect } from 'react'
 import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom'
 import { ExperienceProvider, useExperience } from './context/ExperienceContext'
 import { SoundProvider } from './context/SoundContext'
-import { TransitionProvider } from './components/transitions/TransitionProvider'
+import { TransitionProvider, TransitionStage } from './components/transitions/TransitionProvider'
 import { ProjectEntryProvider } from './components/projects/ProjectEntryContext'
 import { BootSequence } from './components/boot/BootSequence'
 import { Nav } from './components/navigation/Nav'
@@ -10,6 +10,7 @@ import { CustomCursor } from './components/ui/CustomCursor'
 import { Grain } from './components/effects/Grain'
 import { Atmosphere } from './components/effects/Atmosphere'
 import { Footer } from './components/layout/Footer'
+import { ErrorBoundary } from './components/layout/ErrorBoundary'
 import { useLenisScroll } from './hooks/useLenis'
 import { ScrollTrigger } from './lib/gsap'
 import Home from './pages/Home'
@@ -27,8 +28,13 @@ function ScrollSystem() {
 
   useEffect(() => {
     if (!booted) return undefined
-    const t = setTimeout(() => ScrollTrigger.refresh(), 240)
-    return () => clearTimeout(t)
+    // Pins are measured after layout settles; two passes cover late webfonts.
+    const a = setTimeout(() => ScrollTrigger.refresh(), 260)
+    const b = setTimeout(() => ScrollTrigger.refresh(), 1200)
+    return () => {
+      clearTimeout(a)
+      clearTimeout(b)
+    }
   }, [booted, pathname])
 
   return null
@@ -38,7 +44,7 @@ function Shell() {
   const { booted } = useExperience()
 
   return (
-    <>
+    <TransitionProvider>
       <a
         href="#main"
         className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[400] focus:rounded-full focus:bg-brass focus:px-5 focus:py-3 focus:font-mono focus:text-[11px] focus:uppercase focus:tracking-[0.16em] focus:text-void"
@@ -48,28 +54,32 @@ function Shell() {
 
       <Atmosphere />
       {!booted && <BootSequence />}
+
+      {/* Persistent chrome lives outside the stage so it never travels with a route. */}
       <Nav />
 
-      <TransitionProvider>
-        <ProjectEntryProvider>
+      <ProjectEntryProvider>
+        <TransitionStage>
           <main id="main" className="relative z-10">
-            <Suspense fallback={<RouteFallback />}>
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/work" element={<WorkPage />} />
-                <Route path="/work/:id" element={<ProjectPage />} />
-                <Route path="/contact" element={<ContactPage />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </Suspense>
+            <ErrorBoundary>
+              <Suspense fallback={<RouteFallback />}>
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/work" element={<WorkPage />} />
+                  <Route path="/work/:id" element={<ProjectPage />} />
+                  <Route path="/contact" element={<ContactPage />} />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </Suspense>
+            </ErrorBoundary>
           </main>
           <Footer />
-        </ProjectEntryProvider>
-      </TransitionProvider>
+        </TransitionStage>
+      </ProjectEntryProvider>
 
       <Grain />
       <CustomCursor />
-    </>
+    </TransitionProvider>
   )
 }
 
