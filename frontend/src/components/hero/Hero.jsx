@@ -10,12 +10,19 @@ import { useTransition } from '../transitions/TransitionProvider'
 import { scrollTo } from '../../hooks/useLenis'
 import { buildHeroIntro, buildHeroScrollHandoff, floatFragments } from '../../animations/heroAnimations'
 
-/* Small floating digital elements — real artefacts of the work, not decoration. */
+/**
+ * Small floating digital elements — real artefacts of the work, not decoration.
+ *
+ * All four live in the right-hand column. The statement occupies the left
+ * ~55–60% of the frame at every size where these are shown (lg and up), so
+ * anchoring them right is what keeps them off the typography instead of
+ * sitting behind it.
+ */
 const FRAGMENTS = [
-  { id: 'f1', label: 'build.status', value: 'PASSING', top: '18%', left: '7%', tone: 'sage' },
-  { id: 'f2', label: 'frame.budget', value: '16.6 ms', top: '30%', right: '8%', tone: 'brass' },
-  { id: 'f3', label: 'lighthouse', value: '98 / 100', bottom: '30%', left: '11%', tone: 'brass' },
-  { id: 'f4', label: 'projects.live', value: '90+', top: '62%', right: '12%', tone: 'bone' },
+  { id: 'f1', label: 'build.status', value: 'PASSING', top: '21%', right: '7%', tone: 'sage' },
+  { id: 'f2', label: 'frame.budget', value: '16.6 ms', top: '37%', right: '16%', tone: 'brass' },
+  { id: 'f3', label: 'lighthouse', value: '98 / 100', top: '53%', right: '6%', tone: 'brass' },
+  { id: 'f4', label: 'projects.live', value: '90+', top: '69%', right: '18%', tone: 'bone' },
 ]
 
 const TONE = {
@@ -54,7 +61,7 @@ export function Hero() {
       id="hero"
       ref={rootRef}
       aria-label="Introduction"
-      className="section relative min-h-[100svh] w-full overflow-hidden perspective-far"
+      className="section relative h-[100svh] w-full overflow-hidden perspective-far"
     >
       {/* Environment */}
       <HeroField scrollProgress={progress} />
@@ -87,7 +94,15 @@ export function Hero() {
         ))}
 
       {/* Type */}
-      <div className="shell relative z-20 flex min-h-[100svh] flex-col justify-center pb-24 pt-32 md:pb-32">
+      {/*
+        Fixed height, not min-height: the hero is a single frame. Top padding is
+        derived from the nav so the statement clears it at any size, and the
+        bottom leaves room for the scroll cue.
+      */}
+      <div
+        className="shell relative z-20 flex h-full flex-col justify-center pb-20"
+        style={{ paddingTop: 'calc(var(--nav-h) + 1.5rem)' }}
+      >
         <div data-hero-type className="preserve-3d">
           <div data-hero-eyebrow className="mb-6 flex flex-wrap items-center gap-x-4 gap-y-2 overflow-hidden md:mb-9">
             <span className="inline-block overflow-hidden">
@@ -135,14 +150,19 @@ export function Hero() {
             ))}
           </h1>
 
-          <div className="mt-8 flex flex-col gap-8 md:mt-12 md:flex-row md:items-end md:justify-between">
-            <div data-hero-meta className="flex max-w-md flex-col gap-4">
+          <div className="mt-7 flex flex-col gap-6 md:mt-10 md:flex-row md:items-end md:justify-between md:gap-10">
+            <div data-hero-meta className="flex max-w-md flex-col gap-3.5">
               <div data-hero-rule className="rule-brass h-px w-32 origin-left" />
-              <p className="text-[15px] leading-relaxed text-silver md:text-base">
+              <p className="text-[14.5px] leading-relaxed text-silver md:text-base">
                 We build apps, websites, storefronts and platforms for companies that need the work to be
                 right. {brand.tagline}
               </p>
-              <dl className="flex flex-wrap gap-x-8 gap-y-3 pt-1">
+              {/*
+                The stats are the first thing to go on a short viewport — they
+                are the least load-bearing element here, and dropping them keeps
+                the CTAs above the fold on 720–800px-tall laptops.
+              */}
+              <dl className="hidden flex-wrap gap-x-8 gap-y-3 pt-1 [@media(min-height:780px)]:flex">
                 {[
                   ['90+', 'Projects'],
                   ['14', 'Countries'],

@@ -32,8 +32,17 @@ export default {
         // Fluid editorial scale
         'label': ['0.6875rem', { lineHeight: '1', letterSpacing: '0.18em' }],
         'label-lg': ['0.75rem', { lineHeight: '1', letterSpacing: '0.16em' }],
-        'display-1': ['clamp(3rem, 13vw, 12.5rem)', { lineHeight: '0.85', letterSpacing: '-0.045em' }],
-        'display-2': ['clamp(2.5rem, 9vw, 8rem)', { lineHeight: '0.88', letterSpacing: '-0.04em' }],
+        /*
+         * display-1 sets a three-line statement inside one viewport, so it must
+         * respect HEIGHT as well as width — `min(vw, svh)` keeps it from eating
+         * the screen on a wide-but-short window (1920×800 laptops, in
+         * particular). The vw term still wins on mobile, where height is ample.
+         */
+        'display-1': [
+          'clamp(2.75rem, min(13vw, 16svh), 10.5rem)',
+          { lineHeight: '0.85', letterSpacing: '-0.045em' },
+        ],
+        'display-2': ['clamp(2.5rem, min(9vw, 15svh), 8rem)', { lineHeight: '0.88', letterSpacing: '-0.04em' }],
         'display-3': ['clamp(2rem, 6vw, 5rem)', { lineHeight: '0.94', letterSpacing: '-0.035em' }],
         'display-4': ['clamp(1.5rem, 3.6vw, 2.75rem)', { lineHeight: '1.04', letterSpacing: '-0.025em' }],
         'numeral': ['clamp(4rem, 18vw, 20rem)', { lineHeight: '0.78', letterSpacing: '-0.05em' }],
