@@ -1317,4 +1317,34 @@ write(
 )
 count++
 
+/* ── robots.txt + sitemap.xml, derived from the same data as the routes ── */
+const SITE = 'https://growkynos.com'
+
+write('robots.txt', `User-agent: *\nAllow: /\n\nSitemap: ${SITE}/sitemap.xml\n`)
+count++
+
+const routes = [
+  { loc: '/', priority: '1.0', freq: 'weekly' },
+  { loc: '/work', priority: '0.9', freq: 'weekly' },
+  { loc: '/contact', priority: '0.8', freq: 'monthly' },
+  ...jobs
+    .filter((j) => j.dir.startsWith('projects/'))
+    .map((j) => ({ loc: `/work/${j.dir.split('/').pop()}`, priority: '0.7', freq: 'monthly' })),
+]
+
+write(
+  'sitemap.xml',
+  `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${routes
+  .map(
+    (r) =>
+      `  <url><loc>${SITE}${r.loc}</loc><changefreq>${r.freq}</changefreq><priority>${r.priority}</priority></url>`,
+  )
+  .join('\n')}
+</urlset>
+`,
+)
+count++
+
 console.log(`Generated ${count} placeholder assets into public/`)

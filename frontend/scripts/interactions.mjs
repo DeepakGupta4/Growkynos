@@ -56,21 +56,11 @@ await sleep(3600)
 
 check('Route transition navigates to /contact', page.url().endsWith('/contact'), page.url())
 
-console.log(
-  '   [debug] contact DOM:',
-  JSON.stringify(
-    await page.evaluate(() => ({
-      url: location.pathname,
-      inputs: document.querySelectorAll('input,select,textarea').length,
-      mainText: document.querySelector('#main')?.innerText?.slice(0, 120).replace(/\n/g, ' | '),
-      mainOpacity: getComputedStyle(document.querySelector('#main')).opacity,
-      stageOpacity: getComputedStyle(document.querySelector('#main').parentElement).opacity,
-      overlay: getComputedStyle(document.querySelector('.z-transition') ?? document.body).opacity,
-      locked: document.body.dataset.scrollLocked,
-    })),
-  ),
+check(
+  'Contact form is present after arriving via transition',
+  (await page.evaluate(() => document.querySelectorAll('input,select,textarea').length)) >= 8,
 )
-console.log('   [debug] console errors so far:', JSON.stringify([...new Set(errors)].slice(0, 4)))
+check('Scroll is released after the transition', await page.evaluate(() => document.body.dataset.scrollLocked !== 'true'))
 
 const residual = await page.evaluate(() => {
   const main = document.querySelector('#main')
