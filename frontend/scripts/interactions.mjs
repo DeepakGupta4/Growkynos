@@ -130,16 +130,16 @@ check(
 
 /* ── 3. Pins still work after a transition ── */
 await page.evaluate(() => {
-  const btn = [...document.querySelectorAll('button')].find((b) => b.textContent.trim() === 'GROWKYNOS')
-  btn?.click()
+  document.querySelector('button[aria-label*="home"]')?.click()
 })
-await sleep(3800)
-check('Returned to home', new URL(page.url()).pathname === '/', page.url())
+await sleep(4200)
+check('Returned to home via the brand mark', new URL(page.url()).pathname === '/', page.url())
 
 const appTop = await page.evaluate(() => {
   const el = document.getElementById('world-app')
   return el ? el.getBoundingClientRect().top + window.scrollY : null
 })
+check('Home sections exist after returning', appTop != null)
 await lenisTo(appTop + 2400)
 await sleep(2000)
 const pinned = await page.evaluate(() => {
