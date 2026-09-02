@@ -22,7 +22,8 @@ const FRAGMENTS = [
   { id: 'f1', label: 'build.status', value: 'PASSING', top: '21%', right: '7%', tone: 'sage' },
   { id: 'f2', label: 'frame.budget', value: '16.6 ms', top: '37%', right: '16%', tone: 'brass' },
   { id: 'f3', label: 'lighthouse', value: '98 / 100', top: '53%', right: '6%', tone: 'brass' },
-  { id: 'f4', label: 'projects.live', value: '90+', top: '69%', right: '18%', tone: 'bone' },
+  // Kept clear of the CTA row, which sits at roughly 76–85% of the frame.
+  { id: 'f4', label: 'projects.live', value: '90+', top: '64%', right: '24%', tone: 'bone' },
 ]
 
 const TONE = {

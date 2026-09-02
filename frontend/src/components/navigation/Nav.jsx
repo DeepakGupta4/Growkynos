@@ -148,9 +148,12 @@ export function Nav() {
             <span className="font-display text-[15px] font-bold tracking-[0.16em] text-bone transition-colors duration-500 group-hover:text-brass md:text-[17px]">
               {brand.wordmark}
             </span>
+            {/* Only shown where there is genuinely room — below 2xl the five
+                nav items, the chapter readout and the CTA already fill the bar,
+                and this descriptor is what pushes them into wrapping. */}
             <span
               className={cn(
-                'hidden font-mono text-[9px] uppercase tracking-[0.2em] text-mist transition-opacity duration-500 lg:block',
+                'hidden whitespace-nowrap font-mono text-[9px] uppercase tracking-[0.2em] text-mist transition-opacity duration-500 2xl:block',
                 condensed ? 'opacity-0' : 'opacity-100',
               )}
             >
@@ -175,7 +178,7 @@ export function Nav() {
           <div className="flex items-center gap-3 md:gap-5" data-nav-item>
             {/* Chapter readout */}
             {isHome && (
-              <div className="hidden items-center gap-2.5 border-r border-smoke pr-5 xl:flex">
+              <div className="hidden items-center gap-2.5 whitespace-nowrap border-r border-smoke pr-5 2xl:flex">
                 <span className="h-1 w-1 rounded-full bg-brass anim-pulse" />
                 <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-mist tabular-nums">
                   {String(chapters.indexOf(chapter) + 1).padStart(2, '0')} / {chapters.length}

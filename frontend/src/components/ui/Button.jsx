@@ -60,7 +60,10 @@ export const Button = forwardRef(function Button(
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-[900ms] ease-out-expo group-hover:translate-x-full"
       />
-      <span ref={innerRef} className="relative flex items-center gap-2.5 will-change-transform">
+      <span
+        ref={innerRef}
+        className="relative flex items-center gap-2.5 whitespace-nowrap will-change-transform"
+      >
         {children}
       </span>
     </Tag>
