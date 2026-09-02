@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import { useIsomorphicLayoutEffect } from '../hooks/useIsomorphicLayoutEffect'
 import { useParams } from 'react-router-dom'
 import { gsap, ScrollTrigger, EASE, SCRUB } from '../lib/gsap'
 import { getProject, adjacentProjects } from '../data/projects'
@@ -34,7 +35,7 @@ export default function ProjectPage() {
     type: 'article',
   })
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const root = rootRef.current
     if (!root || !project || reducedMotion) return undefined
 

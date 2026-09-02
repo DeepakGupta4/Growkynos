@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import { useIsomorphicLayoutEffect } from '../../hooks/useIsomorphicLayoutEffect'
 import { gsap, ScrollTrigger, EASE, SCRUB } from '../../lib/gsap'
 import { studio } from '../../data/studio'
 import { useExperience } from '../../context/ExperienceContext'
@@ -17,7 +18,7 @@ export function StudioSection() {
   const rootRef = useRef(null)
   const { reducedMotion, isMobile } = useExperience()
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const root = rootRef.current
     if (!root || reducedMotion) return undefined
 

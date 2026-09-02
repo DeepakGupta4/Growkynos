@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { useIsomorphicLayoutEffect } from '../../hooks/useIsomorphicLayoutEffect'
 import { gsap, ScrollTrigger, SCRUB } from '../../lib/gsap'
 import { useExperience } from '../../context/ExperienceContext'
 import { cn } from '../../lib/utils'
@@ -36,7 +37,7 @@ export function ShowcaseFrame({
   const scale = reducedMotion ? 0 : isMobile ? 0.55 : isTablet ? 0.8 : 1
   const distance = Math.round(beats * 100 * scale)
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const root = rootRef.current
     const stage = stageRef.current
     if (!root || !stage || reducedMotion || !build) return undefined

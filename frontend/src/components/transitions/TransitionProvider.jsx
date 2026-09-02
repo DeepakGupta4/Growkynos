@@ -61,6 +61,12 @@ export function TransitionProvider({ children }) {
       const tl = gsap.timeline({
         onComplete: () => {
           busy.current = false
+          // Belt and braces: whatever happened mid-flight, the stage must end
+          // with no inline transform. A residual one — even the identity
+          // matrix — makes it a containing block for position:fixed and breaks
+          // every pinned ScrollTrigger on the arriving page.
+          if (page) gsap.set(page, { clearProps: 'transform,opacity,filter' })
+          ScrollTrigger.refresh()
         },
       })
 

@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import { useIsomorphicLayoutEffect } from '../hooks/useIsomorphicLayoutEffect'
 import { gsap, EASE } from '../lib/gsap'
 import { ContactForm } from '../components/contact/ContactForm'
 import { brand } from '../data/brand'
@@ -24,7 +25,7 @@ export default function ContactPage() {
     path: '/contact',
   })
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const root = rootRef.current
     if (!root || reducedMotion) return undefined
 

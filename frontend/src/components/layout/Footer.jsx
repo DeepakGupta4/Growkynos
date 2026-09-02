@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import { useIsomorphicLayoutEffect } from '../../hooks/useIsomorphicLayoutEffect'
 import { gsap, ScrollTrigger, EASE } from '../../lib/gsap'
 import { brand } from '../../data/brand'
 import { navItems } from '../../data/nav'
@@ -12,7 +13,7 @@ export function Footer() {
   const { go } = useTransition()
   const { reducedMotion } = useExperience()
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const el = ref.current
     if (!el || reducedMotion) return undefined
     const ctx = gsap.context(() => {

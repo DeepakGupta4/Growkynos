@@ -60,13 +60,17 @@ console.log(
   '   [debug] contact DOM:',
   JSON.stringify(
     await page.evaluate(() => ({
+      url: location.pathname,
       inputs: document.querySelectorAll('input,select,textarea').length,
-      submit: document.querySelectorAll('button[type="submit"]').length,
-      ids: [...document.querySelectorAll('[id^="field-"]')].map((n) => n.id),
-      head: document.body.innerText.slice(0, 90).replace(/\n/g, ' | '),
+      mainText: document.querySelector('#main')?.innerText?.slice(0, 120).replace(/\n/g, ' | '),
+      mainOpacity: getComputedStyle(document.querySelector('#main')).opacity,
+      stageOpacity: getComputedStyle(document.querySelector('#main').parentElement).opacity,
+      overlay: getComputedStyle(document.querySelector('.z-transition') ?? document.body).opacity,
+      locked: document.body.dataset.scrollLocked,
     })),
   ),
 )
+console.log('   [debug] console errors so far:', JSON.stringify([...new Set(errors)].slice(0, 4)))
 
 const residual = await page.evaluate(() => {
   const main = document.querySelector('#main')

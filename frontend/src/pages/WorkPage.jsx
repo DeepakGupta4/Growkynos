@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { useIsomorphicLayoutEffect } from '../hooks/useIsomorphicLayoutEffect'
 import { gsap, ScrollTrigger, EASE, SCRUB } from '../lib/gsap'
 import { projects, categories } from '../data/projects'
 import { useSEO } from '../hooks/useSEO'
@@ -35,7 +36,7 @@ export default function WorkPage() {
   )
 
   /* Entrance + scroll reveals */
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const root = rootRef.current
     if (!root || reducedMotion) return undefined
 
@@ -70,7 +71,7 @@ export default function WorkPage() {
   }, [reducedMotion, filter])
 
   /* Pointer-following preview */
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const el = previewRef.current
     if (!el || !hasHover || reducedMotion || isMobile) return undefined
 
@@ -91,7 +92,7 @@ export default function WorkPage() {
     return () => window.removeEventListener('pointermove', onMove)
   }, [hasHover, reducedMotion, isMobile])
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const el = previewRef.current
     const img = previewImgRef.current
     if (!el || !img || reducedMotion || !hasHover || isMobile) return

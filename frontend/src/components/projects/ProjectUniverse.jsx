@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useIsomorphicLayoutEffect } from '../../hooks/useIsomorphicLayoutEffect'
 import { gsap, ScrollTrigger, EASE, SCRUB } from '../../lib/gsap'
 import { ProjectCard } from './ProjectCard'
 import { projects } from '../../data/projects'
@@ -104,7 +105,7 @@ export function ProjectUniverse() {
     [enterProject, sfx],
   )
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const root = rootRef.current
     const stage = stageRef.current
     const field = fieldRef.current

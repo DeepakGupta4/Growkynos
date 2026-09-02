@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useIsomorphicLayoutEffect } from '../../hooks/useIsomorphicLayoutEffect'
 import { gsap, ScrollTrigger, EASE, SCRUB } from '../../lib/gsap'
 import { technologies, techGroups, getTech } from '../../data/technologies'
 import { useExperience } from '../../context/ExperienceContext'
@@ -66,7 +67,7 @@ export function TechConstellation() {
   )
 
   /* ── Entrance + scroll parallax ── */
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const root = rootRef.current
     const field = fieldRef.current
     if (!root || !field || reducedMotion) return undefined
@@ -88,9 +89,18 @@ export function TechConstellation() {
         scrollTrigger: { trigger: root, start: 'top 68%' },
       })
 
+      /*
+       * Edge length is read from the element's own data attribute rather than
+       * getTotalLength(): that call throws InvalidStateError on any SVG
+       * geometry that is not currently rendered (during an error-boundary
+       * re-render, inside a hidden ancestor, etc.), which would take out the
+       * whole section. The value is exact — these are straight lines.
+       */
+      const edgeLen = (i, el) => Number(el.dataset.len) || 200
+
       gsap.fromTo(
         '[data-tech-edge]',
-        { strokeDashoffset: (i, el) => el.getTotalLength?.() ?? 200, strokeDasharray: (i, el) => el.getTotalLength?.() ?? 200 },
+        { strokeDashoffset: edgeLen, strokeDasharray: edgeLen },
         {
           strokeDashoffset: 0,
           duration: 1.6,
@@ -141,7 +151,7 @@ export function TechConstellation() {
   }, [reducedMotion, isMobile])
 
   /* ── Pointer parallax ── */
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const field = fieldRef.current
     const root = rootRef.current
     if (!field || !root || reducedMotion || isMobile) return undefined
@@ -176,7 +186,7 @@ export function TechConstellation() {
   }, [reducedMotion, isMobile])
 
   /* ── Focus reaction across the whole constellation ── */
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (reducedMotion) return
     technologies.forEach((t) => {
       const el = nodeRefs.current[t.id]
@@ -210,7 +220,7 @@ export function TechConstellation() {
     [sfx],
   )
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const onKey = (e) => e.key === 'Escape' && setLocked(null)
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
@@ -278,10 +288,13 @@ export function TechConstellation() {
               const p1 = svgPos(e.a)
               const p2 = svgPos(e.b)
               const live = isEdgeLive(e)
+              // Length in viewBox units — used by the draw-on animation.
+              const len = Math.hypot(p2.x - p1.x, p2.y - p1.y)
               return (
                 <line
                   key={e.key}
                   data-tech-edge
+                  data-len={len.toFixed(2)}
                   x1={p1.x}
                   y1={p1.y}
                   x2={p2.x}

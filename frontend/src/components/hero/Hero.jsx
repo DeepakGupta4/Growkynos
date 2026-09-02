@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import { useIsomorphicLayoutEffect } from '../../hooks/useIsomorphicLayoutEffect'
 import { gsap } from '../../lib/gsap'
 import { brand } from '../../data/brand'
 import { services } from '../../data/services'
@@ -29,7 +30,7 @@ export function Hero() {
   const { reducedMotion, booted, isMobile } = useExperience()
   const { go } = useTransition()
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (!booted) return undefined
     const el = rootRef.current
     if (!el) return undefined

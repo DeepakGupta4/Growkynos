@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { useIsomorphicLayoutEffect } from '../../hooks/useIsomorphicLayoutEffect'
 import { gsap, ScrollTrigger, EASE, SCRUB } from '../../lib/gsap'
 import { services } from '../../data/services'
 import { useExperience } from '../../context/ExperienceContext'
@@ -55,7 +56,7 @@ export function ServiceUniverse() {
     })
   }, [])
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const root = rootRef.current
     const cloud = cloudRef.current
     if (!root || !cloud || reducedMotion) return undefined
@@ -142,7 +143,7 @@ export function ServiceUniverse() {
   }, [reducedMotion, isMobile])
 
   /* Pointer parallax on the whole cloud — the viewer leans into the space. */
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const stage = stageRef.current
     const cloud = cloudRef.current
     if (!stage || !cloud || reducedMotion || isMobile) return undefined
@@ -179,7 +180,7 @@ export function ServiceUniverse() {
   }, [reducedMotion, isMobile])
 
   /* Hover reaction across the whole cloud. */
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (reducedMotion || isMobile) return
     const plates = gsap.utils.toArray('[data-plate]')
     plates.forEach((el) => {

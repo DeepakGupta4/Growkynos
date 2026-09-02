@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import { useIsomorphicLayoutEffect } from '../../hooks/useIsomorphicLayoutEffect'
 import { gsap, ScrollTrigger, EASE, SCRUB } from '../../lib/gsap'
 import { Button } from '../ui/Button'
 import { brand } from '../../data/brand'
@@ -17,7 +18,7 @@ export function ContactCta() {
   const { go } = useTransition()
   const { reducedMotion } = useExperience()
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const root = rootRef.current
     if (!root || reducedMotion) return undefined
 
