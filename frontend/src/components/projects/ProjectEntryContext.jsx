@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useMemo, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { gsap, EASE } from '../../lib/gsap'
+import { gsap, ScrollTrigger, EASE } from '../../lib/gsap'
 import { getLenis, lockScroll } from '../../hooks/useLenis'
 import { useExperience } from '../../context/ExperienceContext'
 import { useSound } from '../../context/SoundContext'
@@ -104,7 +104,11 @@ export function ProjectEntryProvider({ children }) {
           const lenis = getLenis()
           if (lenis) lenis.scrollTo(0, { immediate: true })
           else window.scrollTo(0, 0)
-          gsap.set('#main', { scale: 1, opacity: 1, filter: 'blur(0px)' })
+          // Must clear, not reset: a residual identity transform on #main would
+          // make it a containing block for position:fixed and break the pinned
+          // ScrollTriggers on every page rendered inside it afterwards.
+          gsap.set('#main', { clearProps: 'transform,opacity,filter' })
+          ScrollTrigger.refresh()
         }, 1.02)
         // Release: the arriving route already shows this image at this geometry.
         .to(chrome, { autoAlpha: 0, duration: 0.35 }, 1.18)

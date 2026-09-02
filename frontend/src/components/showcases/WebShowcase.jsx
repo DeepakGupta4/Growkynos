@@ -151,7 +151,7 @@ export function WebShowcase() {
       .fromTo(pages[2], { autoAlpha: 1, yPercent: 100 }, { yPercent: 0, duration: 1, ease: 'power2.inOut' }, '<')
       .to(
         browser,
-        { scale: mobile ? 1.16 : 1.28, rotateY: 8, duration: 1.5, ease: 'power2.inOut' },
+        { scale: mobile ? 1.04 : 1.28, rotateY: 8, duration: 1.5, ease: 'power2.inOut' },
         '-=0.7',
       )
       .to(browser, { rotateY: 0, duration: 1, ease: EASE.settle })
@@ -174,7 +174,7 @@ export function WebShowcase() {
       .to(
         browser,
         {
-          scale: mobile ? 1.75 : 2.35,
+          scale: mobile ? 1.22 : 2.35,
           z: mobile ? 260 : 460,
           borderRadius: 0,
           duration: 2,
@@ -346,7 +346,7 @@ export function WebShowcase() {
         </div>
       </div>
 
-      <div data-web-cta className="absolute inset-x-0 bottom-[16%] z-40 flex justify-center opacity-0">
+      <div data-web-cta className="absolute inset-x-0 bottom-[26%] z-40 flex justify-center opacity-0 md:bottom-[16%]">
         <button
           type="button"
           data-cursor="view"

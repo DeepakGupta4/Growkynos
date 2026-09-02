@@ -214,7 +214,7 @@ export function AIShowcase() {
     /* 07 — APPROACH */
     tl.to(
       graph,
-      { scale: mobile ? 1.22 : 1.34, z: mobile ? 180 : 300, duration: 1.8, ease: 'power2.in' },
+      { scale: mobile ? 1.04 : 1.34, z: mobile ? 180 : 300, duration: 1.8, ease: 'power2.in' },
       '+=0.4',
     )
       .to(glow, { opacity: 1.7, duration: 1.2 }, '<')
@@ -395,7 +395,7 @@ export function AIShowcase() {
         </div>
       </div>
 
-      <div data-ai-cta className="absolute inset-x-0 bottom-[14%] z-40 flex justify-center opacity-0">
+      <div data-ai-cta className="absolute inset-x-0 bottom-[26%] z-40 flex justify-center opacity-0 md:bottom-[14%]">
         <button
           type="button"
           data-cursor="view"

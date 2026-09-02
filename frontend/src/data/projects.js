@@ -382,6 +382,7 @@ export const projects = [
       `${P}/creative/halcyon-film/01.svg`,
       `${P}/creative/halcyon-film/02.svg`,
       `${P}/creative/halcyon-film/03.svg`,
+      `${P}/creative/halcyon-film/04.svg`,
     ],
     // Drop real files in /public/projects/creative/halcyon-film/ and the
     // showcase will play them instead of the synthetic preview.

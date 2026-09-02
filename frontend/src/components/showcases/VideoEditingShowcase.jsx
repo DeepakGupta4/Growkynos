@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef } from 'react'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { gsap, EASE } from '../../lib/gsap'
 import { ShowcaseFrame } from './ShowcaseFrame'
 import { PanelFrame } from './ui/Devices'
@@ -46,6 +46,29 @@ export function VideoEditingShowcase() {
     clipsRef.current[i] = el
   }
 
+  /**
+   * Footage playback is gated to visibility: nothing decodes until the world is
+   * on screen, and it pauses the moment it leaves. Failure to autoplay is
+   * non-fatal — the poster stays up.
+   */
+  useEffect(() => {
+    const el = videoRef.current
+    if (!el || !hasFootage) return undefined
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          el.preload = 'auto'
+          el.play().catch(() => {})
+        } else {
+          el.pause()
+        }
+      },
+      { threshold: 0.2 },
+    )
+    io.observe(el)
+    return () => io.disconnect()
+  }, [hasFootage])
+
   /* Deterministic audio waveform. */
   const waveform = useMemo(() => {
     const rand = seeded(19871122)
@@ -65,7 +88,10 @@ export function VideoEditingShowcase() {
     const timecode = timecodeRef.current
     const glow = glowRef.current
     const tag = tagRef.current
-    if (!nle || !previews.length) return
+    // With real footage the preview is a <video>, so there are no still layers
+    // to cross-fade — the edit choreography still runs, it just skips those steps.
+    if (!nle) return
+    const hasStills = previews.length > 0
 
     const frames = 2160 // 90s at 24fps
     const setTC = (p) => {
@@ -80,8 +106,10 @@ export function VideoEditingShowcase() {
 
     /* Initial */
     gsap.set(nle, { z: -1050, rotateX: 18, opacity: 0, scale: 0.92 })
-    gsap.set(previews, { autoAlpha: 0 })
-    gsap.set(previews[0], { autoAlpha: 1 })
+    if (hasStills) {
+      gsap.set(previews, { autoAlpha: 0 })
+      gsap.set(previews[0], { autoAlpha: 1 })
+    }
     gsap.set(playhead, { left: '4%' })
     gsap.set(transition, { autoAlpha: 0, scale: 0.6 })
     gsap.set(progress, { scaleX: 0.04, transformOrigin: 'left center' })
@@ -117,6 +145,7 @@ export function VideoEditingShowcase() {
           gsap.set(playhead, { left: `${scrub.p * 100}%` })
           gsap.set(progress, { scaleX: scrub.p })
           setTC(scrub.p)
+          if (!hasStills) return
           const idx = cutAt.filter((c) => scrub.p >= c).length
           previews.forEach((el, i) => {
             const target = i === Math.min(idx, previews.length - 1) ? 1 : 0
@@ -159,9 +188,14 @@ export function VideoEditingShowcase() {
       )
 
     /* 07 — PREVIEW CHANGES: a real cross-dissolve through the transition. */
-    tl.to(previews[previews.length - 2], { autoAlpha: 0, duration: 0.9, ease: 'power2.inOut' }, '+=0.1')
-      .to(previews[previews.length - 1], { autoAlpha: 1, duration: 0.9, ease: 'power2.inOut' }, '<')
-      .fromTo(
+    if (hasStills) {
+      tl.to(previews[previews.length - 2], { autoAlpha: 0, duration: 0.9, ease: 'power2.inOut' }, '+=0.1').to(
+        previews[previews.length - 1],
+        { autoAlpha: 1, duration: 0.9, ease: 'power2.inOut' },
+        '<',
+      )
+    }
+    tl.fromTo(
         '[data-video-flash]',
         { autoAlpha: 0 },
         { autoAlpha: 0.42, duration: 0.22, yoyo: true, repeat: 1, ease: 'power2.inOut' },
@@ -181,8 +215,8 @@ export function VideoEditingShowcase() {
       },
     })
       .to('[data-video-chrome]', { autoAlpha: 0, duration: 0.8, ease: 'power2.inOut' }, '-=0.9')
-      .to('[data-video-preview-wrap]', { scale: mobile ? 1.24 : 1.4, duration: 1.6, ease: 'power2.inOut' }, '-=0.8')
-      .to(nle, { scale: mobile ? 1.2 : 1.32, z: mobile ? 180 : 300, duration: 1.6, ease: 'power2.in' }, '<')
+      .to('[data-video-preview-wrap]', { scale: mobile ? 1.06 : 1.4, duration: 1.6, ease: 'power2.inOut' }, '-=0.8')
+      .to(nle, { scale: mobile ? 1.04 : 1.32, z: mobile ? 180 : 300, duration: 1.6, ease: 'power2.in' }, '<')
       .to(glow, { opacity: 1.7, duration: 1.2 }, '<')
       .to(tag, { autoAlpha: 0, duration: 0.4 }, '<')
       .fromTo(
@@ -483,7 +517,7 @@ export function VideoEditingShowcase() {
         </div>
       </div>
 
-      <div data-video-cta className="absolute inset-x-0 bottom-[16%] z-40 flex justify-center opacity-0">
+      <div data-video-cta className="absolute inset-x-0 bottom-[26%] z-40 flex justify-center opacity-0 md:bottom-[16%]">
         <button
           type="button"
           data-cursor="view"

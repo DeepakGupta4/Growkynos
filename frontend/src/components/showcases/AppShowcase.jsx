@@ -119,7 +119,10 @@ export function AppShowcase() {
         }, '-=1.15')
         .to([card, notif], { y: '+=12', duration: 1.2, ease: 'sine.inOut' }, '-=0.4')
 
-      /* 05 — PAGING: screens exchange places in depth, not by sliding. */
+      /* 05 — PAGING: screens exchange places in depth, not by sliding.
+         The live rows belong to screen 01, so they leave with it. */
+      tl.to('[data-app-row]', { autoAlpha: 0, y: -14, duration: 0.45, ease: 'power2.in' })
+
       for (let i = 1; i < screens.length; i++) {
         tl.to(
           screens[i - 1],
@@ -199,7 +202,7 @@ export function AppShowcase() {
         phone,
         {
           z: mobile ? 420 : 700,
-          scale: mobile ? 1.5 : 1.85,
+          scale: mobile ? 1.16 : 1.85,
           y: mobile ? -10 : -24,
           duration: 2.1,
           ease: 'power2.in',
@@ -370,7 +373,7 @@ export function AppShowcase() {
       </div>
 
       {/* Hand-off */}
-      <div data-app-cta className="absolute inset-x-0 bottom-[16%] z-40 flex justify-center opacity-0">
+      <div data-app-cta className="absolute inset-x-0 bottom-[26%] z-40 flex justify-center opacity-0 md:bottom-[16%]">
         <button
           type="button"
           data-cursor="view"

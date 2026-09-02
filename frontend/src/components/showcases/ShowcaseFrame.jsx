@@ -162,14 +162,15 @@ function Chrome({ service, phase, beats, side = 'left', barRef, static: isStatic
               <h2 className="font-display text-[clamp(1.15rem,3.6vw,2.25rem)] font-semibold leading-none tracking-tight text-bone">
                 {service.title}
               </h2>
-              <p className="max-w-md text-[12.5px] leading-relaxed text-mist md:text-[13.5px]">
+              {/* Mobile gives its height to the demonstration, not the caption. */}
+              <p className="hidden max-w-md text-[12.5px] leading-relaxed text-mist md:block md:text-[13.5px]">
                 {service.summary}
               </p>
             </div>
           </div>
 
           <div className="flex shrink-0 flex-col items-start gap-2.5 md:items-end">
-            <ul className="flex flex-wrap gap-x-3 gap-y-1.5 md:justify-end">
+            <ul className="hidden flex-wrap gap-x-3 gap-y-1.5 sm:flex md:justify-end">
               {service.capabilities.map((c) => (
                 <li
                   key={c}

@@ -9,6 +9,10 @@ import { DesignShowcase } from '../components/showcases/DesignShowcase'
 import { PhotoEditingShowcase } from '../components/showcases/PhotoEditingShowcase'
 import { VideoEditingShowcase } from '../components/showcases/VideoEditingShowcase'
 import { AIShowcase } from '../components/showcases/AIShowcase'
+import { ProjectUniverse } from '../components/projects/ProjectUniverse'
+import { StudioSection } from '../components/studio/StudioSection'
+import { TechConstellation } from '../components/technology/TechConstellation'
+import { ContactCta } from '../components/contact/ContactCta'
 import { useSEO } from '../hooks/useSEO'
 import { brand } from '../data/brand'
 
@@ -35,6 +39,12 @@ export default function Home() {
       <PhotoEditingShowcase />
       <VideoEditingShowcase />
       <AIShowcase />
+
+      {/* The identity moment, then who and how */}
+      <ProjectUniverse />
+      <StudioSection />
+      <TechConstellation />
+      <ContactCta />
     </>
   )
 }

@@ -162,7 +162,7 @@ export function PhotoEditingShowcase() {
     tl.to('[data-photo-chrome]', { autoAlpha: 0, duration: 0.7, ease: 'power2.inOut' }, '-=0.4')
       .to(
         editor,
-        { scale: mobile ? 1.34 : 1.62, z: mobile ? 220 : 380, duration: 1.9, ease: 'power2.in' },
+        { scale: mobile ? 1.08 : 1.62, z: mobile ? 220 : 380, duration: 1.9, ease: 'power2.in' },
         '-=0.5',
       )
       .to(glow, { opacity: 1.7, duration: 1.2 }, '<')
@@ -383,7 +383,7 @@ export function PhotoEditingShowcase() {
         </div>
       </div>
 
-      <div data-photo-cta className="absolute inset-x-0 bottom-[16%] z-40 flex justify-center opacity-0">
+      <div data-photo-cta className="absolute inset-x-0 bottom-[26%] z-40 flex justify-center opacity-0 md:bottom-[16%]">
         <button
           type="button"
           data-cursor="view"

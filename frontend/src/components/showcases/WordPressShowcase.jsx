@@ -197,7 +197,7 @@ export function WordPressShowcase() {
       )
 
     /* 06 — APPROACH */
-    tl.to(site, { scale: mobile ? 1.24 : 1.4, z: mobile ? 200 : 340, duration: 1.7, ease: 'power2.in' }, '+=0.3')
+    tl.to(site, { scale: mobile ? 1.08 : 1.4, z: mobile ? 200 : 340, duration: 1.7, ease: 'power2.in' }, '+=0.3')
       .to(glow, { opacity: 1.7, duration: 1.2 }, '<')
       .to(tag, { autoAlpha: 0, duration: 0.4 }, '<')
       .fromTo(
@@ -240,7 +240,14 @@ export function WordPressShowcase() {
 
       {/* Admin */}
       <div ref={adminRef} className="absolute z-10 preserve-3d will-change-transform">
-        <PanelFrame label="CHRONICLE PRESS — EDITOR" accent={service.accent} className="w-[min(90vw,800px)]">
+        {/* clip=false: the blocks must be able to leave the editor entirely —
+            that departure is the whole argument of this world. */}
+        <PanelFrame
+          label="CHRONICLE PRESS — EDITOR"
+          accent={service.accent}
+          clip={false}
+          className="w-[min(90vw,800px)]"
+        >
           <div className="flex h-[46svh] md:h-[52svh]">
             {/* Sidebar */}
             <div ref={sidebarRef} className="hidden w-36 shrink-0 border-r border-smoke/60 p-3 sm:block">
@@ -263,13 +270,15 @@ export function WordPressShowcase() {
               <span className="mb-2 block font-mono text-[8px] uppercase tracking-[0.16em] text-mist">
                 CONTENT BLOCKS
               </span>
-              <div className="flex flex-col gap-2 preserve-3d">
+              {/* A centred content column, as in a real block editor — it also
+                  gives the blocks a card-like proportion once they detach. */}
+              <div className="mx-auto flex w-full max-w-[280px] flex-col gap-2 preserve-3d">
                 {BLOCKS.map((b, i) => (
                   <div
                     key={b.id}
                     ref={(el) => setBlock(el, i)}
                     className="surface relative overflow-hidden rounded preserve-3d will-change-transform"
-                    style={{ height: isMobile ? b.h * 0.62 : b.h * 0.78 }}
+                    style={{ height: isMobile ? b.h * 0.62 : b.h * 0.95 }}
                   >
                     <div className="flex h-full flex-col gap-1.5 p-2 md:p-2.5">
                       <span
@@ -401,7 +410,7 @@ export function WordPressShowcase() {
         <ProjectTag project={project} accent={service.accent} />
       </div>
 
-      <div data-wp-cta className="absolute inset-x-0 bottom-[16%] z-40 flex justify-center opacity-0">
+      <div data-wp-cta className="absolute inset-x-0 bottom-[26%] z-40 flex justify-center opacity-0 md:bottom-[16%]">
         <button
           type="button"
           data-cursor="view"

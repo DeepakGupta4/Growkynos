@@ -53,19 +53,20 @@ export function useLenisScroll({ enabled = true } = {}) {
     lenisInstance = lenis
     ref.current = lenis
 
+    // Debug/tooling handle. Lenis owns the scroll position, so anything driving
+    // the page programmatically (smoke tests, screenshot capture, e2e) must go
+    // through it — a raw window.scrollTo is reverted on the next Lenis frame.
+    window.__lenis = lenis
+
     lenis.on('scroll', ScrollTrigger.update)
 
     const raf = (time) => lenis.raf(time * 1000)
     gsap.ticker.add(raf)
     gsap.ticker.lagSmoothing(500, 33)
 
-    ScrollTrigger.scrollerProxy(document.body, {
-      scrollTop(value) {
-        if (arguments.length && typeof value === 'number') lenis.scrollTo(value, { immediate: true })
-        return lenis.scroll
-      },
-    })
-
+    // NOTE: no scrollerProxy here. Lenis drives window scroll natively, so
+    // ScrollTrigger's default scroller is already correct — proxying it breaks
+    // pin measurement on the pinned showcase sections.
     ScrollTrigger.refresh()
 
     return () => {
@@ -73,6 +74,7 @@ export function useLenisScroll({ enabled = true } = {}) {
       lenis.destroy()
       lenisInstance = null
       ref.current = null
+      delete window.__lenis
     }
   }, [enabled])
 

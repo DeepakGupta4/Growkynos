@@ -59,7 +59,10 @@
   body {
     @apply bg-void text-bone font-sans antialiased;
     margin: 0;
-    overflow-x: hidden;
+    /* `clip`, not `hidden` — hidden turns the viewport into a scroll container,
+       which breaks ScrollTrigger's pin measurements. This is a safety net for
+       3D-transformed layers; each one still clips itself at source. */
+    overflow-x: clip;
     font-synthesis-weight: none;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;

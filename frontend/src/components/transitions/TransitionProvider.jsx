@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { gsap, EASE } from '../../lib/gsap'
+import { gsap, ScrollTrigger, EASE } from '../../lib/gsap'
 import { getLenis, lockScroll } from '../../hooks/useLenis'
 import { useExperience } from '../../context/ExperienceContext'
 import { useSound } from '../../context/SoundContext'
@@ -94,7 +94,10 @@ export function TransitionProvider({ children }) {
         const lenis = getLenis()
         if (lenis) lenis.scrollTo(0, { immediate: true })
         else window.scrollTo(0, 0)
-        if (page) gsap.set(page, { scale: 1, y: 0, filter: 'blur(0px)', opacity: 1 })
+        // clearProps, not set-to-identity: an inline `transform: matrix(1,0,0,1,0,0)`
+        // still makes this a containing block for position:fixed, which would
+        // break every pinned ScrollTrigger on the arriving page.
+        if (page) gsap.set(page, { clearProps: 'transform,filter,opacity' })
       }, 0.95)
 
       tl.to(labelRef.current, { autoAlpha: 0, y: -18, duration: 0.4, ease: 'power3.in' }, 1.24)
@@ -119,7 +122,18 @@ export function TransitionProvider({ children }) {
         tl.fromTo(
           page,
           { opacity: 0, y: 44, scale: 1.02 },
-          { opacity: 1, y: 0, scale: 1, duration: 1.05, ease: EASE.settle },
+          {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            duration: 1.05,
+            ease: EASE.settle,
+            // Leave no transform behind — see the note above.
+            onComplete: () => {
+              gsap.set(page, { clearProps: 'transform,opacity,filter' })
+              ScrollTrigger.refresh()
+            },
+          },
           1.42,
         )
       }
@@ -179,7 +193,15 @@ export function useTransition() {
 export function TransitionStage({ children, className }) {
   const { pageRef } = useTransition()
   return (
-    <div ref={pageRef} className={className ?? 'relative will-change-transform'}>
+    /*
+     * IMPORTANT: no persistent `will-change: transform` / `transform` here.
+     * Either one makes this element a containing block for `position: fixed`
+     * descendants, which silently breaks every pinned ScrollTrigger inside —
+     * the pinned stage gets positioned against the document instead of the
+     * viewport and scrolls off screen. GSAP applies will-change itself for the
+     * duration of the transition tween, which is all we need.
+     */
+    <div ref={pageRef} className={className ?? 'relative'}>
       {children}
     </div>
   )

@@ -1084,54 +1084,133 @@ function photoPlate({ seed, index, graded = false }) {
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img">${s}</svg>`
 }
 
-/** Studio editorial images — abstract but photographic in feel. */
+/**
+ * Studio editorial images. These sit behind text at large sizes, so they need
+ * real tonal range — a dark room still has lit surfaces, rim light on figures
+ * and glowing screens. An almost-black rectangle reads as a loading failure,
+ * not as atmosphere.
+ */
 function studioImage(i) {
   const r = rng(hash(`studio-${i}`))
   const W = 1200
   const H = i % 2 === 0 ? 1500 : 800
   let s = ''
-  const tint = [C.brass, C.halo, C.sage, C.lilac, C.rose][i % 5]
+  const tint = [C.brass, C.halo, C.sage, C.lilac, C.brass][i % 5]
+  const floor = H * 0.78
 
-  s += rect(0, 0, W, H, C.graphite)
-  // volumetric light
-  s += `<defs><linearGradient id="lt${i}" x1="0.2" y1="0" x2="0.8" y2="1">
-      <stop offset="0%" stop-color="${tint}" stop-opacity="0.28"/>
-      <stop offset="60%" stop-color="${C.void}" stop-opacity="0.1"/>
-      <stop offset="100%" stop-color="${C.void}" stop-opacity="0.9"/>
-    </linearGradient></defs>`
-  // architectural blocks
-  for (let k = 0; k < 9; k++) {
-    const x = r() * W
-    const y = r() * H
-    const w = 100 + r() * 420
-    const h = 60 + r() * 420
-    s += rect(x, y, w, h, k % 3 === 0 ? C.smoke : C.ash, 0, 0.5 + r() * 0.4)
+  s += `<defs>
+    <linearGradient id="wall${i}" x1="0.1" y1="0" x2="0.9" y2="1">
+      <stop offset="0%" stop-color="#3A3A44"/>
+      <stop offset="45%" stop-color="#26262E"/>
+      <stop offset="100%" stop-color="#15151A"/>
+    </linearGradient>
+    <linearGradient id="floor${i}" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2A2A32"/>
+      <stop offset="100%" stop-color="#101014"/>
+    </linearGradient>
+    <radialGradient id="key${i}" cx="0.72" cy="0.18" r="0.68">
+      <stop offset="0%" stop-color="${tint}" stop-opacity="0.42"/>
+      <stop offset="55%" stop-color="${tint}" stop-opacity="0.10"/>
+      <stop offset="100%" stop-color="${tint}" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="vig${i}" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#000" stop-opacity="0.34"/>
+      <stop offset="42%" stop-color="#000" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0.62"/>
+    </linearGradient>
+  </defs>`
+
+  // Room
+  s += rect(0, 0, W, H, `url(#wall${i})`)
+  s += rect(0, floor, W, H - floor, `url(#floor${i})`)
+  s += line(0, floor, W, floor, '#4A4A56', 2, 0.6)
+
+  // Structural bays — vertical mullions catching light
+  for (let k = 0; k < 5; k++) {
+    const x = k * (W / 5) + 30 + r() * 40
+    s += rect(x, 0, 10 + r() * 16, floor, '#43434F', 0, 0.32 + r() * 0.25)
+    s += rect(x + 14, 0, 3, floor, C.bone, 0, 0.07)
   }
-  // human-scale silhouettes
+
+  // Wall of pinned work — the brightest objects in frame
+  const pins = 6
+  for (let k = 0; k < pins; k++) {
+    const pw = 150 + r() * 120
+    const ph = pw * (0.62 + r() * 0.5)
+    const x = 60 + r() * (W - pw - 120)
+    const y = 70 + r() * (floor * 0.42)
+    s += rect(x + 5, y + 7, pw, ph, '#000', 3, 0.45)
+    s += rect(x, y, pw, ph, '#EDEDF0', 3, 0.9)
+    s += rect(x, y, pw, ph, '#1A1A20', 3, 0.12)
+    // content inside the print
+    s += rect(x + 12, y + 12, pw - 24, ph * 0.45, tint, 2, 0.5)
+    for (let j = 0; j < 3; j++) {
+      s += rect(x + 12, y + ph * 0.55 + j * 12, (pw - 24) * (0.9 - j * 0.24), 5, '#3A3A44', 2.5, 0.85)
+    }
+  }
+
+  // Lit screens
+  for (let k = 0; k < 2; k++) {
+    const sw = 220 + r() * 150
+    const sh = sw * 0.6
+    const x = 80 + r() * (W - sw - 160)
+    const y = floor - sh - 120 - r() * 90
+    s += rect(x - 6, y - 6, sw + 12, sh + 12, '#0A0A0D', 6)
+    s += rect(x, y, sw, sh, '#1C2733', 3)
+    s += rect(x, y, sw, sh, tint, 3, 0.3)
+    for (let j = 0; j < 5; j++) {
+      s += rect(x + 14, y + 16 + j * (sh / 6), (sw - 28) * (0.35 + r() * 0.6), 6, C.bone, 3, 0.35 + r() * 0.35)
+    }
+    // screen spill onto the surface below
+    s += `<ellipse cx="${f(x + sw / 2)}" cy="${f(y + sh + 40)}" rx="${f(sw * 0.75)}" ry="46" fill="${tint}" opacity="0.16"/>`
+  }
+
+  // Figures — silhouettes with rim light, at human scale
   const figs = i % 2 === 0 ? 2 : 3
   for (let k = 0; k < figs; k++) {
-    const cx = W * (0.22 + k * 0.3) + r() * 60
-    const base = H * 0.92
-    const scale = 0.8 + r() * 0.45
-    s += `<ellipse cx="${f(cx)}" cy="${f(base - 250 * scale)}" rx="${f(56 * scale)}" ry="${f(
-      160 * scale,
-    )}" fill="${C.void}" opacity="0.72"/>`
-    s += `<circle cx="${f(cx)}" cy="${f(base - 430 * scale)}" r="${f(40 * scale)}" fill="${C.void}" opacity="0.75"/>`
+    const cx = W * (0.2 + k * 0.28) + r() * 70
+    const scale = 0.9 + r() * 0.35
+    const headY = floor - 300 * scale
+    // body
+    s += `<path d="M${f(cx - 62 * scale)} ${f(floor + 10)} C ${f(cx - 66 * scale)} ${f(
+      headY + 70,
+    )}, ${f(cx - 34 * scale)} ${f(headY + 34)}, ${f(cx)} ${f(headY + 30)} C ${f(cx + 34 * scale)} ${f(
+      headY + 34,
+    )}, ${f(cx + 66 * scale)} ${f(headY + 70)}, ${f(cx + 62 * scale)} ${f(floor + 10)} Z" fill="#0C0C10" opacity="0.94"/>`
+    s += `<circle cx="${f(cx)}" cy="${f(headY)}" r="${f(34 * scale)}" fill="#0C0C10" opacity="0.95"/>`
+    // rim light on the key side
+    s += `<path d="M${f(cx + 30 * scale)} ${f(headY - 22 * scale)} A ${f(34 * scale)} ${f(
+      34 * scale,
+    )} 0 0 1 ${f(cx + 24 * scale)} ${f(headY + 26 * scale)}" fill="none" stroke="${tint}" stroke-width="${f(
+      5 * scale,
+    )}" opacity="0.7" stroke-linecap="round"/>`
+    s += `<path d="M${f(cx + 58 * scale)} ${f(headY + 90)} L ${f(cx + 60 * scale)} ${f(
+      floor - 10,
+    )}" stroke="${tint}" stroke-width="${f(4 * scale)}" opacity="0.42" stroke-linecap="round"/>`
+    // contact shadow
+    s += `<ellipse cx="${f(cx)}" cy="${f(floor + 12)}" rx="${f(90 * scale)}" ry="14" fill="#000" opacity="0.5"/>`
   }
-  // pinned work / screens
-  for (let k = 0; k < 5; k++) {
-    const x = 60 + r() * (W - 300)
-    const y = 60 + r() * (H * 0.5)
-    s += rect(x, y, 150 + r() * 130, 100 + r() * 110, C.carbon, 2, 0.85)
-    s += rect(x + 8, y + 8, 60 + r() * 60, 5, tint, 2, 0.7)
-    s += rect(x + 8, y + 22, 90 + r() * 70, 4, C.steel, 2, 0.6)
+
+  // Table with proofs, foreground
+  s += rect(0, floor + 40, W, 10, '#3A3A44', 0, 0.5)
+  for (let k = 0; k < 4; k++) {
+    const pw = 130 + r() * 110
+    const x = 40 + k * (W / 4) + r() * 40
+    s += `<g transform="rotate(${f((r() - 0.5) * 16)} ${f(x + pw / 2)} ${f(floor + 120)})">`
+    s += rect(x, floor + 70, pw, pw * 0.72, '#E4E4E8', 2, 0.85)
+    s += rect(x + 10, floor + 80, pw - 20, pw * 0.3, tint, 1, 0.55)
+    s += '</g>'
   }
-  s += rect(0, 0, W, H, `url(#lt${i})`)
-  // grain
-  for (let k = 0; k < 420; k++) {
-    s += rect(r() * W, r() * H, 2, 2, C.bone, 0, r() * 0.05)
+
+  s += rect(0, 0, W, H, `url(#key${i})`)
+  s += rect(0, 0, W, H, `url(#vig${i})`)
+
+  // Film grain
+  for (let k = 0; k < 900; k++) {
+    s += rect(r() * W, r() * H, 2, 2, r() > 0.45 ? C.bone : '#000', 0, r() * 0.07)
   }
-  return wrap(W, H, s, { bg: C.graphite })
+
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img">${s}</svg>`
 }
 
 /* ══════════════════════════════════════════════════════════
@@ -1166,7 +1245,9 @@ const jobs = [
   // 01 = flat capture, 02 = delivered grade, 03/04 = further frames.
   // The photo world cross-fades 01 → 02, so these two must be the same frame.
   { dir: 'projects/creative/aurelia-campaign', n: 4, kind: 'plate', title: 'Aurelia', accent: C.rose },
-  { dir: 'projects/creative/halcyon-film', n: 3, kind: 'video', title: 'Halcyon', accent: C.brass },
+  // Film FRAMES, not editor screenshots — the video world supplies its own NLE
+  // chrome, so these must be the footage it is cutting.
+  { dir: 'projects/creative/halcyon-film', n: 4, kind: 'plate', title: 'Halcyon', accent: C.brass },
   { dir: 'projects/creative/vertex-identity', n: 4, kind: 'poster', title: 'Vertex', accent: C.brass },
   { dir: 'projects/creative/orbit-automation', n: 3, kind: 'flow', title: 'Orbit', accent: C.brass },
 ]
@@ -1188,9 +1269,11 @@ for (const job of jobs) {
     } else if (job.kind === 'dash') {
       svg = dashScreen({ seed, title: job.title, accent: job.accent, index: i })
     } else if (job.kind === 'plate') {
-      // 01 and 02 are the same frame ungraded / graded — the before/after pair.
-      const seedForPair = i < 2 ? hash(`${job.dir}-pair`) : seed
-      svg = photoPlate({ seed: seedForPair, index: i, graded: i !== 0 })
+      // For the retouch project, 01 and 02 must be the SAME frame ungraded /
+      // graded — the photo world cross-fades between them as a before/after.
+      const pair = job.dir.includes('aurelia')
+      const seedForPair = pair && i < 2 ? hash(`${job.dir}-pair`) : seed
+      svg = photoPlate({ seed: seedForPair, index: i, graded: pair ? i !== 0 : true })
     } else {
       svg = creativeScreen({ seed, kind: job.kind, title: job.title, index: i, accent: job.accent })
     }

@@ -169,7 +169,7 @@ export function SaaSShowcase() {
     /* 06 — APPROACH */
     tl.to(
       dash,
-      { scale: mobile ? 1.35 : 1.62, z: mobile ? 240 : 420, rotateX: -3, duration: 2, ease: 'power2.in' },
+      { scale: mobile ? 1.1 : 1.62, z: mobile ? 240 : 420, rotateX: -3, duration: 2, ease: 'power2.in' },
       '+=0.35',
     )
       .to(glow, { opacity: 1.7, duration: 1.3 }, '<')
@@ -456,7 +456,7 @@ export function SaaSShowcase() {
         </div>
       </div>
 
-      <div data-saas-cta className="absolute inset-x-0 bottom-[16%] z-40 flex justify-center opacity-0">
+      <div data-saas-cta className="absolute inset-x-0 bottom-[26%] z-40 flex justify-center opacity-0 md:bottom-[16%]">
         <button
           type="button"
           data-cursor="view"

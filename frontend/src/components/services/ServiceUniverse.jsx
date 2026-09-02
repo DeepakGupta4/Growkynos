@@ -31,10 +31,17 @@ export function ServiceUniverse() {
       const cols = 5
       const col = i % cols
       const row = Math.floor(i / cols)
-      // Base grid, then displaced — structure underneath, looseness on top.
-      const x = (col / (cols - 1) - 0.5) * 168 + (rand() - 0.5) * 22
-      const y = (row - 0.5) * 46 + (rand() - 0.5) * 26
-      const z = -520 + rand() * 900
+      /*
+       * NOTE: GSAP resolves a percentage `x` against the ELEMENT's own width,
+       * not the container — so these numbers are large on purpose. A plate is
+       * ~236px wide, so ±233% ≈ ±550px of travel, which is the spread that
+       * actually fills the stage.
+       */
+      const spreadX = isMobile ? 210 : 466
+      const spreadY = isMobile ? 120 : 170
+      const x = (col / (cols - 1) - 0.5) * spreadX + (rand() - 0.5) * (isMobile ? 26 : 58)
+      const y = (row - 0.5) * spreadY + (rand() - 0.5) * (isMobile ? 34 : 76)
+      const z = -600 + rand() * 700
       return {
         ...s,
         x,
@@ -80,8 +87,6 @@ export function ServiceUniverse() {
         })
       })
 
-      const depth = isMobile ? 900 : 1500
-
       // Entrance
       gsap.from(plates, {
         z: (i, el) => JSON.parse(el.dataset.plate).z - 900,
@@ -92,17 +97,23 @@ export function ServiceUniverse() {
         scrollTrigger: { trigger: root, start: 'top 72%' },
       })
 
-      // Camera travel
-      gsap.to(cloud, {
-        z: depth,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: root,
-          start: 'top bottom',
-          end: 'bottom top',
-          scrub: SCRUB,
+      // Camera travel — a measured push through the cloud, not a fly-through.
+      // Starts pulled back so the whole field reads, and ends just short of the
+      // nearest plates so they never fill and crop the frame.
+      gsap.fromTo(
+        cloud,
+        { z: isMobile ? -140 : -220 },
+        {
+          z: isMobile ? 340 : 500,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: root,
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: SCRUB,
+          },
         },
-      })
+      )
 
       gsap.to(cloud, {
         rotateX: isMobile ? 2 : 6,
@@ -352,7 +363,7 @@ function ServicePlate({ service, hovered, dimmed, onEnter, onLeave, onSelect, co
           className={cn(
             'font-display font-semibold leading-tight tracking-tight transition-colors duration-500',
             compact ? 'text-[13.5px]' : 'text-[16px]',
-            hovered ? 'text-bone' : 'text-silver',
+            'text-bone',
           )}
         >
           {service.title}

@@ -264,7 +264,7 @@ export function ShopifyShowcase() {
           <PanelFrame
             label="ASHGROVE.SUPPLY — STOREFRONT"
             accent={service.accent}
-            className="w-[min(90vw,820px)]"
+            className="w-[min(88vw,740px)]"
           >
             <div className="relative p-4 md:p-6">
               {/* Storefront header */}
@@ -293,7 +293,7 @@ export function ShopifyShowcase() {
                     ref={(el) => setCard(el, i)}
                     className="surface overflow-hidden rounded-md preserve-3d will-change-transform"
                   >
-                    <div className="relative aspect-[4/5] overflow-hidden">
+                    <div className="relative aspect-[5/4] overflow-hidden">
                       <img
                         src={project.images[i % project.images.length]}
                         alt=""
@@ -385,10 +385,13 @@ export function ShopifyShowcase() {
               {/* Checkout */}
               <div
                 ref={checkoutRef}
-                className="absolute inset-3 z-30 flex flex-col gap-2.5 overflow-hidden rounded-lg p-3.5 opacity-0 md:inset-5 md:gap-3.5 md:p-6"
+                /* A sheet over the store, not a full-bleed panel — it must read
+                   as checkout arriving on top of the storefront. */
+                className="absolute inset-x-4 top-[9%] z-30 flex flex-col gap-2.5 overflow-hidden rounded-lg p-3.5 opacity-0 md:inset-x-10 md:gap-3 md:p-6"
                 style={{
-                  background: 'linear-gradient(160deg,rgba(24,24,30,0.99),rgba(8,8,11,1))',
-                  border: '1px solid rgba(255,255,255,0.08)',
+                  background: 'linear-gradient(160deg,rgba(30,30,37,0.99),rgba(12,12,16,1))',
+                  border: `1px solid ${service.accent}3d`,
+                  boxShadow: `0 40px 90px -34px rgba(0,0,0,0.96), 0 0 70px -26px ${service.accent}44`,
                 }}
               >
                 <div className="flex items-center justify-between">
@@ -411,7 +414,7 @@ export function ShopifyShowcase() {
                     <span className="truncate text-[10px] text-silver md:text-[12px]">{v}</span>
                   </div>
                 ))}
-                <div data-shop-checkout-row className="mt-auto flex items-center justify-between border-t border-smoke/70 pt-2.5">
+                <div data-shop-checkout-row className="mt-1 flex items-center justify-between border-t border-smoke/70 pt-2.5">
                   <span className="font-mono text-[8.5px] uppercase tracking-[0.14em] text-mist">TOTAL</span>
                   <span className="font-display text-base font-bold text-bone md:text-xl">£312.00</span>
                 </div>
@@ -432,7 +435,7 @@ export function ShopifyShowcase() {
         </div>
       </div>
 
-      <div data-shop-cta className="absolute inset-x-0 bottom-[16%] z-40 flex justify-center opacity-0">
+      <div data-shop-cta className="absolute inset-x-0 bottom-[26%] z-40 flex justify-center opacity-0 md:bottom-[16%]">
         <button
           type="button"
           data-cursor="view"

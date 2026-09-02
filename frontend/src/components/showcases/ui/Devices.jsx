@@ -138,11 +138,22 @@ export const BrowserFrame = forwardRef(function BrowserFrame(
 })
 
 /* ── Laptop / desktop plate ────────────────────────────────── */
-export const PanelFrame = forwardRef(function PanelFrame({ children, className, label, accent = '#C6A87C', style }, ref) {
+/**
+ * `clip` must be false wherever children are meant to leave the frame —
+ * otherwise the panel's own overflow silently eats the escaping elements.
+ */
+export const PanelFrame = forwardRef(function PanelFrame(
+  { children, className, label, accent = '#C6A87C', style, clip = true },
+  ref,
+) {
   return (
     <div
       ref={ref}
-      className={cn('relative overflow-hidden rounded-lg preserve-3d will-change-transform', className)}
+      className={cn(
+        'relative rounded-lg preserve-3d will-change-transform',
+        clip && 'overflow-hidden',
+        className,
+      )}
       style={{
         background: 'linear-gradient(160deg,#1E1E25 0%,#121216 45%,#0A0A0D 100%)',
         boxShadow:
