@@ -43,15 +43,19 @@ for (const [w, h] of SIZES) {
       const b = el.getBoundingClientRect()
       return { t: Math.round(b.top), b: Math.round(b.bottom), l: Math.round(b.left), r: Math.round(b.right) }
     }
-    const frags = [...document.querySelectorAll('[data-hero-frag]')].map((el) => {
-      const b = el.getBoundingClientRect()
-      return {
-        label: el.innerText.split('\n')[0],
-        t: Math.round(b.top),
-        l: Math.round(b.left),
-        r: Math.round(b.right),
-      }
-    })
+    // Hidden fragments (display:none below lg) report an all-zero rect — skip
+    // them rather than reporting a phantom off-screen element.
+    const frags = [...document.querySelectorAll('[data-hero-frag]')]
+      .filter((el) => el.getClientRects().length > 0)
+      .map((el) => {
+        const b = el.getBoundingClientRect()
+        return {
+          label: el.innerText.split('\n')[0],
+          t: Math.round(b.top),
+          l: Math.round(b.left),
+          r: Math.round(b.right),
+        }
+      })
     const nav = box(document.querySelector('header'))
     return {
       vh: window.innerHeight,
