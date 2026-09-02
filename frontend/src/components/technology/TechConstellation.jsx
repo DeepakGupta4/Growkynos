@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useMemo, useRef, useState } from 'react'
 import { useIsomorphicLayoutEffect } from '../../hooks/useIsomorphicLayoutEffect'
 import { gsap, ScrollTrigger, EASE, SCRUB } from '../../lib/gsap'
 import { technologies, techGroups, getTech } from '../../data/technologies'

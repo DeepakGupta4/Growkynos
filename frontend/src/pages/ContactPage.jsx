@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useRef } from 'react'
 import { useIsomorphicLayoutEffect } from '../hooks/useIsomorphicLayoutEffect'
 import { gsap, EASE } from '../lib/gsap'
 import { ContactForm } from '../components/contact/ContactForm'

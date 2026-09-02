@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { useIsomorphicLayoutEffect } from '../../hooks/useIsomorphicLayoutEffect'
-import { gsap, ScrollTrigger, SCRUB } from '../../lib/gsap'
+import { gsap, SCRUB } from '../../lib/gsap'
 import { useExperience } from '../../context/ExperienceContext'
 import { cn } from '../../lib/utils'
 

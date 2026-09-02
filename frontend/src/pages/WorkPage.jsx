@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { useIsomorphicLayoutEffect } from '../hooks/useIsomorphicLayoutEffect'
 import { gsap, ScrollTrigger, EASE, SCRUB } from '../lib/gsap'
 import { projects, categories } from '../data/projects'

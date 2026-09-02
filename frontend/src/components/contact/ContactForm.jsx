@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useRef, useState } from 'react'
-import { gsap, EASE } from '../../lib/gsap'
+import { gsap } from '../../lib/gsap'
 import { Button } from '../ui/Button'
 import { formatBytes, cn } from '../../lib/utils'
 

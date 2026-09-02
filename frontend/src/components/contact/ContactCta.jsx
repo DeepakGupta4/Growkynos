@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useRef } from 'react'
 import { useIsomorphicLayoutEffect } from '../../hooks/useIsomorphicLayoutEffect'
 import { gsap, ScrollTrigger, EASE, SCRUB } from '../../lib/gsap'
 import { Button } from '../ui/Button'
