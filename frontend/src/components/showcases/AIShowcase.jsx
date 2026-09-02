@@ -144,12 +144,6 @@ export function AIShowcase() {
 
     /* 04 — A REQUEST FLOWS THROUGH: the packet rides each edge's real path. */
     const route = [0, 2, 3, 4]
-    const consoleText = [
-      '› ticket #48213 received',
-      '› retrieved 8 passages (42ms)',
-      '› drafted response · 214 tokens',
-      '› eval passed · confidence 0.96',
-    ]
 
     tl.to(packet, { autoAlpha: 1, duration: 0.2 }, '+=0.2')
     route.forEach((ei, i) => {

@@ -23,11 +23,10 @@ import { cn } from '../../lib/utils'
 export function TechConstellation() {
   const rootRef = useRef(null)
   const fieldRef = useRef(null)
-  const svgRef = useRef(null)
   const nodeRefs = useRef({})
   const [hovered, setHovered] = useState(null)
   const [locked, setLocked] = useState(null)
-  const { reducedMotion, isMobile, isTablet } = useExperience()
+  const { reducedMotion, isMobile } = useExperience()
   const { sfx } = useSound()
 
   const active = locked ?? hovered
@@ -278,7 +277,6 @@ export function TechConstellation() {
         <div ref={fieldRef} className="absolute inset-0 preserve-3d will-change-transform">
           {/* Connections */}
           <svg
-            ref={svgRef}
             viewBox="0 0 100 100"
             preserveAspectRatio="none"
             aria-hidden="true"

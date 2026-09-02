@@ -54,7 +54,7 @@ export function ServiceUniverse() {
         scale: 0.82 + rand() * 0.3,
       }
     })
-  }, [])
+  }, [isMobile])
 
   useIsomorphicLayoutEffect(() => {
     const root = rootRef.current

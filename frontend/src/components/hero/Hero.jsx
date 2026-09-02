@@ -102,7 +102,7 @@ export function Hero() {
           </div>
 
           <h1 className="preserve-3d" aria-label={brand.statement.join(' ')}>
-            {brand.statement.map((line, li) => (
+            {brand.statement.map((line) => (
               <span
                 key={line}
                 data-hero-line

@@ -35,7 +35,6 @@ export function ShopifyShowcase() {
   const storeRef = useRef(null)
   const gridRef = useRef(null)
   const cardsRef = useRef([])
-  const heroProductRef = useRef(null)
   const detailRef = useRef(null)
   const cartRef = useRef(null)
   const cartCountRef = useRef(null)
@@ -51,7 +50,6 @@ export function ShopifyShowcase() {
 
   const build = useCallback((tl, { isMobile: mobile }) => {
     const store = storeRef.current
-    const grid = gridRef.current
     const cards = cardsRef.current.filter(Boolean)
     const detail = detailRef.current
     const cart = cartRef.current

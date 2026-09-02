@@ -5,7 +5,6 @@ import { PanelFrame } from './ui/Devices'
 import { ProjectTag, StaticShowcase } from './ui/ShowcaseParts'
 import { getService } from '../../data/services'
 import { projectsByService } from '../../data/projects'
-import { useExperience } from '../../context/ExperienceContext'
 import { useProjectEntry } from '../projects/ProjectEntryContext'
 import { seeded } from '../../lib/utils'
 
@@ -28,7 +27,6 @@ const STATS = [
  */
 export function SaaSShowcase() {
   const project = projectsByService('saas')[0]
-  const { isMobile } = useExperience()
   const { enterProject } = useProjectEntry()
 
   const dashRef = useRef(null)
