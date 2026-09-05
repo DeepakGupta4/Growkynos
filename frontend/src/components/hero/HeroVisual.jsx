@@ -90,7 +90,7 @@ export function HeroVisual({ slideIndex = 0 }) {
     <div
       ref={rootRef}
       aria-hidden="true"
-      className="pointer-events-none relative hidden h-full w-full items-center justify-start preserve-3d xl:flex"
+      className="pointer-events-none relative hidden h-full w-full items-center justify-end preserve-3d xl:flex"
     >
       <div
         data-hv-glow

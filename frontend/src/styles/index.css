@@ -50,6 +50,11 @@
   html {
     -webkit-text-size-adjust: 100%;
     scrollbar-width: none;
+    /* The clip must be on the ROOT, not just body. 3D-transformed layers (the
+       world backdrops' parallax plates) overhang by a few pixels, and with the
+       rule only on body the document itself still scrolled ~4px sideways —
+       enough to feel like sideways drift on a trackpad. */
+    overflow-x: clip;
   }
 
   html::-webkit-scrollbar {

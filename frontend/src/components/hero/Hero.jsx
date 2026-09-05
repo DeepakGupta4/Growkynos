@@ -92,17 +92,17 @@ export function Hero() {
         the right-hand half.
       */}
       <div
-        className="shell relative z-20 grid h-full grid-cols-1 items-center gap-10 pb-20 xl:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] xl:gap-6"
+        className="shell relative z-20 grid h-full grid-cols-1 items-center gap-10 pb-20 xl:grid-cols-[minmax(0,1.06fr)_minmax(0,0.94fr)] xl:gap-8"
         style={{ paddingTop: 'calc(var(--nav-h) + 1.5rem)' }}
       >
         <div data-hero-type className="preserve-3d">
-          <div data-hero-eyebrow className="mb-6 flex flex-wrap items-center gap-x-4 gap-y-2 overflow-hidden md:mb-9">
-            <span className="inline-block overflow-hidden">
-              <span className="label-brass inline-block">{brand.wordmark}</span>
-            </span>
-            <span className="inline-block overflow-hidden">
-              <span className="label inline-block">— {brand.descriptor}</span>
-            </span>
+          {/*
+            The old eyebrow read "GENTECHNE — DIGITAL PRODUCT STUDIO — EST. 2019",
+            which is word-for-word what the nav already says two inches above it.
+            Removing it costs no information and returns ~55px of height to the
+            statement, which is the element that actually has to carry the page.
+          */}
+          <div data-hero-eyebrow className="mb-4 flex overflow-hidden md:mb-5">
             <span className="inline-block overflow-hidden">
               <span className="label inline-block">EST. {brand.since}</span>
             </span>
@@ -118,7 +118,7 @@ export function Hero() {
             copy removes the only thing naming what is on screen.
           */}
           <h1
-            className="preserve-3d [&_.hero-size]:xl:text-[clamp(2.5rem,min(8vw,13svh),7rem)] [@media(max-height:700px)]:[&_.hero-size]:text-[clamp(2rem,min(10.5vw,12.5svh),4.75rem)]"
+            className="preserve-3d [&_.hero-size]:xl:text-[clamp(3rem,min(9.2vw,15.5svh),8.5rem)] [@media(max-height:899px)]:[&_.hero-size]:text-[clamp(2.4rem,min(9vw,15svh),9rem)] [@media(max-height:700px)]:[&_.hero-size]:text-[clamp(2rem,min(10.5vw,12.5svh),4.75rem)]"
             aria-label={`${brand.statement[0]} ${brand.statement[1]} ${story.word}`}
           >
             {[brand.statement[0], brand.statement[1]].map((line) => (
@@ -185,7 +185,12 @@ export function Hero() {
               the visual cluster takes the right-hand column. */}
           <div className="mt-7 flex flex-col gap-6 md:mt-10 md:flex-row md:items-end md:justify-between md:gap-10 xl:flex-col xl:items-start xl:gap-7">
             <div data-hero-meta className="flex max-w-md flex-col gap-3.5">
-              <div data-hero-rule className="rule-brass h-px w-32 origin-left" />
+              {/* The decorative rule and the discipline strip both came out.
+                  The strip listed APPS · WEBSITES · SAAS · AI SYSTEMS — exactly
+                  the four words the headline already cycles through, with the
+                  sequence indicator already saying "01 / 04". Two lines of pure
+                  repetition, and the height they cost is what was keeping the
+                  statement small. */}
               {/*
                 The copy changes with the typed service rather than sitting
                 static. Clamped to two lines on short windows so it costs the
@@ -195,18 +200,6 @@ export function Hero() {
               {/* Positioning line first, then the line for the active beat —
                   so the copy says who we are AND what is on screen. */}
               <p className="text-[15px] leading-relaxed text-bone md:text-[17px]">{brand.lede}</p>
-              {/* Range, stated plainly — a visitor should know the scope of
-                  what we take on without waiting for the cycle to come round. */}
-              <ul className="flex flex-wrap items-center gap-x-2.5 gap-y-1.5">
-                {brand.disciplines.map((d, i) => (
-                  <li key={d} className="flex items-center gap-2.5">
-                    {i > 0 && <span className="h-1 w-1 rounded-full bg-smoke" />}
-                    <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-silver">
-                      {d}
-                    </span>
-                  </li>
-                ))}
-              </ul>
               {/*
                 Per-beat detail is the enhancement, not the essential — the
                 discipline strip above already states the range and the sequence

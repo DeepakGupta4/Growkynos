@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef } from 'react'
+﻿import { useCallback, useMemo, useRef } from 'react'
 import { gsap, EASE } from '../../lib/gsap'
 import { ShowcaseFrame } from './ShowcaseFrame'
 import { ProjectTag, StaticShowcase } from './ui/ShowcaseParts'
@@ -225,7 +225,7 @@ export function AIShowcase() {
     <ShowcaseFrame
       service={service}
       id={service.sectionId}
-      beats={7}
+      beats={5}
       chromeSide="right"
       build={build}
       fallback={<StaticShowcase project={project} service={service} />}

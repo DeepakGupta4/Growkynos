@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react'
+﻿import { useCallback, useRef } from 'react'
 import { gsap, EASE } from '../../lib/gsap'
 import { ShowcaseFrame } from './ShowcaseFrame'
 import { BrowserFrame } from './ui/Devices'
@@ -199,7 +199,7 @@ export function WebShowcase() {
     <ShowcaseFrame
       service={service}
       id={service.sectionId}
-      beats={7}
+      beats={5}
       chromeSide="right"
       build={build}
       fallback={<StaticShowcase project={project} service={service} />}

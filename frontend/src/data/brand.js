@@ -82,14 +82,12 @@ export const heroStory = [
 export const chapters = [
   { id: 'hero', label: 'Entry', short: 'ENTRY' },
   { id: 'services', label: 'Services', short: 'SERVICES' },
+  /* Must match the worlds actually rendered in pages/Home.jsx — a chapter for
+     a section that is not on the page leaves the nav readout pointing at
+     nothing. */
   { id: 'world-app', label: 'App Development', short: 'APP' },
   { id: 'world-web', label: 'Web Development', short: 'WEB' },
-  { id: 'world-shopify', label: 'Shopify', short: 'SHOPIFY' },
-  { id: 'world-wordpress', label: 'WordPress', short: 'WORDPRESS' },
   { id: 'world-saas', label: 'SaaS & Product', short: 'SAAS' },
-  { id: 'world-design', label: 'Design', short: 'DESIGN' },
-  { id: 'world-photo', label: 'Photo Editing', short: 'PHOTO' },
-  { id: 'world-video', label: 'Video Editing', short: 'VIDEO' },
   { id: 'world-ai', label: 'AI & Automation', short: 'AI' },
   { id: 'more-services', label: 'More Services', short: 'MORE' },
   { id: 'projects', label: 'Projects', short: 'PROJECTS' },

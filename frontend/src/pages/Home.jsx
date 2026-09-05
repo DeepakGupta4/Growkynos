@@ -29,15 +29,17 @@ export default function Home() {
       <Hero />
       <ServiceUniverse />
 
-      {/* The ten worlds, in journey order */}
+      {/*
+        FOUR worlds, not nine.
+        Measured: nine pinned worlds cost 72 screens of scrolling and pushed the
+        page to 93 screens end to end. The showcases for Shopify, WordPress,
+        Design, Photo and Video are NOT deleted — they still exist and can be
+        restored by adding them back here — but a homepage that takes ninety
+        screens to read is not a homepage. These four carry the positioning.
+      */}
       <AppShowcase />
       <WebShowcase />
-      <ShopifyShowcase />
-      <WordPressShowcase />
       <SaaSShowcase />
-      <DesignShowcase />
-      <PhotoEditingShowcase />
-      <VideoEditingShowcase />
       <AIShowcase />
 
       {/* Everything that supports the ten worlds, without a world of its own */}

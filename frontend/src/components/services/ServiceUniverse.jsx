@@ -1,7 +1,7 @@
-import { useMemo, useRef, useState } from 'react'
+﻿import { useMemo, useRef, useState } from 'react'
 import { useIsomorphicLayoutEffect } from '../../hooks/useIsomorphicLayoutEffect'
 import { gsap, EASE, SCRUB } from '../../lib/gsap'
-import { services } from '../../data/services'
+import { primaryServices, supportingServices } from '../../data/services'
 import { useExperience } from '../../context/ExperienceContext'
 import { scrollTo } from '../../hooks/useLenis'
 import { useSound } from '../../context/SoundContext'
@@ -28,8 +28,14 @@ export function ServiceUniverse() {
   /* Authored-but-seeded scatter: stable across renders, never overlapping badly. */
   const layout = useMemo(() => {
     const rand = seeded(884422)
-    return services.map((s, i) => {
-      const cols = 5
+    return primaryServices.map((s, i) => {
+      /*
+       * Columns follow the actual count. Hard-coding 5 while rendering 4 put
+       * every plate in columns 0–3 of a five-wide grid, so the cloud sat
+       * off-centre with a hole on the right — visible as the sparse, left-heavy
+       * composition the section had after the reduction.
+       */
+      const cols = Math.min(5, primaryServices.length)
       const col = i % cols
       const row = Math.floor(i / cols)
       /*
@@ -205,7 +211,7 @@ export function ServiceUniverse() {
         <div className="shell flex flex-col gap-10">
           <Heading />
           <ul className="flex flex-col border-t border-smoke/60">
-            {services.map((s) => (
+            {primaryServices.map((s) => (
               <li key={s.id} className="border-b border-smoke/60">
                 <button
                   type="button"
@@ -275,7 +281,15 @@ export function ServiceUniverse() {
 
       <div className="shell relative z-20 -mt-4 flex flex-wrap items-center justify-between gap-4">
         <span className="label">HOVER TO FOCUS · CLICK TO ENTER A WORLD</span>
-        <span className="label-brass">{services.length} DISCIPLINES</span>
+        {/* The supporting capabilities are named here rather than each taking a
+            world of their own — the visitor still sees the full range, in one
+            line instead of forty screens. */}
+        <span className="label">
+          ALSO:{' '}
+          <span className="text-silver">
+            {supportingServices.map((s) => s.title).join(' · ')}
+          </span>
+        </span>
       </div>
     </section>
   )
@@ -284,7 +298,9 @@ export function ServiceUniverse() {
 /* ─────────────────────────────────────────────────────────── */
 
 function Heading() {
-  const lines = ['TEN WORLDS.', 'ONE STUDIO.']
+  /* Was "TEN WORLDS." and stayed that way after the homepage dropped to four —
+     the heading was counting sections that are no longer on the page. */
+  const lines = ['FOUR WORLDS.', 'ONE STUDIO.']
   return (
     <div data-universe-heading className="flex flex-col gap-6">
       <span data-universe-sub className="label-brass">

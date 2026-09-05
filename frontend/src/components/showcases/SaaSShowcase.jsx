@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef } from 'react'
+﻿import { useCallback, useMemo, useRef } from 'react'
 import { gsap, EASE } from '../../lib/gsap'
 import { ShowcaseFrame } from './ShowcaseFrame'
 import { PanelFrame } from './ui/Devices'
@@ -192,7 +192,7 @@ export function SaaSShowcase() {
     <ShowcaseFrame
       service={service}
       id={service.sectionId}
-      beats={7}
+      beats={5}
       build={build}
       fallback={<StaticShowcase project={project} service={service} />}
     >

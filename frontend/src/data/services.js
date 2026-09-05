@@ -1,4 +1,4 @@
-/**
+﻿/**
  * The ten worlds. Order here is the order of the scroll journey.
  *
  * `showcase` maps to a component in components/showcases/registry.js —
@@ -7,6 +7,7 @@
 const RAW_SERVICES = [
   {
     id: 'app',
+    primary: true,
     index: '01',
     title: 'App Development',
     showcase: 'phone',
@@ -20,6 +21,7 @@ const RAW_SERVICES = [
   },
   {
     id: 'web',
+    primary: true,
     index: '02',
     title: 'Web Development',
     showcase: 'browser',
@@ -59,6 +61,7 @@ const RAW_SERVICES = [
   },
   {
     id: 'saas',
+    primary: true,
     index: '05',
     title: 'SaaS / Product Development',
     showcase: 'dashboard',
@@ -124,6 +127,7 @@ const RAW_SERVICES = [
   },
   {
     id: 'ai',
+    primary: true,
     index: '10',
     title: 'AI & Automation',
     showcase: 'flow',
@@ -169,6 +173,20 @@ const SERVICE_MEDIA = {
 }
 
 export const services = RAW_SERVICES.map((s) => ({ ...s, media: SERVICE_MEDIA[s.id] ?? null }))
+
+/**
+ * PRIMARY vs SUPPORTING
+ * ---------------------
+ * Only four services get a full pinned world on the homepage.
+ *
+ * Nine worlds cost 72 screens of scrolling on their own — measured, not
+ * guessed. At that length the page stopped reading as a studio and started
+ * reading as a catalogue, and a visitor could not tell what we mainly do. The
+ * rest are real capabilities and stay listed in More Services; they simply do
+ * not each get eight screens of the homepage.
+ */
+export const primaryServices = services.filter((s) => s.primary)
+export const supportingServices = services.filter((s) => !s.primary)
 
 export const getService = (id) => services.find((s) => s.id === id)
 

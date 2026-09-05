@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react'
+﻿import { useCallback, useRef } from 'react'
 import { gsap, EASE } from '../../lib/gsap'
 import { ShowcaseFrame } from './ShowcaseFrame'
 import { PhoneFrame } from './ui/Devices'
@@ -227,7 +227,7 @@ export function AppShowcase() {
     <ShowcaseFrame
       service={service}
       id={service.sectionId}
-      beats={7}
+      beats={5}
       build={build}
       fallback={<StaticShowcase project={project} service={service} aspect="phone" />}
     >

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Measures the hero at a range of viewports and reports whether its content
  * actually fits — and where the floating fragments land.
  *   node scripts/hero-check.mjs [baseUrl]
@@ -19,6 +19,11 @@ const SIZES = [
   [1920, 720],
   [1920, 800],
   [1920, 900],
+  // Real Chrome on a 1080p screen with a bookmarks bar lands here — the band
+  // that was missing when the hero overflowed for the user at 858px.
+  [1917, 858],
+  [1917, 820],
+  [1600, 880],
   [1600, 740],
   [1440, 900],
   [1280, 720],
