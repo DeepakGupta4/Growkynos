@@ -3,8 +3,15 @@ export const brand = {
   wordmark: 'GENTECHNE',
   tagline: 'Design, code & motion under one roof.',
   statement: ['WE BUILD', 'DIGITAL'],
-  lede:
-    'From first idea to final product — we design and build digital experiences that people actually use.',
+  /* The value proposition. Says what a client GETS, not what we do. */
+  lede: 'We turn ambitious ideas into digital products people actually use.',
+  /* The capability strip under the lede — range, in two seconds. */
+  disciplines: ['Apps', 'Websites', 'SaaS', 'AI Systems'],
+  seo: {
+    title: 'Gentechne — Digital Product Studio for Apps, Websites, SaaS & AI',
+    description:
+      'Gentechne designs and builds high-performance apps, websites, SaaS platforms and AI products for ambitious businesses and startups.',
+  },
   descriptor: 'Digital product studio',
   since: 2019,
   email: 'studio@gentechne.com',

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * PROJECT SYSTEM
  * --------------
  * Adding a project = adding an object here. Nothing else.
@@ -349,10 +349,10 @@ export const projects = [
     excerpt: 'Eight hundred campaign frames, one consistent grade.',
     description:
       'A full-season campaign retouch: compositing, skin and product retouching, and a colour grade applied consistently across eight hundred frames destined for print, digital and out-of-home. We built the batch pipeline that kept every deliverable on the same curve.',
-    thumbnail: `${P}/creative/aurelia-campaign/01.svg`,
+    thumbnail: `${P}/creative/aurelia-campaign/01.jpg`,
     images: [
-      `${P}/creative/aurelia-campaign/01.svg`,
-      `${P}/creative/aurelia-campaign/02.svg`,
+      `${P}/creative/aurelia-campaign/01.jpg`,
+      `${P}/creative/aurelia-campaign/02.jpg`,
       `${P}/creative/aurelia-campaign/03.svg`,
       `${P}/creative/aurelia-campaign/04.svg`,
     ],

@@ -209,17 +209,30 @@ export function StudioSection() {
                 zIndex: Math.round(img.depth * 10),
               }}
             >
+              {/*
+                Duotone grade. Photography here comes from mixed sources with
+                mixed colour, and dropping it in raw makes the section look like
+                a stock-photo grid. Stripping colour and re-tinting to the brand
+                accent is what makes a varied set read as one commissioned shoot
+                — the same thing a studio does to a real gallery.
+              */}
               <img
                 src={img.src}
                 alt={img.alt}
                 loading="lazy"
                 decoding="async"
-                className="h-[112%] w-full object-cover will-change-transform"
+                className="h-[112%] w-full object-cover grayscale will-change-transform"
+                style={{ filter: 'grayscale(1) contrast(1.15) brightness(0.62)' }}
+              />
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0 mix-blend-color"
+                style={{ backgroundColor: '#C6A87C', opacity: 0.3 }}
               />
               <div
                 aria-hidden="true"
                 className="pointer-events-none absolute inset-0"
-                style={{ background: 'linear-gradient(180deg, rgba(5,5,7,0) 52%, rgba(5,5,7,0.7) 100%)' }}
+                style={{ background: 'linear-gradient(180deg, rgba(5,5,7,0.25) 0%, rgba(5,5,7,0.82) 100%)' }}
               />
               <figcaption className="absolute inset-x-0 bottom-0 flex items-center justify-between p-3 md:p-4">
                 <span className="font-mono text-[8px] uppercase tracking-[0.14em] text-silver md:text-[9px]">

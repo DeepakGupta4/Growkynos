@@ -1,4 +1,4 @@
-const S = '/studio'
+﻿const S = '/studio'
 
 export const studio = {
   statement: ['DESIGN, CODE & MOTION', 'UNDER ONE ROOF.'],
@@ -33,11 +33,11 @@ export const studio = {
   ],
   /* Layered editorial composition — not employee cards. */
   images: [
-    { src: `${S}/01.svg`, alt: 'The GENTECHNE studio floor during a design review', span: 'tall', depth: 0.9 },
-    { src: `${S}/02.svg`, alt: 'Interface exploration pinned across the studio wall', span: 'wide', depth: 0.55 },
-    { src: `${S}/03.svg`, alt: 'A motion timeline being reviewed frame by frame', span: 'square', depth: 1.15 },
-    { src: `${S}/04.svg`, alt: 'Engineering workstation with a build in progress', span: 'tall', depth: 0.7 },
-    { src: `${S}/05.svg`, alt: 'Printed type specimens and colour proofs on the studio table', span: 'wide', depth: 1.0 },
+    { src: `${S}/01.jpg`, alt: 'The GENTECHNE studio floor during a design review', span: 'tall', depth: 0.9 },
+    { src: `${S}/02.jpg`, alt: 'Interface exploration pinned across the studio wall', span: 'wide', depth: 0.55 },
+    { src: `${S}/03.jpg`, alt: 'A motion timeline being reviewed frame by frame', span: 'square', depth: 1.15 },
+    { src: `${S}/04.jpg`, alt: 'Engineering workstation with a build in progress', span: 'tall', depth: 0.7 },
+    { src: `${S}/05.jpg`, alt: 'Printed type specimens and colour proofs on the studio table', span: 'wide', depth: 1.0 },
   ],
   process: [
     { index: '01', title: 'Orient', body: 'Two weeks understanding the business before we touch a canvas.' },

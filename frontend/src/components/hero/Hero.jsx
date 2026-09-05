@@ -194,10 +194,28 @@ export function Hero() {
               */}
               {/* Positioning line first, then the line for the active beat —
                   so the copy says who we are AND what is on screen. */}
-              <p className="text-[14.5px] leading-relaxed text-silver md:text-base">{brand.lede}</p>
+              <p className="text-[15px] leading-relaxed text-bone md:text-[17px]">{brand.lede}</p>
+              {/* Range, stated plainly — a visitor should know the scope of
+                  what we take on without waiting for the cycle to come round. */}
+              <ul className="flex flex-wrap items-center gap-x-2.5 gap-y-1.5">
+                {brand.disciplines.map((d, i) => (
+                  <li key={d} className="flex items-center gap-2.5">
+                    {i > 0 && <span className="h-1 w-1 rounded-full bg-smoke" />}
+                    <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-silver">
+                      {d}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+              {/*
+                Per-beat detail is the enhancement, not the essential — the
+                discipline strip above already states the range and the sequence
+                indicator names the active beat. So this is the first thing to
+                go when height is short, rather than either of those.
+              */}
               <p
                 data-hero-swap
-                className="line-clamp-2 font-mono text-[11px] uppercase tracking-[0.13em] text-mist [@media(min-height:780px)]:line-clamp-none"
+                className="hidden font-mono text-[11px] uppercase tracking-[0.13em] text-mist [@media(min-height:820px)]:block"
               >
                 {story.line}
               </p>
