@@ -43,6 +43,27 @@ export function Hero() {
     return () => ctx.revert()
   }, [booted, reducedMotion])
 
+  /*
+   * Re-animate the service label and copy on every story beat. Without this the
+   * text swaps silently and the left column reads as static — which is exactly
+   * how it looked with only the typed word moving.
+   */
+  useIsomorphicLayoutEffect(() => {
+    if (!booted || reducedMotion) return undefined
+    const el = rootRef.current
+    if (!el) return undefined
+
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        '[data-hero-swap]',
+        { autoAlpha: 0, y: 10 },
+        { autoAlpha: 1, y: 0, duration: 0.55, ease: 'power3.out', stagger: 0.06, overwrite: 'auto' },
+      )
+    }, el)
+
+    return () => ctx.revert()
+  }, [slide, booted, reducedMotion])
+
   return (
     <section
       id="hero"
@@ -90,8 +111,14 @@ export function Hero() {
             the two-column layout narrows this column, and the longest word
             ("PLATFORMS.") would otherwise run past it at 1280.
           */}
+          {/*
+            Below 700px of viewport height the statement steps down further.
+            Reclaiming height from the type is the right trade: the words stay
+            large and dominant either way, whereas dropping the service label to
+            make room removes the only thing naming what is on screen.
+          */}
           <h1
-            className="preserve-3d [&_.hero-size]:xl:text-[clamp(2.75rem,min(8.5vw,14svh),7.5rem)]"
+            className="preserve-3d [&_.hero-size]:xl:text-[clamp(2.75rem,min(8.5vw,14svh),7.5rem)] [@media(max-height:700px)]:[&_.hero-size]:text-[clamp(2rem,min(11vw,13svh),5rem)]"
             aria-label={`${brand.statement[0]} ${brand.statement[1]} ${story.word}`}
           >
             {[brand.statement[0], brand.statement[1]].map((line) => (
@@ -134,19 +161,26 @@ export function Hero() {
             </span>
           </h1>
 
-          {/* Names the service the typed word stands for, so the cycle reads as
-              a tour of what we do rather than a list of nouns. Hidden below
-              700px of viewport height, where a third type line plus this pushes
-              the CTAs off screen. */}
+          {/*
+            Names the service the typed word stands for. NEVER hidden: this is
+            the only place the service is named, and hiding it on short windows
+            left the whole left column looking static while a single word
+            changed. It is line-clamped instead of dropped.
+          */}
           <p
-            key={story.word}
             data-hero-note
-            className="mt-4 hidden items-center gap-3 font-mono text-[10px] uppercase tracking-[0.18em] [@media(min-height:700px)]:flex md:mt-5 md:text-[11px]"
+            className="mt-4 flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.18em] md:mt-5 md:text-[11px]"
           >
-            <span className="text-brass tabular-nums">{service?.index}</span>
+            <span data-hero-swap className="text-brass tabular-nums">
+              {service?.index}
+            </span>
             <span className="h-px w-6 bg-smoke" />
-            <span className="text-silver">{service?.title}</span>
-            <span className="hidden text-mist lg:inline">— {service?.verb}</span>
+            <span data-hero-swap className="text-silver">
+              {service?.title}
+            </span>
+            <span data-hero-swap className="hidden text-mist lg:inline">
+              — {service?.verb}
+            </span>
           </p>
 
           {/* Side by side while the statement owns the full width; stacked once
@@ -154,9 +188,17 @@ export function Hero() {
           <div className="mt-7 flex flex-col gap-6 md:mt-10 md:flex-row md:items-end md:justify-between md:gap-10 xl:flex-col xl:items-start xl:gap-7">
             <div data-hero-meta className="flex max-w-md flex-col gap-3.5">
               <div data-hero-rule className="rule-brass h-px w-32 origin-left" />
-              <p className="text-[14.5px] leading-relaxed text-silver md:text-base">
-                We build apps, websites, storefronts and platforms for companies that need the work to be
-                right. {brand.tagline}
+              {/*
+                The copy changes with the typed service rather than sitting
+                static. Clamped to two lines on short windows so it costs the
+                same height everywhere — clamping keeps the story; hiding it
+                would not.
+              */}
+              <p
+                data-hero-swap
+                className="line-clamp-2 text-[14.5px] leading-relaxed text-silver [@media(min-height:780px)]:line-clamp-none md:text-base"
+              >
+                {service?.summary}
               </p>
               {/*
                 The stats are the first thing to go on a short viewport — they
