@@ -65,6 +65,7 @@ export function buildHeroIntro(scope, { reducedMotion = false, delay = 0 } = {})
     }
   })
 
+  tl.from('[data-hero-note]', { y: 18, autoAlpha: 0, duration: 0.7 }, '-=1.0')
   tl.from('[data-hero-meta] > *', { y: 26, autoAlpha: 0, duration: 0.9, stagger: 0.07 }, '-=0.9')
   tl.from('[data-hero-actions]', { y: 28, autoAlpha: 0, duration: 0.9 }, '-=0.75')
   // NOTE: the visual cluster is NOT animated here. It owns its own entrance in

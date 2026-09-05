@@ -1,45 +1,60 @@
-import { useEffect, useRef } from 'react'
+﻿import { useEffect, useRef } from 'react'
 import { gsap, EASE } from '../../lib/gsap'
 import { PhoneFrame, BrowserFrame } from '../showcases/ui/Devices'
 import { getProject } from '../../data/projects'
+import { getService } from '../../data/services'
+import { heroStory } from '../../data/brand'
+import { CrossfadeImage } from './CrossfadeImage'
 import { useExperience } from '../../context/ExperienceContext'
 
 /**
  * HERO VISUAL
  * -----------
- * The right half of the hero was dead space — a wall of black beside the
- * statement, which read as unfinished rather than confident. This fills it with
- * the thing the statement is actually claiming: real products, in depth.
+ * The right half of the hero, and the other half of the story: as the
+ * typewriter cycles through what we build, this cluster swaps to the real
+ * project that proves each word. Type "STORES." and an actual storefront is
+ * on screen. That is the claim and the evidence in the same frame.
  *
- * A browser sits furthest back, a phone crosses in front of it, and telemetry
- * chips anchor to the cluster. Everything arrives from depth on one timeline
- * and then holds — nothing loops.
+ * ALIGNMENT
+ * Everything is positioned against the browser plate, which is the anchor —
+ * not against the section in loose percentages. The phone's bottom edge sits on
+ * the browser's bottom edge (offset by a fixed overhang), and the three chips
+ * are pinned to the browser's own corners. That is why the cluster reads as one
+ * assembled object rather than parts that happen to be near each other.
  *
- * The chips are children of this cluster, deliberately. They used to be
- * absolutely positioned against the whole section in percentages, which is
- * fragile: any change to hero height moved them independently of anything they
- * related to. Anchored here they cannot drift away from what they annotate.
+ * All slides are rendered and cross-faded rather than swapping `src`, so a
+ * switch never shows a half-decoded image.
  */
 /*
- * Positions are chosen against the cluster's own geometry: the phone occupies
- * the lower-left (-10% left, -22% bottom), so nothing is anchored there.
+ * The phone owns the cluster's bottom-RIGHT, so the chips take the top edge and
+ * the left flank. Sites are laid out left-to-right: the browser's headline
+ * lives in its top-left, and anything overlapping there clips real words and
+ * reads as a broken screenshot rather than a layered composition.
  */
-const CHIPS = [
-  { id: 'c1', label: 'build', value: 'PASSING', tone: '#A8C0A0', top: '-9%', left: '4%' },
-  { id: 'c2', label: 'frame', value: '16.6 ms', tone: '#C6A87C', top: '26%', right: '-13%' },
-  { id: 'c3', label: 'lighthouse', value: '98 / 100', tone: '#C6A87C', bottom: '-9%', right: '4%' },
+const CHIP_SLOTS = [
+  { id: 'build', label: 'build', value: 'PASSING', tone: '#A8C0A0', pos: 'top-0 left-[22%] -translate-y-[170%]' },
+  { id: 'frame', label: 'frame', value: '16.6 ms', tone: '#C6A87C', pos: 'top-1/2 left-0 -translate-x-[22%] -translate-y-1/2' },
+  // Left flank, low. The phone covers the entire right flank from top to bottom,
+  // so nothing can be anchored there.
+  { id: 'score', label: 'lighthouse', value: '98 / 100', tone: '#C6A87C', pos: 'bottom-[8%] left-0 -translate-x-[26%]' },
 ]
 
-export function HeroVisual() {
+export function HeroVisual({ slideIndex = 0 }) {
   const rootRef = useRef(null)
   const browserRef = useRef(null)
   const phoneRef = useRef(null)
+  const urlRef = useRef(null)
+  const tagRef = useRef(null)
   const { reducedMotion, booted, quality } = useExperience()
 
-  const web = getProject('obsidian-architects')
-  const app = getProject('meridian-health')
+  const slides = heroStory.map((s) => ({
+    ...s,
+    browserProject: getProject(s.browser),
+    phoneProject: getProject(s.phone),
+    service: getService(s.serviceId),
+  }))
 
-  /* ── Entrance: the cluster arrives from depth with the statement. ── */
+  /* ── Entrance ── */
   useEffect(() => {
     const root = rootRef.current
     if (!root || !booted) return undefined
@@ -50,20 +65,19 @@ export function HeroVisual() {
     }
 
     const ctx = gsap.context(() => {
-      const tl = gsap.timeline({ delay: 0.55 })
-
+      const tl = gsap.timeline({ delay: 0.5 })
       tl.from(browserRef.current, {
         z: -900,
-        yPercent: 12,
-        rotateY: 26,
-        rotateX: 14,
+        yPercent: 10,
+        rotateY: 24,
+        rotateX: 12,
         opacity: 0,
         duration: 1.8,
         ease: EASE.mass,
       })
         .from(
           phoneRef.current,
-          { z: -620, yPercent: 22, rotateY: 30, opacity: 0, duration: 1.6, ease: EASE.mass },
+          { z: -620, yPercent: 20, rotateY: 28, opacity: 0, duration: 1.6, ease: EASE.mass },
           '-=1.35',
         )
         .from(
@@ -71,17 +85,36 @@ export function HeroVisual() {
           { scale: 0.6, opacity: 0, duration: 1, stagger: 0.11, ease: EASE.overshoot },
           '-=0.95',
         )
-        .from(
-          '[data-hv-glow]',
-          { opacity: 0, scale: 0.7, duration: 1.6, ease: 'expo.out' },
-          '-=1.7',
-        )
+        .from('[data-hv-glow]', { opacity: 0, scale: 0.7, duration: 1.6, ease: 'expo.out' }, '-=1.7')
     }, root)
 
     return () => ctx.revert()
   }, [booted, reducedMotion])
 
-  /* ── Pointer parallax: layers separate by depth, not by amount. ── */
+  /* ── Slide change: the devices react. Media crossfade is owned by
+       CrossfadeImage, which waits for the incoming frame to decode. ── */
+  useEffect(() => {
+    if (!booted || reducedMotion) return
+
+    // A small settle on each swap so the object acknowledges the change.
+    gsap.fromTo(
+      browserRef.current,
+      { rotateY: -13 },
+      { rotateY: -9, duration: 1.1, ease: 'elastic.out(1, 0.7)' },
+    )
+    gsap.fromTo(
+      phoneRef.current,
+      { y: -10 },
+      { y: 0, duration: 1.2, ease: 'elastic.out(1, 0.6)' },
+    )
+    gsap.fromTo(
+      [urlRef.current, tagRef.current],
+      { autoAlpha: 0, y: 6 },
+      { autoAlpha: 1, y: 0, duration: 0.5, ease: 'power3.out', stagger: 0.06 },
+    )
+  }, [slideIndex, booted, reducedMotion])
+
+  /* ── Pointer parallax: layers separate by depth. ── */
   useEffect(() => {
     const root = rootRef.current
     if (!root || reducedMotion || quality.parallax === 0) return undefined
@@ -95,7 +128,6 @@ export function HeroVisual() {
       depth,
       x: gsap.quickTo(el, 'x', { duration: 1.1, ease: 'power3.out' }),
       y: gsap.quickTo(el, 'y', { duration: 1.1, ease: 'power3.out' }),
-      ry: gsap.quickTo(el, 'rotateY', { duration: 1.3, ease: 'power3.out' }),
     }))
 
     const onMove = (e) => {
@@ -103,9 +135,8 @@ export function HeroVisual() {
       const ny = (e.clientY / window.innerHeight) * 2 - 1
       const k = quality.parallax
       setters.forEach((s) => {
-        s.x(nx * 26 * s.depth * k)
-        s.y(ny * 16 * s.depth * k)
-        s.ry(nx * 7 * s.depth * k)
+        s.x(nx * 24 * s.depth * k)
+        s.y(ny * 15 * s.depth * k)
       })
     }
 
@@ -113,79 +144,73 @@ export function HeroVisual() {
     return () => window.removeEventListener('pointermove', onMove)
   }, [reducedMotion, quality.parallax])
 
+  const current = slides[slideIndex] ?? slides[0]
+
   return (
     <div
       ref={rootRef}
       aria-hidden="true"
-      /* xl, not lg: at 1024 the two-column split squeezed the statement column
-         and the hero stopped fitting its own frame. */
       className="pointer-events-none relative hidden h-full w-full items-center justify-center preserve-3d xl:flex"
     >
-      {/* Light bed behind the cluster */}
       <div
         data-hv-glow
-        className="absolute left-1/2 top-1/2 h-[46vmax] w-[46vmax] -translate-x-1/2 -translate-y-1/2"
+        className="absolute left-1/2 top-1/2 h-[44vmax] w-[44vmax] -translate-x-1/2 -translate-y-1/2"
         style={{
           background:
-            'radial-gradient(circle, rgba(198,168,124,0.16) 0%, rgba(159,180,201,0.07) 34%, rgba(5,5,7,0) 68%)',
+            'radial-gradient(circle, rgba(198,168,124,0.17) 0%, rgba(159,180,201,0.07) 34%, rgba(5,5,7,0) 68%)',
         }}
       />
 
-      <div className="relative preserve-3d" style={{ width: 'min(38vw, 620px)' }}>
-        {/* Browser — furthest back */}
+      {/* The browser is the anchor everything else aligns to. */}
+      <div className="relative preserve-3d" style={{ width: 'min(34vw, 560px)' }}>
         <div
           ref={browserRef}
           data-hv
-          className="preserve-3d will-change-transform"
-          style={{ transform: 'translateZ(-120px)' }}
+          /* Explicit z-index: BrowserFrame's overflow-hidden flattens its own
+             subtree, and Chrome was painting it over the phone despite the
+             phone's greater translateZ. */
+          className="relative z-0 preserve-3d will-change-transform"
+          style={{ transform: 'translateZ(-110px) rotateY(-9deg) rotateX(4deg)' }}
         >
           <BrowserFrame
-            url="obsidian.archi"
+            url={current.browserProject.url?.replace('https://', '') ?? 'gentechne.com'}
             accent="#9FB4C9"
             className="w-full"
-            style={{ transform: 'rotateY(-9deg) rotateX(4deg)' }}
           >
-            {/* object-left-top, not object-top: a centre crop sliced the site's
-                headline mid-word, which read as a broken image rather than a
-                framed screenshot. */}
-            <img
-              src={web.thumbnail}
-              alt=""
-              loading="eager"
-              decoding="async"
-              className="h-[26vh] w-full object-cover object-left-top"
-            />
+            <div className="relative h-[25vh] w-full">
+              <CrossfadeImage
+                src={current.browserProject.thumbnail}
+                className="absolute inset-0 h-full w-full object-cover object-left-top"
+              />
+            </div>
           </BrowserFrame>
         </div>
 
-        {/* Phone — crosses in front, lower left */}
+        {/* Phone: hangs off the browser's bottom-right corner, clear of the
+            site headline in the browser's top-left. */}
         <div
           ref={phoneRef}
           data-hv
-          /* Far enough left that it crosses the browser's edge rather than
-             sitting over its headline. */
-          className="absolute -bottom-[26%] -left-[24%] preserve-3d will-change-transform"
-          style={{ transform: 'translateZ(110px)' }}
+          className="absolute bottom-0 right-0 z-10 preserve-3d will-change-transform"
+          style={{ transform: 'translateZ(110px) translate(34%, 28%)' }}
         >
-          <PhoneFrame width={168}>
-            <img
-              src={app.thumbnail}
-              alt=""
-              loading="eager"
-              decoding="async"
-              className="h-full w-full object-cover object-top"
-            />
+          <PhoneFrame width={152}>
+            <div className="relative h-full w-full">
+              <CrossfadeImage
+                src={current.phoneProject.thumbnail}
+                className="absolute inset-0 h-full w-full object-cover object-top"
+              />
+            </div>
           </PhoneFrame>
         </div>
 
-        {/* Telemetry chips, anchored to the cluster */}
-        {CHIPS.map((c) => (
+        {/* Chips pinned to the browser's own corners. */}
+        {CHIP_SLOTS.map((c) => (
           <div
             key={c.id}
             data-hv-chip
             data-hv
-            className="surface absolute z-20 flex items-center gap-2.5 whitespace-nowrap rounded-full px-3.5 py-2 will-change-transform"
-            style={{ top: c.top, left: c.left, right: c.right, bottom: c.bottom }}
+            className={`surface absolute z-20 flex items-center gap-2.5 whitespace-nowrap rounded-full px-3.5 py-2 will-change-transform ${c.pos}`}
           >
             <span
               className="h-1.5 w-1.5 rounded-full"
@@ -197,6 +222,21 @@ export function HeroVisual() {
             </span>
           </div>
         ))}
+
+        {/* Caption — names the project on screen, so the swap has meaning. */}
+        <div
+          ref={tagRef}
+          data-hv
+          className="absolute inset-x-0 -bottom-[4.25rem] flex items-center justify-center gap-3"
+        >
+          <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-brass">
+            {current.service?.title}
+          </span>
+          <span className="h-1 w-1 rounded-full bg-smoke" />
+          <span ref={urlRef} className="font-display text-[12px] text-silver">
+            {current.browserProject.title}
+          </span>
+        </div>
       </div>
     </div>
   )

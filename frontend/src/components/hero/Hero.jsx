@@ -1,8 +1,9 @@
-﻿import { useRef } from 'react'
+﻿import { useCallback, useRef, useState } from 'react'
 import { useIsomorphicLayoutEffect } from '../../hooks/useIsomorphicLayoutEffect'
 import { gsap } from '../../lib/gsap'
-import { brand } from '../../data/brand'
-import { services } from '../../data/services'
+import { brand, heroStory } from '../../data/brand'
+import { Typewriter } from './Typewriter'
+import { services, getService } from '../../data/services'
 import { HeroField } from './HeroField'
 import { HeroVisual } from './HeroVisual'
 import { Button } from '../ui/Button'
@@ -16,6 +17,13 @@ export function Hero() {
   const progress = useRef(0)
   const { reducedMotion, booted } = useExperience()
   const { go } = useTransition()
+
+  /* Which story beat the typewriter is on. Stable identity so Typewriter's
+     effect does not re-fire on every parent render. */
+  const [slide, setSlide] = useState(0)
+  const setSlideStable = useCallback((i) => setSlide(i), [])
+  const story = heroStory[slide] ?? heroStory[0]
+  const service = getService(story.serviceId)
 
   useIsomorphicLayoutEffect(() => {
     if (!booted) return undefined
@@ -76,8 +84,17 @@ export function Hero() {
             </span>
           </div>
 
-          <h1 className="preserve-3d" aria-label={brand.statement.join(' ')}>
-            {brand.statement.map((line) => (
+          {/*
+            The first two lines are fixed and animate in per character. The
+            third is typed, and cycles — the size is stepped down at xl because
+            the two-column layout narrows this column, and the longest word
+            ("PLATFORMS.") would otherwise run past it at 1280.
+          */}
+          <h1
+            className="preserve-3d [&_.hero-size]:xl:text-[clamp(2.75rem,min(8.5vw,14svh),7.5rem)]"
+            aria-label={`${brand.statement[0]} ${brand.statement[1]} ${story.word}`}
+          >
+            {[brand.statement[0], brand.statement[1]].map((line) => (
               <span
                 key={line}
                 data-hero-line
@@ -88,7 +105,7 @@ export function Hero() {
                     <span
                       key={`${line}-${ci}`}
                       data-hero-char
-                      className="inline-block font-display text-display-1 font-extrabold text-gradient-bone will-change-transform"
+                      className="hero-size inline-block font-display text-display-1 font-extrabold text-gradient-bone will-change-transform"
                       style={{ transformOrigin: '50% 100%' }}
                     >
                       {ch}
@@ -108,7 +125,29 @@ export function Hero() {
                 />
               </span>
             ))}
+
+            {/* No preserve-3d here: this line is never transformed in 3D, and
+                keeping it out of the 3D context stops Chrome promoting a layer
+                it then has to repaint on every keystroke. */}
+            <span data-hero-line className="relative block pb-[0.06em]">
+              <Typewriter onIndexChange={setSlideStable} />
+            </span>
           </h1>
+
+          {/* Names the service the typed word stands for, so the cycle reads as
+              a tour of what we do rather than a list of nouns. Hidden below
+              700px of viewport height, where a third type line plus this pushes
+              the CTAs off screen. */}
+          <p
+            key={story.word}
+            data-hero-note
+            className="mt-4 hidden items-center gap-3 font-mono text-[10px] uppercase tracking-[0.18em] [@media(min-height:700px)]:flex md:mt-5 md:text-[11px]"
+          >
+            <span className="text-brass tabular-nums">{service?.index}</span>
+            <span className="h-px w-6 bg-smoke" />
+            <span className="text-silver">{service?.title}</span>
+            <span className="hidden text-mist lg:inline">— {service?.verb}</span>
+          </p>
 
           {/* Side by side while the statement owns the full width; stacked once
               the visual cluster takes the right-hand column. */}
@@ -153,7 +192,7 @@ export function Hero() {
         </div>
 
         {/* Right column: the products the statement is claiming */}
-        <HeroVisual />
+        <HeroVisual slideIndex={slide} />
 
         {/* Scroll cue */}
         <div

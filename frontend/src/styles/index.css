@@ -353,6 +353,19 @@ html[data-reduced-motion='true'] .line-mask > * {
   }
 }
 
+/* Terminal caret: a hard on/off, never a fade — a blinking cursor does not
+   dim, and easing it makes the typewriter read as decoration. */
+@keyframes gt-caret {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
 @keyframes gt-drift {
   0% {
     transform: translate3d(0, 0, 0);
