@@ -1,41 +1,20 @@
-import { useRef } from 'react'
+﻿import { useRef } from 'react'
 import { useIsomorphicLayoutEffect } from '../../hooks/useIsomorphicLayoutEffect'
 import { gsap } from '../../lib/gsap'
 import { brand } from '../../data/brand'
 import { services } from '../../data/services'
 import { HeroField } from './HeroField'
+import { HeroVisual } from './HeroVisual'
 import { Button } from '../ui/Button'
 import { useExperience } from '../../context/ExperienceContext'
 import { useTransition } from '../transitions/TransitionProvider'
 import { scrollTo } from '../../hooks/useLenis'
-import { buildHeroIntro, buildHeroScrollHandoff, floatFragments } from '../../animations/heroAnimations'
-
-/**
- * Small floating digital elements — real artefacts of the work, not decoration.
- *
- * All four live in the right-hand column. The statement occupies the left
- * ~55–60% of the frame at every size where these are shown (lg and up), so
- * anchoring them right is what keeps them off the typography instead of
- * sitting behind it.
- */
-const FRAGMENTS = [
-  { id: 'f1', label: 'build.status', value: 'PASSING', top: '21%', right: '7%', tone: 'sage' },
-  { id: 'f2', label: 'frame.budget', value: '16.6 ms', top: '37%', right: '16%', tone: 'brass' },
-  { id: 'f3', label: 'lighthouse', value: '98 / 100', top: '53%', right: '6%', tone: 'brass' },
-  // Kept clear of the CTA row, which sits at roughly 76–85% of the frame.
-  { id: 'f4', label: 'projects.live', value: '90+', top: '64%', right: '24%', tone: 'bone' },
-]
-
-const TONE = {
-  sage: '#A8C0A0',
-  brass: '#C6A87C',
-  bone: '#E6E6EA',
-}
+import { buildHeroIntro, buildHeroScrollHandoff } from '../../animations/heroAnimations'
 
 export function Hero() {
   const rootRef = useRef(null)
   const progress = useRef(0)
-  const { reducedMotion, booted, isMobile } = useExperience()
+  const { reducedMotion, booted } = useExperience()
   const { go } = useTransition()
 
   useIsomorphicLayoutEffect(() => {
@@ -51,7 +30,6 @@ export function Hero() {
           progress.current = p
         },
       })
-      floatFragments(gsap.utils.toArray('[data-hero-frag]'), { reducedMotion })
     }, el)
 
     return () => ctx.revert()
@@ -82,7 +60,7 @@ export function Hero() {
         the right-hand half.
       */}
       <div
-        className="shell relative z-20 grid h-full grid-cols-1 items-center gap-10 pb-20 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.85fr)] lg:gap-14"
+        className="shell relative z-20 grid h-full grid-cols-1 items-center gap-10 pb-20 xl:grid-cols-[minmax(0,1fr)_minmax(0,0.85fr)] xl:gap-14"
         style={{ paddingTop: 'calc(var(--nav-h) + 1.5rem)' }}
       >
         <div data-hero-type className="preserve-3d">
@@ -132,7 +110,9 @@ export function Hero() {
             ))}
           </h1>
 
-          <div className="mt-7 flex flex-col gap-6 md:mt-10 md:flex-row md:items-end md:justify-between md:gap-10">
+          {/* Side by side while the statement owns the full width; stacked once
+              the visual cluster takes the right-hand column. */}
+          <div className="mt-7 flex flex-col gap-6 md:mt-10 md:flex-row md:items-end md:justify-between md:gap-10 xl:flex-col xl:items-start xl:gap-7">
             <div data-hero-meta className="flex max-w-md flex-col gap-3.5">
               <div data-hero-rule className="rule-brass h-px w-32 origin-left" />
               <p className="text-[14.5px] leading-relaxed text-silver md:text-base">
@@ -171,6 +151,9 @@ export function Hero() {
             </div>
           </div>
         </div>
+
+        {/* Right column: the products the statement is claiming */}
+        <HeroVisual />
 
         {/* Scroll cue */}
         <div

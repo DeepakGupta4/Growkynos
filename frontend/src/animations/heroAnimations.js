@@ -1,4 +1,4 @@
-import { gsap, ScrollTrigger, EASE, SCRUB } from '../lib/gsap'
+﻿import { gsap, ScrollTrigger, EASE, SCRUB } from '../lib/gsap'
 
 /**
  * HERO ENTRANCE
@@ -17,7 +17,7 @@ export function buildHeroIntro(scope, { reducedMotion = false, delay = 0 } = {})
         '[data-hero-meta]',
         '[data-hero-actions]',
         '[data-hero-scroll]',
-        '[data-hero-frag]',
+        '[data-hv]',
       ],
       { clearProps: 'all', autoAlpha: 1, y: 0, opacity: 1 },
     )
@@ -67,11 +67,9 @@ export function buildHeroIntro(scope, { reducedMotion = false, delay = 0 } = {})
 
   tl.from('[data-hero-meta] > *', { y: 26, autoAlpha: 0, duration: 0.9, stagger: 0.07 }, '-=0.9')
   tl.from('[data-hero-actions]', { y: 28, autoAlpha: 0, duration: 0.9 }, '-=0.75')
-  tl.from(
-    '[data-hero-frag]',
-    { scale: 0.72, autoAlpha: 0, duration: 1.4, stagger: 0.1, ease: EASE.overshoot },
-    '-=1.1',
-  )
+  // NOTE: the visual cluster is NOT animated here. It owns its own entrance in
+  // HeroVisual. Two gsap.from() tweens on one element race to capture the end
+  // state, which is what previously let a chip bake in a stale position.
   tl.from('[data-hero-scroll]', { autoAlpha: 0, y: 18, duration: 0.8 }, '-=0.6')
 
   return tl
@@ -102,7 +100,7 @@ export function buildHeroScrollHandoff(scope, { reducedMotion = false, onProgres
   tl.to('[data-hero-type]', { yPercent: -18, z: -640, rotateX: 26, opacity: 0, ease: 'power2.in' }, 0)
     .to('[data-hero-eyebrow], [data-hero-meta], [data-hero-actions]', { autoAlpha: 0, y: -40 }, 0)
     .to('[data-hero-scroll]', { autoAlpha: 0, duration: 0.2 }, 0)
-    .to('[data-hero-frag]', { z: 420, opacity: 0, stagger: 0.04, ease: 'power2.in' }, 0)
+    .to('[data-hv]', { z: 420, opacity: 0, stagger: 0.04, ease: 'power2.in' }, 0)
     .fromTo(
       '[data-hero-interface]',
       { yPercent: 34, z: -520, opacity: 0, rotateX: 18 },
@@ -117,23 +115,6 @@ export function buildHeroScrollHandoff(scope, { reducedMotion = false, onProgres
     )
 
   return tl
-}
-
-/** Ambient float for the hero's interactive fragments. */
-export function floatFragments(nodes, { reducedMotion = false } = {}) {
-  if (reducedMotion) return []
-  return nodes.map((node, i) =>
-    gsap.to(node, {
-      y: `random(-16, 16)`,
-      x: `random(-11, 11)`,
-      rotation: `random(-4, 4)`,
-      duration: 5 + i * 0.6,
-      ease: 'sine.inOut',
-      repeat: -1,
-      yoyo: true,
-      delay: i * 0.25,
-    }),
-  )
 }
 
 export { ScrollTrigger }

@@ -20,10 +20,14 @@ import { useExperience } from '../../context/ExperienceContext'
  * fragile: any change to hero height moved them independently of anything they
  * related to. Anchored here they cannot drift away from what they annotate.
  */
+/*
+ * Positions are chosen against the cluster's own geometry: the phone occupies
+ * the lower-left (-10% left, -22% bottom), so nothing is anchored there.
+ */
 const CHIPS = [
-  { id: 'c1', label: 'build', value: 'PASSING', tone: '#A8C0A0', top: '-4%', left: '-12%' },
-  { id: 'c2', label: 'frame', value: '16.6 ms', tone: '#C6A87C', top: '38%', left: '-19%' },
-  { id: 'c3', label: 'lighthouse', value: '98 / 100', tone: '#C6A87C', bottom: '4%', right: '-8%' },
+  { id: 'c1', label: 'build', value: 'PASSING', tone: '#A8C0A0', top: '-9%', left: '4%' },
+  { id: 'c2', label: 'frame', value: '16.6 ms', tone: '#C6A87C', top: '26%', right: '-13%' },
+  { id: 'c3', label: 'lighthouse', value: '98 / 100', tone: '#C6A87C', bottom: '-9%', right: '4%' },
 ]
 
 export function HeroVisual() {
@@ -113,7 +117,9 @@ export function HeroVisual() {
     <div
       ref={rootRef}
       aria-hidden="true"
-      className="pointer-events-none relative hidden h-full w-full items-center justify-center preserve-3d lg:flex"
+      /* xl, not lg: at 1024 the two-column split squeezed the statement column
+         and the hero stopped fitting its own frame. */
+      className="pointer-events-none relative hidden h-full w-full items-center justify-center preserve-3d xl:flex"
     >
       {/* Light bed behind the cluster */}
       <div
@@ -139,12 +145,15 @@ export function HeroVisual() {
             className="w-full"
             style={{ transform: 'rotateY(-9deg) rotateX(4deg)' }}
           >
+            {/* object-left-top, not object-top: a centre crop sliced the site's
+                headline mid-word, which read as a broken image rather than a
+                framed screenshot. */}
             <img
               src={web.thumbnail}
               alt=""
               loading="eager"
               decoding="async"
-              className="h-[26vh] w-full object-cover object-top"
+              className="h-[26vh] w-full object-cover object-left-top"
             />
           </BrowserFrame>
         </div>
@@ -153,7 +162,9 @@ export function HeroVisual() {
         <div
           ref={phoneRef}
           data-hv
-          className="absolute -bottom-[22%] -left-[10%] preserve-3d will-change-transform"
+          /* Far enough left that it crosses the browser's edge rather than
+             sitting over its headline. */
+          className="absolute -bottom-[26%] -left-[24%] preserve-3d will-change-transform"
           style={{ transform: 'translateZ(110px)' }}
         >
           <PhoneFrame width={168}>
