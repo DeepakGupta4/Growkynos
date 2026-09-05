@@ -68,6 +68,11 @@ export function ShowcaseFrame({
           },
         })
 
+        // The approach title hands over to the sequence: it is on screen while
+        // the world scrolls in, and clears within the first beat so it never
+        // competes with the subject.
+        tl.to('[data-showcase-approach]', { autoAlpha: 0, y: -30, duration: 0.6, ease: 'power2.in' }, 0)
+
         build(tl, { root, stage, isMobile, isTablet })
       }, root)
     })
@@ -106,6 +111,31 @@ export function ShowcaseFrame({
       >
         {/* The world's artwork, when it exists. Renders nothing when it doesn't. */}
         <WorldBackdrop service={service} />
+
+        {/*
+          Approach title. The chrome at the bottom of the stage only becomes
+          visible once the section pins — so while a world was scrolling into
+          view the screen carried the backdrop and nothing else, measured at
+          0 items of content. This names the world during that approach and
+          fades out as the pinned sequence takes over.
+        */}
+        <div
+          data-showcase-approach
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 top-1/2 z-10 -translate-y-1/2 px-gutter"
+        >
+          <div className="mx-auto flex w-full max-w-shell items-baseline gap-5">
+            <span
+              className="font-display text-[clamp(2.5rem,8vw,6rem)] font-extrabold leading-none tabular-nums"
+              style={{ color: service.accent, opacity: 0.9 }}
+            >
+              {service.index}
+            </span>
+            <span className="font-display text-[clamp(1.4rem,4vw,3rem)] font-semibold leading-none tracking-tight text-bone">
+              {service.title}
+            </span>
+          </div>
+        </div>
 
         {/* Ambient world tint — each world has its own light temperature */}
         <div

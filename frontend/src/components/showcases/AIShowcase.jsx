@@ -102,7 +102,7 @@ export function AIShowcase() {
     const nodes = NODES.map((n) => nodeRefs.current[n.id]).filter(Boolean)
 
     /* Initial */
-    gsap.set(graph, { z: -900, rotateX: 16, opacity: 0, scale: 0.94 })
+    gsap.set(graph, { z: -900, rotateX: 16, opacity: 0.45, scale: 0.94 })
     gsap.set(nodes, { autoAlpha: 0, y: 22, scale: 0.94 })
     edges.forEach((e) => {
       const len = e.getTotalLength()

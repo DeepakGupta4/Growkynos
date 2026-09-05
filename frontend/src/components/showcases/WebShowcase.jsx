@@ -55,7 +55,7 @@ export function WebShowcase() {
     const d = mobile ? 0.5 : 1
 
     /* Initial */
-    gsap.set(browser, { z: -1500, rotateX: 24, rotateY: -18, opacity: 0, scale: 0.86 })
+    gsap.set(browser, { z: -1500, rotateX: 24, rotateY: -18, opacity: 0.45, scale: 0.86 })
     gsap.set(viewport, { height: 0 })
     gsap.set(pages, { autoAlpha: 0, yPercent: 0 })
     gsap.set(loader, { scaleX: 0, autoAlpha: 1, transformOrigin: 'left center' })

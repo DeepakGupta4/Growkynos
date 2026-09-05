@@ -81,7 +81,7 @@ export function SaaSShowcase() {
     if (!dash) return
 
     /* Initial */
-    gsap.set(dash, { z: -1150, rotateX: 22, opacity: 0, scale: 0.9 })
+    gsap.set(dash, { z: -1150, rotateX: 22, opacity: 0.45, scale: 0.9 })
     gsap.set(glow, { opacity: 0 })
     gsap.set(tag, { autoAlpha: 0, y: 12 })
     gsap.set(focus, { autoAlpha: 0, scale: 0.94, z: -200 })

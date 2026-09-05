@@ -56,7 +56,7 @@ export function AppShowcase() {
       const depth = mobile ? 0.55 : 1
 
       /* Initial state */
-      gsap.set(phone, { z: -1400, rotateY: -34, rotateX: 16, opacity: 0, scale: 0.9 })
+      gsap.set(phone, { z: -1400, rotateY: -34, rotateX: 16, opacity: 0.45, scale: 0.9 })
       gsap.set(screens, { autoAlpha: 0, z: 0, scale: 1, xPercent: 0 })
       gsap.set(screens[0], { autoAlpha: 0 })
       gsap.set(wake, { autoAlpha: 1, scaleY: 1 })
