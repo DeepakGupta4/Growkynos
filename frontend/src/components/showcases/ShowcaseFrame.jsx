@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { useIsomorphicLayoutEffect } from '../../hooks/useIsomorphicLayoutEffect'
 import { gsap, SCRUB } from '../../lib/gsap'
 import { useExperience } from '../../context/ExperienceContext'
+import { WorldBackdrop } from './ui/WorldBackdrop'
 import { cn } from '../../lib/utils'
 
 /**
@@ -103,6 +104,9 @@ export function ShowcaseFrame({
           stageClassName,
         )}
       >
+        {/* The world's artwork, when it exists. Renders nothing when it doesn't. */}
+        <WorldBackdrop service={service} />
+
         {/* Ambient world tint — each world has its own light temperature */}
         <div
           aria-hidden="true"

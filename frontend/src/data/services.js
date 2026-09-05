@@ -4,7 +4,7 @@
  * `showcase` maps to a component in components/showcases/registry.js —
  * add a service by adding an entry here plus one showcase component.
  */
-export const services = [
+const RAW_SERVICES = [
   {
     id: 'app',
     index: '01',
@@ -136,6 +136,39 @@ export const services = [
     accent: '#9FB4C9',
   },
 ]
+
+/**
+ * SERVICE ARTWORK
+ * ---------------
+ * Each world can be backed by a piece of artwork that becomes its environment
+ * (see components/showcases/ui/WorldBackdrop.jsx).
+ *
+ * `image` is deliberately EXTENSION-LESS. The backdrop probes
+ * .avif → .webp → .png → .jpg → .jpeg and uses the first that decodes, so you
+ * can drop in whichever format you have without touching code.
+ *
+ * All of this is optional. Any world whose file is absent renders exactly as
+ * it does with no artwork at all — no broken image, no gap, no layout shift.
+ * Adding the file is the entire integration step.
+ *
+ * Expected drop location:  public/assets/services/
+ */
+const A = '/assets/services'
+
+const SERVICE_MEDIA = {
+  app: { image: `${A}/app-development`, video: `${A}/app-development.mp4`, poster: null },
+  web: { image: `${A}/web-development`, video: `${A}/web-development.mp4`, poster: null },
+  shopify: { image: `${A}/shopify-development`, video: `${A}/shopify-development.mp4`, poster: null },
+  wordpress: { image: `${A}/wordpress-development`, video: `${A}/wordpress-development.mp4`, poster: null },
+  photo: { image: `${A}/photo-editing`, video: `${A}/photo-editing.mp4`, poster: null },
+  video: { image: `${A}/video-editing`, video: `${A}/video-editing.mp4`, poster: null },
+  design: { image: `${A}/banner-poster-design`, video: null, poster: null },
+  graphics: { image: `${A}/banner-poster-design`, video: null, poster: null },
+  saas: { image: `${A}/more-services`, video: null, poster: null },
+  ai: { image: `${A}/more-services`, video: null, poster: null },
+}
+
+export const services = RAW_SERVICES.map((s) => ({ ...s, media: SERVICE_MEDIA[s.id] ?? null }))
 
 export const getService = (id) => services.find((s) => s.id === id)
 

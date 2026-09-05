@@ -1,5 +1,5 @@
 /**
- * Runtime smoke test — GROWKYNOS
+ * Runtime smoke test — GENTECHNE
  * ------------------------------
  * Drives the real site in a headless browser and fails on:
  *   · any console error or page exception
@@ -34,7 +34,7 @@ if (!executablePath) {
 const IGNORE = [/favicon/i, /Download the React DevTools/i, /webkit-text-size-adjust/i]
 
 const ROUTES = [
-  { path: '/', name: 'Home', expect: ['GROWKYNOS', 'BUILD', 'The archive'], scroll: true },
+  { path: '/', name: 'Home', expect: ['GENTECHNE', 'BUILD', 'The archive'], scroll: true },
   { path: '/work', name: 'Work', expect: ['SELECTED WORK', 'Meridian Health'] },
   {
     path: '/work/meridian-health',
@@ -92,7 +92,7 @@ for (const route of ROUTES) {
   // Skip the boot sequence deterministically.
   await page.evaluate(() => {
     try {
-      sessionStorage.setItem('gk:booted', '1')
+      sessionStorage.setItem('gt:booted', '1')
     } catch {
       /* ignore */
     }
@@ -158,7 +158,7 @@ for (const route of ROUTES) {
   })
 
   await page.goto(BASE, { waitUntil: 'networkidle2', timeout: 60000 })
-  await page.evaluate(() => sessionStorage.setItem('gk:booted', '1'))
+  await page.evaluate(() => sessionStorage.setItem('gt:booted', '1'))
   await page.reload({ waitUntil: 'networkidle2', timeout: 60000 })
   await sleep(1200)
 

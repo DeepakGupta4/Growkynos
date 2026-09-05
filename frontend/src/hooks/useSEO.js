@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 
-const SITE = 'https://growkynos.com'
+const SITE = 'https://gentechne.com'
 
 function setMeta(selector, attr, value) {
   if (!value) return

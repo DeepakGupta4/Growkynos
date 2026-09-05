@@ -24,7 +24,7 @@ const SOUND_MAP = {
 }
 
 const SoundContext = createContext(null)
-const PREF_KEY = 'gk:sound'
+const PREF_KEY = 'gt:sound'
 
 export function SoundProvider({ children }) {
   const [enabled, setEnabled] = useState(() => {

@@ -9,6 +9,7 @@ import { DesignShowcase } from '../components/showcases/DesignShowcase'
 import { PhotoEditingShowcase } from '../components/showcases/PhotoEditingShowcase'
 import { VideoEditingShowcase } from '../components/showcases/VideoEditingShowcase'
 import { AIShowcase } from '../components/showcases/AIShowcase'
+import { MoreServices } from '../components/services/MoreServices'
 import { ProjectUniverse } from '../components/projects/ProjectUniverse'
 import { StudioSection } from '../components/studio/StudioSection'
 import { TechConstellation } from '../components/technology/TechConstellation'
@@ -20,7 +21,7 @@ export default function Home() {
   useSEO({
     title: `${brand.name} — Design, Code & Motion Under One Roof`,
     description:
-      'GROWKYNOS is a digital product studio building apps, websites, storefronts and SaaS platforms — design, code and motion under one roof.',
+      'GENTECHNE is a digital product studio building apps, websites, storefronts and SaaS platforms — design, code and motion under one roof.',
     path: '/',
   })
 
@@ -39,6 +40,9 @@ export default function Home() {
       <PhotoEditingShowcase />
       <VideoEditingShowcase />
       <AIShowcase />
+
+      {/* Everything that supports the ten worlds, without a world of its own */}
+      <MoreServices />
 
       {/* The identity moment, then who and how */}
       <ProjectUniverse />

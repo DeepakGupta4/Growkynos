@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 /* ============================================================
-   GROWKYNOS — Design System
+   GENTECHNE — Design System
    Luxury technology · creative studio · cinematic experience
    ============================================================ */
 
@@ -334,7 +334,7 @@ html[data-reduced-motion='true'] .line-mask > * {
 }
 
 /* Keyframes used sparingly, for ambient system-life only */
-@keyframes gk-pulse {
+@keyframes gt-pulse {
   0%,
   100% {
     opacity: 0.25;
@@ -344,7 +344,7 @@ html[data-reduced-motion='true'] .line-mask > * {
   }
 }
 
-@keyframes gk-scanline {
+@keyframes gt-scanline {
   0% {
     transform: translateY(-100%);
   }
@@ -353,7 +353,7 @@ html[data-reduced-motion='true'] .line-mask > * {
   }
 }
 
-@keyframes gk-drift {
+@keyframes gt-drift {
   0% {
     transform: translate3d(0, 0, 0);
   }
@@ -363,5 +363,5 @@ html[data-reduced-motion='true'] .line-mask > * {
 }
 
 .anim-pulse {
-  animation: gk-pulse 2.4s var(--ease-swift) infinite;
+  animation: gt-pulse 2.4s var(--ease-swift) infinite;
 }

@@ -5,7 +5,7 @@ export const studio = {
   intro:
     'Most studios hand you off. A designer draws it, an agency builds it, a freelancer animates it, and the seams show in every one of them. We kept the three disciplines in the same room so the work arrives whole.',
   paragraphs: [
-    'GROWKYNOS is a small, senior team. The person who designs your interface writes the motion spec for it, and sits next to the engineer who builds it. Nothing is thrown over a wall, because there is no wall.',
+    'GENTECHNE is a small, senior team. The person who designs your interface writes the motion spec for it, and sits next to the engineer who builds it. Nothing is thrown over a wall, because there is no wall.',
     'We take on a limited number of projects a year. That is not scarcity marketing — it is the only way to stay this involved in each one.',
   ],
   stats: [
@@ -33,7 +33,7 @@ export const studio = {
   ],
   /* Layered editorial composition — not employee cards. */
   images: [
-    { src: `${S}/01.svg`, alt: 'The GROWKYNOS studio floor during a design review', span: 'tall', depth: 0.9 },
+    { src: `${S}/01.svg`, alt: 'The GENTECHNE studio floor during a design review', span: 'tall', depth: 0.9 },
     { src: `${S}/02.svg`, alt: 'Interface exploration pinned across the studio wall', span: 'wide', depth: 0.55 },
     { src: `${S}/03.svg`, alt: 'A motion timeline being reviewed frame by frame', span: 'square', depth: 1.15 },
     { src: `${S}/04.svg`, alt: 'Engineering workstation with a build in progress', span: 'tall', depth: 0.7 },

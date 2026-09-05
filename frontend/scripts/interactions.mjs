@@ -35,7 +35,7 @@ page.on('console', (m) => m.type() === 'error' && errors.push(m.text()))
 
 const boot = async (path = '/') => {
   await page.goto(`${BASE}${path}`, { waitUntil: 'networkidle2', timeout: 60000 })
-  await page.evaluate(() => sessionStorage.setItem('gk:booted', '1'))
+  await page.evaluate(() => sessionStorage.setItem('gt:booted', '1'))
   await page.reload({ waitUntil: 'networkidle2', timeout: 60000 })
   await sleep(1800)
 }

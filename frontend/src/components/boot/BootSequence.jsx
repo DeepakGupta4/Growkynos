@@ -182,7 +182,7 @@ export function BootSequence() {
       ref={rootRef}
       role="status"
       aria-live="polite"
-      aria-label={`Loading GROWKYNOS, ${pct} percent`}
+      aria-label={`Loading GENTECHNE, ${pct} percent`}
       className="fixed inset-0 z-boot flex flex-col justify-between bg-void px-gutter py-8 md:py-12"
       style={{ clipPath: 'inset(0% 0% 0% 0%)' }}
     >

@@ -84,7 +84,7 @@ export const PhoneFrame = forwardRef(function PhoneFrame(
 
 /* ── Browser ───────────────────────────────────────────────── */
 export const BrowserFrame = forwardRef(function BrowserFrame(
-  { children, className, url = 'growkynos.com', width, style, accent = '#C6A87C', chromeRef, viewportRef },
+  { children, className, url = 'gentechne.com', width, style, accent = '#C6A87C', chromeRef, viewportRef },
   ref,
 ) {
   return (

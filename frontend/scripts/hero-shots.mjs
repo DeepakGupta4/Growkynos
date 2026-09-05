@@ -23,7 +23,7 @@ for (const [w, h] of [
   await page.setViewport({ width: w, height: h })
   await page.emulateMediaFeatures([{ name: 'prefers-reduced-motion', value: 'no-preference' }])
   await page.goto(BASE, { waitUntil: 'networkidle2', timeout: 60000 })
-  await page.evaluate(() => sessionStorage.setItem('gk:booted', '1'))
+  await page.evaluate(() => sessionStorage.setItem('gt:booted', '1'))
   await page.reload({ waitUntil: 'networkidle2', timeout: 60000 })
   await sleep(2800)
   await page.screenshot({ path: `${OUT}/hero-${w}x${h}.png` })

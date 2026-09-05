@@ -1,4 +1,4 @@
-# GROWKYNOS
+# GENTECHNE
 
 A digital product studio site built as a continuous scroll experience: ten
 service "worlds" that each *demonstrate* the discipline rather than describe it,

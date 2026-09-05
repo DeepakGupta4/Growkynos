@@ -4,7 +4,7 @@ import { useSEO } from '../hooks/useSEO'
 
 export default function NotFound() {
   const { go } = useTransition()
-  useSEO({ title: 'Not found — GROWKYNOS', description: 'This page does not exist.', path: '/404' })
+  useSEO({ title: 'Not found — GENTECHNE', description: 'This page does not exist.', path: '/404' })
 
   return (
     <section className="grid min-h-[100svh] place-items-center px-gutter">
@@ -19,7 +19,7 @@ export default function NotFound() {
           The world you were looking for has moved or never existed. Everything else is still where you
           left it.
         </p>
-        <Button onClick={() => go('/', { label: 'GROWKYNOS' })}>Return to the entry</Button>
+        <Button onClick={() => go('/', { label: 'GENTECHNE' })}>Return to the entry</Button>
       </div>
     </section>
   )

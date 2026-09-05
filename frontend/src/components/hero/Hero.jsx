@@ -72,36 +72,17 @@ export function Hero() {
         style={{ background: 'linear-gradient(180deg, rgba(5,5,7,0) 0%, #050507 92%)' }}
       />
 
-      {/* Floating fragments */}
-      {!isMobile &&
-        FRAGMENTS.map((f) => (
-          <div
-            key={f.id}
-            data-hero-frag
-            className="pointer-events-none absolute z-10 hidden select-none lg:block"
-            style={{ top: f.top, left: f.left, right: f.right, bottom: f.bottom }}
-          >
-            <div className="surface flex items-center gap-3 rounded-full px-4 py-2.5">
-              <span
-                className="h-1.5 w-1.5 rounded-full"
-                style={{ backgroundColor: TONE[f.tone], boxShadow: `0 0 10px ${TONE[f.tone]}88` }}
-              />
-              <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-mist">{f.label}</span>
-              <span className="font-mono text-[10px] tabular-nums" style={{ color: TONE[f.tone] }}>
-                {f.value}
-              </span>
-            </div>
-          </div>
-        ))}
-
-      {/* Type */}
       {/*
         Fixed height, not min-height: the hero is a single frame. Top padding is
         derived from the nav so the statement clears it at any size, and the
         bottom leaves room for the scroll cue.
+
+        Two columns from lg up: the statement no longer stretches across the
+        full width leaving a wall of black beside it — the visual cluster holds
+        the right-hand half.
       */}
       <div
-        className="shell relative z-20 flex h-full flex-col justify-center pb-20"
+        className="shell relative z-20 grid h-full grid-cols-1 items-center gap-10 pb-20 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.85fr)] lg:gap-14"
         style={{ paddingTop: 'calc(var(--nav-h) + 1.5rem)' }}
       >
         <div data-hero-type className="preserve-3d">
@@ -200,7 +181,7 @@ export function Hero() {
           <span className="relative block h-8 w-px overflow-hidden bg-smoke">
             <span
               className="absolute inset-x-0 top-0 h-3 bg-brass"
-              style={{ animation: 'gk-scanline 2.2s cubic-bezier(0.4,0,0.1,1) infinite' }}
+              style={{ animation: 'gt-scanline 2.2s cubic-bezier(0.4,0,0.1,1) infinite' }}
             />
           </span>
         </div>
@@ -215,7 +196,7 @@ export function Hero() {
         <div className="shell w-full">
           <div className="surface-raised overflow-hidden rounded-2xl">
             <div className="flex items-center justify-between border-b border-smoke/60 px-5 py-3.5 md:px-8">
-              <span className="label-brass">GROWKYNOS / SERVICE INDEX</span>
+              <span className="label-brass">GENTECHNE / SERVICE INDEX</span>
               <span className="label hidden md:block">SELECT A WORLD</span>
               <span className="font-mono text-[10px] text-mist tabular-nums">{services.length} MODULES</span>
             </div>

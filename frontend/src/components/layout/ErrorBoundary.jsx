@@ -16,7 +16,7 @@ export class ErrorBoundary extends Component {
 
   componentDidCatch(error, info) {
     // Surfaced in the console for debugging; wire to a reporter in production.
-    console.error('[GROWKYNOS] Render error:', error, info?.componentStack)
+    console.error('[GENTECHNE] Render error:', error, info?.componentStack)
   }
 
   render() {

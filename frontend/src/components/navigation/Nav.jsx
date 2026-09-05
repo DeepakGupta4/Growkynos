@@ -119,7 +119,7 @@ export function Nav() {
   const goHome = useCallback(() => {
     setMenuOpen(false)
     if (isHome) scrollTo(0, { duration: 1.5 })
-    else go('/', { label: 'GROWKYNOS' })
+    else go('/', { label: 'GENTECHNE' })
   }, [go, isHome])
 
   if (!booted) return null

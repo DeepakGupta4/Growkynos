@@ -28,8 +28,8 @@ export default function ProjectPage() {
   const { go } = useTransition()
 
   useSEO({
-    title: project ? `${project.title} — ${project.category} | GROWKYNOS` : 'Project — GROWKYNOS',
-    description: project?.excerpt ?? 'A GROWKYNOS project.',
+    title: project ? `${project.title} — ${project.category} | GENTECHNE` : 'Project — GENTECHNE',
+    description: project?.excerpt ?? 'A GENTECHNE project.',
     path: `/work/${id}`,
     image: project?.thumbnail ?? '/og.svg',
     type: 'article',

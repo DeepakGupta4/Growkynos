@@ -19,9 +19,9 @@ export default function ContactPage() {
   const { reducedMotion } = useExperience()
 
   useSEO({
-    title: 'Begin a project — GROWKYNOS',
+    title: 'Begin a project — GENTECHNE',
     description:
-      'Tell us what you are building. GROWKYNOS takes on a limited number of projects a year — apps, websites, storefronts, SaaS platforms, design, motion and automation.',
+      'Tell us what you are building. GENTECHNE takes on a limited number of projects a year — apps, websites, storefronts, SaaS platforms, design, motion and automation.',
     path: '/contact',
   })
 

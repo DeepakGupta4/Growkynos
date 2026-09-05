@@ -6,7 +6,7 @@ import { lockScroll } from '../hooks/useLenis'
 
 const ExperienceContext = createContext(null)
 
-const BOOT_KEY = 'gk:booted'
+const BOOT_KEY = 'gt:booted'
 
 export function ExperienceProvider({ children }) {
   const reducedMotion = useReducedMotion()

@@ -15,7 +15,7 @@ import { formatBytes, cn } from '../../lib/utils'
  * is pre-filled with everything they typed, so the enquiry still reaches us.
  */
 const ENDPOINT = import.meta.env.VITE_CONTACT_ENDPOINT ?? ''
-const STUDIO_EMAIL = 'studio@growkynos.com'
+const STUDIO_EMAIL = 'studio@gentechne.com'
 
 const PROJECT_TYPES = [
   'Web Development',
@@ -131,7 +131,7 @@ export function ContactForm() {
       .filter(Boolean)
       .join('\n')
     return `mailto:${STUDIO_EMAIL}?subject=${encodeURIComponent(
-      `New project enquiry — ${values.name || 'GROWKYNOS'}`,
+      `New project enquiry — ${values.name || 'GENTECHNE'}`,
     )}&body=${encodeURIComponent(body)}`
   }, [values, file])
 

@@ -1,5 +1,5 @@
 /**
- * Placeholder asset generator — GROWKYNOS
+ * Placeholder asset generator — GENTECHNE
  * --------------------------------------
  * Produces on-brand SVG mockups so every path in src/data/projects.js resolves
  * to a real file. Replace any generated file with a real screenshot or photo of
@@ -839,7 +839,7 @@ function creativeScreen({ seed, kind, title, index, accent = C.brass }) {
       s += mono(740, 486, 'ROBOTICS / IDENTITY SYSTEM', { size: 11, fill: C.silver })
       s += text(740, 560, 'A system of', { size: 30, weight: 400, fill: C.silver, family: 'Instrument Serif, Georgia, serif' })
       s += text(740, 600, 'rules, not layouts.', { size: 30, weight: 400, fill: C.silver, family: 'Instrument Serif, Georgia, serif' })
-      s += mono(740, 800, '2024 — GROWKYNOS', { size: 10 })
+      s += mono(740, 800, '2024 — GENTECHNE', { size: 10 })
     } else if (variants === 1) {
       s += rect(0, 0, W, H, C.void)
       for (let i = 0; i < 12; i++) s += line(120 + i * 100, 60, 120 + i * 100, 840, C.steel, 1, 0.25)
@@ -1305,7 +1305,7 @@ write(
     630,
     [
       rect(0, 0, 1200, 630, C.void),
-      text(72, 120, 'GROWKYNOS', { size: 22, weight: 700, spacing: 8, fill: C.brass }),
+      text(72, 120, 'GENTECHNE', { size: 22, weight: 700, spacing: 8, fill: C.brass }),
       text(72, 300, 'BUILD', { size: 118, weight: 800, spacing: -5 }),
       text(72, 410, 'DIGITAL', { size: 118, weight: 800, spacing: -5 }),
       text(72, 520, 'WORLDS.', { size: 118, weight: 800, spacing: -5, fill: C.brass }),
@@ -1318,7 +1318,7 @@ write(
 count++
 
 /* ── robots.txt + sitemap.xml, derived from the same data as the routes ── */
-const SITE = 'https://growkynos.com'
+const SITE = 'https://gentechne.com'
 
 write('robots.txt', `User-agent: *\nAllow: /\n\nSitemap: ${SITE}/sitemap.xml\n`)
 count++

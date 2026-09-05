@@ -32,7 +32,7 @@ for (const [w, h] of SIZES) {
   await page.setViewport({ width: w, height: h, isMobile: w < 768, hasTouch: w < 768 })
   await page.emulateMediaFeatures([{ name: 'prefers-reduced-motion', value: 'no-preference' }])
   await page.goto(BASE, { waitUntil: 'networkidle2', timeout: 60000 })
-  await page.evaluate(() => sessionStorage.setItem('gk:booted', '1'))
+  await page.evaluate(() => sessionStorage.setItem('gt:booted', '1'))
   await page.reload({ waitUntil: 'networkidle2', timeout: 60000 })
   await sleep(2600)
 

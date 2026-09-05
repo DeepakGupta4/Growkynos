@@ -24,9 +24,9 @@ export default function WorkPage() {
   const { enterProject } = useProjectEntry()
 
   useSEO({
-    title: 'Work — GROWKYNOS',
+    title: 'Work — GENTECHNE',
     description:
-      'Selected projects from GROWKYNOS: apps, websites, Shopify storefronts, WordPress builds, SaaS platforms, design, photo, video and AI automation.',
+      'Selected projects from GENTECHNE: apps, websites, Shopify storefronts, WordPress builds, SaaS platforms, design, photo, video and AI automation.',
     path: '/work',
   })
 
