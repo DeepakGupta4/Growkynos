@@ -26,7 +26,183 @@
 
 const P = '/projects'
 
+/**
+ * GENTECHNE's own products.
+ *
+ * PLACEHOLDER COPY — the names are real, the descriptions are written from the
+ * product name alone and need replacing with what each one actually does.
+ *
+ * Deliberately NO `results` block on any of these. Invented outcome metrics
+ * ("+42% bookings", "99.97% uptime") are the fastest way to lose a client who
+ * checks, so a project carries numbers only once real ones exist. The detail
+ * page renders fine without them.
+ */
+const ownProjects = [
+  {
+    id: 'vetician',
+    title: 'Vetician',
+    category: 'App Development',
+    serviceId: 'app',
+    showcaseType: 'phone',
+    excerpt: 'Veterinary care platform connecting pet owners with clinics.',
+    description:
+      'PLACEHOLDER — replace with the real brief. Vetician is a veterinary services platform covering appointment booking, clinic discovery and pet health records across mobile and web.',
+    thumbnail: `${P}/own/vetician/01.svg`,
+    images: [1, 2, 3, 4].map((n) => `${P}/own/vetician/0${n}.svg`),
+    video: null,
+    url: null,
+    technologies: ['React Native', 'Node.js', 'MongoDB', 'Express'],
+    year: 2025,
+    client: 'Gentechne',
+    featured: true,
+    scope: ['Mobile app', 'Booking system', 'Backend & API', 'Admin panel'],
+    results: [],
+  },
+  {
+    id: 'aivet',
+    title: 'AiVet',
+    category: 'AI & Automation',
+    serviceId: 'ai',
+    showcaseType: 'flow',
+    excerpt: 'AI assistant for veterinary triage and guidance.',
+    description:
+      'PLACEHOLDER — replace with the real brief. AiVet applies retrieval and LLM reasoning to veterinary questions, routing anything clinical to a qualified professional.',
+    thumbnail: `${P}/own/aivet/01.svg`,
+    images: [1, 2, 3, 4].map((n) => `${P}/own/aivet/0${n}.svg`),
+    video: null,
+    url: null,
+    technologies: ['Python', 'LLM APIs', 'Vector search', 'FastAPI'],
+    year: 2025,
+    client: 'Gentechne',
+    featured: true,
+    scope: ['AI pipeline', 'Retrieval layer', 'Escalation workflow'],
+    results: [],
+  },
+  {
+    id: 'tezbuy',
+    title: 'TezBuy',
+    category: 'Web Development',
+    serviceId: 'shopify',
+    showcaseType: 'store',
+    excerpt: 'E-commerce platform with catalogue, cart and checkout.',
+    description:
+      'PLACEHOLDER — replace with the real brief. TezBuy is an online storefront covering product catalogue, cart, checkout and order management.',
+    thumbnail: `${P}/own/tezbuy/01.svg`,
+    images: [1, 2, 3, 4].map((n) => `${P}/own/tezbuy/0${n}.svg`),
+    video: null,
+    url: null,
+    technologies: ['React', 'Node.js', 'MongoDB', 'Payments'],
+    year: 2024,
+    client: 'Gentechne',
+    featured: true,
+    scope: ['Storefront', 'Cart & checkout', 'Payments', 'Order management'],
+    results: [],
+  },
+  {
+    id: 'smart-library',
+    title: 'Smart Library',
+    category: 'SaaS / Product',
+    serviceId: 'saas',
+    showcaseType: 'dashboard',
+    excerpt: 'Library management system for issuing, returns and catalogue.',
+    description:
+      'PLACEHOLDER — replace with the real brief. Smart Library handles cataloguing, issue and return tracking, member records and reporting.',
+    thumbnail: `${P}/own/smart-library/01.svg`,
+    images: [1, 2, 3, 4].map((n) => `${P}/own/smart-library/0${n}.svg`),
+    video: null,
+    url: null,
+    technologies: ['React', 'Node.js', 'PostgreSQL'],
+    year: 2024,
+    client: 'Gentechne',
+    featured: true,
+    scope: ['Catalogue system', 'Issue & return flow', 'Reporting'],
+    results: [],
+  },
+  {
+    id: 'college-dispensary',
+    title: 'College Dispensary',
+    category: 'SaaS / Product',
+    serviceId: 'saas',
+    showcaseType: 'dashboard',
+    excerpt: 'Campus health record and medicine inventory system.',
+    description:
+      'PLACEHOLDER — replace with the real brief. A dispensary system for campus health centres covering patient visits, prescriptions and medicine stock.',
+    thumbnail: `${P}/own/college-dispensary/01.svg`,
+    images: [1, 2, 3].map((n) => `${P}/own/college-dispensary/0${n}.svg`),
+    video: null,
+    url: null,
+    technologies: ['React', 'Node.js', 'MongoDB'],
+    year: 2024,
+    client: 'Gentechne',
+    featured: false,
+    scope: ['Patient records', 'Inventory', 'Reporting'],
+    results: [],
+  },
+  {
+    id: 'agentic-astro',
+    title: 'Agentic Astro',
+    category: 'AI & Automation',
+    serviceId: 'ai',
+    showcaseType: 'flow',
+    excerpt: 'Agent-driven workflow product.',
+    description:
+      'PLACEHOLDER — replace with the real brief, including what the agent actually does end to end.',
+    thumbnail: `${P}/own/agentic-astro/01.svg`,
+    images: [1, 2, 3].map((n) => `${P}/own/agentic-astro/0${n}.svg`),
+    video: null,
+    url: null,
+    technologies: ['LLM APIs', 'Agent workflows', 'Python'],
+    year: 2025,
+    client: 'Gentechne',
+    featured: false,
+    scope: ['Agent workflow', 'Integrations'],
+    results: [],
+  },
+  {
+    id: 'help-desk',
+    title: 'Help Desk',
+    category: 'SaaS / Product',
+    serviceId: 'saas',
+    showcaseType: 'dashboard',
+    excerpt: 'Support ticketing with routing and status tracking.',
+    description:
+      'PLACEHOLDER — replace with the real brief. A ticketing system covering intake, assignment, status tracking and resolution.',
+    thumbnail: `${P}/own/help-desk/01.svg`,
+    images: [1, 2, 3].map((n) => `${P}/own/help-desk/0${n}.svg`),
+    video: null,
+    url: null,
+    technologies: ['React', 'Node.js', 'PostgreSQL'],
+    year: 2024,
+    client: 'Gentechne',
+    featured: false,
+    scope: ['Ticket intake', 'Routing', 'Status tracking'],
+    results: [],
+  },
+  {
+    id: 'gym-management',
+    title: 'Gym Management',
+    category: 'App Development',
+    serviceId: 'app',
+    showcaseType: 'phone',
+    excerpt: 'Membership, scheduling and billing for fitness studios.',
+    description:
+      'PLACEHOLDER — replace with the real brief. A gym management product covering memberships, class scheduling, attendance and billing.',
+    thumbnail: `${P}/own/gym-management/01.svg`,
+    images: [1, 2, 3, 4].map((n) => `${P}/own/gym-management/0${n}.svg`),
+    video: null,
+    url: null,
+    technologies: ['React Native', 'Node.js', 'MongoDB'],
+    year: 2024,
+    client: 'Gentechne',
+    featured: true,
+    scope: ['Membership system', 'Scheduling', 'Billing'],
+    results: [],
+  },
+]
+
 export const projects = [
+  ...ownProjects,
+
   /* ─────────────── APP ─────────────── */
   {
     id: 'meridian-health',

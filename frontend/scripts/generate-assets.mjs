@@ -1225,6 +1225,18 @@ const write = (rel, content) => {
 }
 
 const jobs = [
+  /* ── GENTECHNE's own products ──────────────────────────────
+     Placeholder artwork for real projects. Replace any file with a real
+     screenshot of the same name and it is picked up with no code change. */
+  { dir: 'projects/own/vetician', n: 4, kind: 'phone', title: 'Vetician', accent: C.sage, screens: ['Home', 'Vets', 'Booking', 'Records'] },
+  { dir: 'projects/own/aivet', n: 4, kind: 'flow', title: 'AiVet', accent: C.halo },
+  { dir: 'projects/own/tezbuy', n: 4, kind: 'store', title: 'TezBuy', accent: C.brass },
+  { dir: 'projects/own/smart-library', n: 4, kind: 'dash', title: 'Smart Library', accent: C.lilac },
+  { dir: 'projects/own/college-dispensary', n: 3, kind: 'dash', title: 'Dispensary', accent: C.sage },
+  { dir: 'projects/own/agentic-astro', n: 3, kind: 'flow', title: 'Agentic Astro', accent: C.lilac },
+  { dir: 'projects/own/help-desk', n: 3, kind: 'dash', title: 'Help Desk', accent: C.halo },
+  { dir: 'projects/own/gym-management', n: 4, kind: 'phone', title: 'Gym', accent: C.brass, screens: ['Today', 'Plan', 'Members', 'Billing'] },
+
   // App
   { dir: 'projects/app/meridian-health', n: 5, kind: 'phone', title: 'Meridian', accent: C.brass, screens: ['Today', 'Vitals', 'Chart', 'Rounds', 'Sync'] },
   { dir: 'projects/app/lattice-finance', n: 4, kind: 'phone', title: 'Lattice', accent: C.sage, screens: ['This week', 'Spending', 'Trends', 'Goals'] },

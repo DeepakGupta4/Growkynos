@@ -92,7 +92,7 @@ export function Hero() {
         the right-hand half.
       */}
       <div
-        className="shell relative z-20 grid h-full grid-cols-1 items-center gap-10 pb-20 xl:grid-cols-[minmax(0,1fr)_minmax(0,0.85fr)] xl:gap-14"
+        className="shell relative z-20 grid h-full grid-cols-1 items-center gap-10 pb-20 xl:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] xl:gap-6"
         style={{ paddingTop: 'calc(var(--nav-h) + 1.5rem)' }}
       >
         <div data-hero-type className="preserve-3d">

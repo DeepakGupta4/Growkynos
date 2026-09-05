@@ -210,8 +210,7 @@ export function Nav() {
                   boxShadow: reducedMotion ? 'none' : '0 0 10px rgba(198,168,124,0.8)',
                 }}
               />
-              <span className="font-mono text-[9px] uppercase tracking-[0.14em] text-mist">
-                {reducedMotion ? 'STATIC' : 'MOTION'}
+              <span className={cn('font-mono text-[9px] uppercase tracking-[0.14em]', reducedMotion ? 'text-brass' : 'text-mist')}>{reducedMotion ? 'ENABLE MOTION' : 'MOTION ON'}
               </span>
             </button>
 
