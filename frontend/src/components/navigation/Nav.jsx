@@ -230,7 +230,7 @@ export function Nav() {
                   className="w-[2px] rounded-full bg-mist transition-all duration-500"
                   style={{
                     height: soundOn ? `${5 + ((i * 7) % 11)}px` : '3px',
-                    backgroundColor: soundOn ? '#C6A87C' : '#6B6B78',
+                    backgroundColor: soundOn ? '#C6A87C' : '#8E8E9D',
                   }}
                 />
               ))}

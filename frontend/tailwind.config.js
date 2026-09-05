@@ -1,4 +1,4 @@
-/** @type {import('tailwindcss').Config} */
+﻿/** @type {import('tailwindcss').Config} */
 export default {
   content: ['./index.html', './src/**/*.{js,jsx}'],
   theme: {
@@ -10,7 +10,9 @@ export default {
         ash: '#17171C',
         smoke: '#232329',
         steel: '#35353E',
-        mist: '#6B6B78',
+        // Was #6B6B78, which measured 3.1-3.9:1 on the page ground — below WCAG AA
+        // (4.5) for the small mono labels it is used for almost everywhere.
+        mist: '#8E8E9D',
         silver: '#9C9CA8',
         bone: '#E6E6EA',
         chalk: '#F5F5F7',

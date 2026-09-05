@@ -14,13 +14,19 @@ import { useExperience } from '../../context/ExperienceContext'
  * Disabled entirely on touch and under reduced motion — the native cursor is
  * never removed unless a real replacement is running.
  */
+/*
+ * The resting dot was 8px of pure white in difference blend — bright enough to
+ * read as another floating object on a dark page rather than a pointer. It is
+ * now smaller and dimmer at rest, and only grows where there is something to
+ * act on. A cursor should support the interaction, not join the composition.
+ */
 const MODES = {
-  default: { size: 8, ring: 0, mix: 'difference' },
-  link: { size: 8, ring: 34, mix: 'difference' },
-  view: { size: 74, ring: 0, mix: 'normal' },
-  drag: { size: 56, ring: 0, mix: 'normal' },
-  text: { size: 3, ring: 0, mix: 'difference' },
-  hidden: { size: 0, ring: 0, mix: 'difference' },
+  default: { size: 5, ring: 0, mix: 'difference', alpha: 0.62 },
+  link: { size: 6, ring: 30, mix: 'difference', alpha: 0.8 },
+  view: { size: 68, ring: 0, mix: 'normal', alpha: 1 },
+  drag: { size: 52, ring: 0, mix: 'normal', alpha: 1 },
+  text: { size: 3, ring: 0, mix: 'difference', alpha: 0.7 },
+  hidden: { size: 0, ring: 0, mix: 'difference', alpha: 0 },
 }
 
 export function CustomCursor() {
@@ -125,6 +131,7 @@ export function CustomCursor() {
     gsap.to(dotRef.current, {
       width: cfg.size,
       height: cfg.size,
+      opacity: cfg.alpha,
       backgroundColor: cfg.mix === 'difference' ? '#ffffff' : 'rgba(198,168,124,0.94)',
       mixBlendMode: cfg.mix,
       duration: 0.5,

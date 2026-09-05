@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from 'react'
+﻿import { useCallback, useMemo, useRef, useState } from 'react'
 import { useIsomorphicLayoutEffect } from '../../hooks/useIsomorphicLayoutEffect'
 import { gsap, ScrollTrigger, EASE, SCRUB } from '../../lib/gsap'
 import { technologies, techGroups, getTech } from '../../data/technologies'
@@ -198,7 +198,6 @@ export function TechConstellation() {
         z: active ? (isActive ? base + 340 : isNeighbour ? base + 90 : base - 190) : base,
         scale: active ? (isActive ? 1.16 : isNeighbour ? 1.03 : 0.9) : 1,
         opacity: active ? (isActive ? 1 : isNeighbour ? 0.92 : 0.26) : 1,
-        filter: active && !isActive && !isNeighbour ? 'blur(2.5px)' : 'blur(0px)',
         duration: 0.85,
         ease: EASE.settle,
         overwrite: 'auto',
@@ -358,7 +357,7 @@ export function TechConstellation() {
                       'whitespace-nowrap font-mono uppercase tracking-[0.12em] transition-colors duration-500',
                       isMobile ? 'text-[9px]' : 'text-[10.5px]',
                     )}
-                    style={{ color: isActive ? '#E6E6EA' : isNeighbour ? '#9C9CA8' : '#6B6B78' }}
+                    style={{ color: isActive ? '#E6E6EA' : isNeighbour ? '#9C9CA8' : '#8E8E9D' }}
                   >
                     {t.name}
                   </span>

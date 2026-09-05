@@ -1,4 +1,4 @@
-import { forwardRef } from 'react'
+﻿import { forwardRef } from 'react'
 import { cn } from '../../lib/utils'
 
 /**
@@ -46,7 +46,7 @@ export const ProjectCard = forwardRef(function ProjectCard(
           className="pointer-events-none absolute inset-0 opacity-70 transition-opacity duration-700 group-hover:opacity-25"
           style={{ background: 'linear-gradient(180deg, rgba(5,5,7,0.25) 0%, rgba(5,5,7,0.85) 100%)' }}
         />
-        <span className="absolute left-2.5 top-2.5 font-mono text-[8px] tabular-nums text-brass">
+        <span className="absolute left-2.5 top-2.5 font-mono text-[9px] tabular-nums text-brass">
           {String(index + 1).padStart(2, '0')}
         </span>
         {project.featured && (
@@ -64,10 +64,10 @@ export const ProjectCard = forwardRef(function ProjectCard(
           {project.title}
         </span>
         <div className="flex items-center justify-between gap-2">
-          <span className="truncate font-mono text-[7.5px] uppercase tracking-[0.13em] text-mist">
+          <span className="truncate font-mono text-[9px] uppercase tracking-[0.13em] text-mist">
             {project.category}
           </span>
-          <span className="shrink-0 font-mono text-[7.5px] tabular-nums text-mist">{project.year}</span>
+          <span className="shrink-0 font-mono text-[9px] tabular-nums text-mist">{project.year}</span>
         </div>
       </div>
 

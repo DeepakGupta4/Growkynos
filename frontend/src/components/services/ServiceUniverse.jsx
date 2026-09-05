@@ -196,7 +196,6 @@ export function ServiceUniverse() {
         z: hovered ? (isTarget ? d.z + 340 : d.z - 130) : d.z,
         scale: hovered ? (isTarget ? d.scale * 1.12 : d.scale * 0.94) : d.scale,
         opacity: hovered ? (isTarget ? 1 : 0.34) : 1,
-        filter: hovered && !isTarget ? 'blur(2.5px)' : 'blur(0px)',
         duration: 0.9,
         ease: EASE.settle,
         overwrite: 'auto',
@@ -388,7 +387,7 @@ function ServicePlate({ service, hovered, dimmed, onEnter, onLeave, onSelect, co
 
         <p
           className="mt-2 font-mono text-[9px] uppercase tracking-[0.14em] transition-colors duration-500"
-          style={{ color: hovered ? service.accent : '#6B6B78' }}
+          style={{ color: hovered ? service.accent : '#8E8E9D' }}
         >
           {service.verb}
         </p>

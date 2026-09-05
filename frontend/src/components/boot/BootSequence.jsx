@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+﻿import { useCallback, useEffect, useRef, useState } from 'react'
 import { gsap, EASE } from '../../lib/gsap'
 import { brand } from '../../data/brand'
 import { useExperience } from '../../context/ExperienceContext'
@@ -234,7 +234,7 @@ export function BootSequence() {
               >
                 <span
                   className="font-mono text-label tabular-nums transition-colors duration-500"
-                  style={{ color: isActive || isDone ? '#C6A87C' : '#6B6B78' }}
+                  style={{ color: isActive || isDone ? '#C6A87C' : '#8E8E9D' }}
                 >
                   {m.id}
                 </span>

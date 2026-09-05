@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react'
+﻿import { useCallback, useRef } from 'react'
 import { gsap, EASE } from '../../lib/gsap'
 import { ShowcaseFrame } from './ShowcaseFrame'
 import { PanelFrame } from './ui/Devices'
@@ -275,7 +275,7 @@ export function ShopifyShowcase() {
                     <span
                       key={n}
                       className="font-mono text-[8px] uppercase tracking-[0.14em] md:text-[9px]"
-                      style={{ color: i === 1 ? service.accent : '#6B6B78' }}
+                      style={{ color: i === 1 ? service.accent : '#8E8E9D' }}
                     >
                       {n}
                     </span>

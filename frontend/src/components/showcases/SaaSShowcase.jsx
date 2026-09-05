@@ -427,7 +427,7 @@ export function SaaSShowcase() {
                       data-saas-sparkline
                       d="M0 72 L30 70 L60 68 L90 66 L120 68 L150 60 L180 62 L210 54 L240 58 L270 50 L300 52"
                       fill="none"
-                      stroke="#6B6B78"
+                      stroke="#8E8E9D"
                       strokeWidth="1.4"
                       strokeDasharray="300"
                       vectorEffect="non-scaling-stroke"

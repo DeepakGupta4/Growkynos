@@ -282,7 +282,7 @@ export function WebShowcase() {
           <span
             key={n}
             className="font-mono text-[8.5px] uppercase tracking-[0.14em] md:text-[9px]"
-            style={{ color: i === 0 ? service.accent : '#6B6B78' }}
+            style={{ color: i === 0 ? service.accent : '#8E8E9D' }}
           >
             {n}
           </span>

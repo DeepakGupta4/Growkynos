@@ -145,7 +145,13 @@ export function ShowcaseFrame({
             background: `radial-gradient(70vmax 55vmax at 50% 32%, ${service.accent}14 0%, rgba(5,5,7,0) 68%)`,
           }}
         />
-        <div aria-hidden="true" className="pointer-events-none absolute inset-0 grid-field-fine opacity-40 mask-fade-edges" />
+        {/*
+          The fine grid came out. Each world stage was stacking three texture
+          layers — backdrop artwork, accent wash, and this grid — on top of the
+          two global ones (atmosphere, grain). One dominant motif per section
+          reads as art direction; five reads as noise, and the subject has to
+          fight all of them.
+        */}
 
         {/* Stage */}
         <div className="relative flex flex-1 items-center justify-center overflow-hidden perspective-far">

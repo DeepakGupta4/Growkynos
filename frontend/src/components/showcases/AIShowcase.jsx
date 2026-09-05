@@ -327,7 +327,7 @@ export function AIShowcase() {
                     y={n.y + 70}
                     fontFamily="JetBrains Mono, monospace"
                     fontSize="10"
-                    fill="#6B6B78"
+                    fill="#8E8E9D"
                   >
                     {n.sub}
                   </text>

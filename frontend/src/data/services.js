@@ -35,7 +35,7 @@ const RAW_SERVICES = [
   },
   {
     id: 'shopify',
-    index: '03',
+    index: '05',
     title: 'Shopify Development',
     showcase: 'store',
     sectionId: 'world-shopify',
@@ -48,7 +48,7 @@ const RAW_SERVICES = [
   },
   {
     id: 'wordpress',
-    index: '04',
+    index: '06',
     title: 'WordPress Development',
     showcase: 'cms',
     sectionId: 'world-wordpress',
@@ -62,7 +62,7 @@ const RAW_SERVICES = [
   {
     id: 'saas',
     primary: true,
-    index: '05',
+    index: '03',
     title: 'SaaS / Product Development',
     showcase: 'dashboard',
     sectionId: 'world-saas',
@@ -75,7 +75,7 @@ const RAW_SERVICES = [
   },
   {
     id: 'design',
-    index: '06',
+    index: '07',
     title: 'UI/UX Design',
     showcase: 'poster',
     sectionId: 'world-design',
@@ -88,7 +88,7 @@ const RAW_SERVICES = [
   },
   {
     id: 'photo',
-    index: '07',
+    index: '08',
     title: 'Photo Editing',
     showcase: 'canvas',
     sectionId: 'world-photo',
@@ -101,7 +101,7 @@ const RAW_SERVICES = [
   },
   {
     id: 'video',
-    index: '08',
+    index: '09',
     title: 'Video Editing',
     showcase: 'timeline',
     sectionId: 'world-video',
@@ -114,7 +114,7 @@ const RAW_SERVICES = [
   },
   {
     id: 'graphics',
-    index: '09',
+    index: '10',
     title: 'Banner / Poster Design',
     showcase: 'poster',
     sectionId: 'world-design',
@@ -128,7 +128,7 @@ const RAW_SERVICES = [
   {
     id: 'ai',
     primary: true,
-    index: '10',
+    index: '04',
     title: 'AI & Automation',
     showcase: 'flow',
     sectionId: 'world-ai',

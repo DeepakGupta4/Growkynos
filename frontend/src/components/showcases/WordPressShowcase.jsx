@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react'
+﻿import { useCallback, useRef } from 'react'
 import { gsap, EASE } from '../../lib/gsap'
 import { ShowcaseFrame } from './ShowcaseFrame'
 import { PanelFrame } from './ui/Devices'
@@ -258,7 +258,7 @@ export function WordPressShowcase() {
                     className="h-2 w-2 rounded-sm"
                     style={{ backgroundColor: i === 2 ? service.accent : '#35353E' }}
                   />
-                  <span className="text-[10px]" style={{ color: i === 2 ? '#E6E6EA' : '#6B6B78' }}>
+                  <span className="text-[10px]" style={{ color: i === 2 ? '#E6E6EA' : '#8E8E9D' }}>
                     {n}
                   </span>
                 </div>

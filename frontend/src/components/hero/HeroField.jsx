@@ -46,8 +46,13 @@ export function HeroField({ scrollProgress }) {
       }
     })
 
-    // A few larger "fragments" — abstract geometry rather than dust.
-    const fragments = new Array(quality.label === 'low' ? 4 : 9).fill(0).map(() => ({
+    /*
+     * Was 9. The floating squares, circles and triangles were the loudest of
+     * the hero's decorative layers and competed with the statement for
+     * attention — three is enough to give the field scale without becoming a
+     * second thing to look at.
+     */
+    const fragments = new Array(quality.label === 'low' ? 2 : 3).fill(0).map(() => ({
       x: rand(),
       y: rand(),
       z: 0.4 + rand() * 0.6,

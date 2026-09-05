@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+﻿import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { gsap, ScrollTrigger, EASE, SCRUB } from '../../lib/gsap'
 import { capabilities, ORBITS, getCapability } from '../../data/capabilities'
 import { useExperience } from '../../context/ExperienceContext'
@@ -174,7 +174,6 @@ export function MoreServices() {
         z: active ? (isActive ? c.z + 420 : c.z - 160) : c.z,
         scale: active ? (isActive ? c.baseScale * 1.24 : c.baseScale * 0.92) : c.baseScale,
         opacity: active ? (isActive ? 1 : 0.28) : 1,
-        filter: active && !isActive ? 'blur(2.5px)' : 'blur(0px)',
         duration: 0.85,
         ease: EASE.settle,
         overwrite: 'auto',
@@ -318,13 +317,12 @@ export function MoreServices() {
                     boxShadow: isActive
                       ? `0 0 48px -10px ${SERVICE.accent}cc, 0 24px 50px -26px rgba(0,0,0,0.95)`
                       : '0 18px 40px -24px rgba(0,0,0,0.9)',
-                    backdropFilter: 'blur(8px)',
                   }}
                 >
                   <span
                     className="h-1.5 w-1.5 shrink-0 rounded-full transition-all duration-500"
                     style={{
-                      backgroundColor: isActive ? SERVICE.accent : '#6B6B78',
+                      backgroundColor: isActive ? SERVICE.accent : '#8E8E9D',
                       boxShadow: isActive ? `0 0 12px ${SERVICE.accent}` : 'none',
                     }}
                   />
