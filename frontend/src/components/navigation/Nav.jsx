@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+﻿import { useCallback, useEffect, useRef, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { gsap, ScrollTrigger, EASE } from '../../lib/gsap'
 import { brand, chapters } from '../../data/brand'
@@ -14,7 +14,7 @@ import { cn } from '../../lib/utils'
 export function Nav() {
   const { go } = useTransition()
   const { pathname } = useLocation()
-  const { booted, isMobile, reducedMotion } = useExperience()
+  const { booted, isMobile, reducedMotion, toggleMotion } = useExperience()
   const { enabled: soundOn, toggle: toggleSound } = useSound()
   const navRef = useRef(null)
   const [condensed, setCondensed] = useState(false)
@@ -188,6 +188,32 @@ export function Nav() {
                 </span>
               </div>
             )}
+
+            {/*
+              Motion toggle. Surfaced because the OS-level "reduce animations"
+              setting is common and otherwise silently disables the entire
+              experience with no way for the visitor to opt back in.
+            */}
+            <button
+              type="button"
+              onClick={toggleMotion}
+              data-cursor="link"
+              aria-pressed={!reducedMotion}
+              aria-label={reducedMotion ? 'Turn animation on' : 'Turn animation off'}
+              title={reducedMotion ? 'Animation off — click to enable' : 'Animation on'}
+              className="hidden h-8 items-center gap-1.5 px-1 md:flex"
+            >
+              <span
+                className="block h-2 w-2 rounded-full transition-all duration-500"
+                style={{
+                  backgroundColor: reducedMotion ? '#35353E' : '#C6A87C',
+                  boxShadow: reducedMotion ? 'none' : '0 0 10px rgba(198,168,124,0.8)',
+                }}
+              />
+              <span className="font-mono text-[9px] uppercase tracking-[0.14em] text-mist">
+                {reducedMotion ? 'STATIC' : 'MOTION'}
+              </span>
+            </button>
 
             {/* Sound toggle — architecture is in place, off by default */}
             <button

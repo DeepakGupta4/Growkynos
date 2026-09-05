@@ -1,16 +1,13 @@
-import { useEffect } from 'react'
 import { useMediaQuery } from './useMediaQuery'
 
 /**
- * Single source of truth for motion preference.
- * Also stamps <html data-reduced-motion> so CSS can respond without JS props.
+ * The SYSTEM motion preference, nothing more.
+ *
+ * Deliberately does not stamp `<html data-reduced-motion>`: the value the rest
+ * of the site acts on is the RESOLVED preference (system, unless the visitor
+ * has overridden it), and that lives in ExperienceContext. Two writers on one
+ * attribute meant the CSS flag could disagree with the JS behaviour.
  */
 export function useReducedMotion() {
-  const reduced = useMediaQuery('(prefers-reduced-motion: reduce)')
-
-  useEffect(() => {
-    document.documentElement.dataset.reducedMotion = String(reduced)
-  }, [reduced])
-
-  return reduced
+  return useMediaQuery('(prefers-reduced-motion: reduce)')
 }

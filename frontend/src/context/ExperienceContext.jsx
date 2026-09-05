@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
+﻿import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { deviceTier } from '../lib/utils'
 import { useReducedMotion } from '../hooks/useReducedMotion'
 import { useHasHover, useIsMobile, useIsTablet } from '../hooks/useMediaQuery'
@@ -8,8 +8,50 @@ const ExperienceContext = createContext(null)
 
 const BOOT_KEY = 'gt:booted'
 
+const MOTION_KEY = 'gt:motion'
+
 export function ExperienceProvider({ children }) {
-  const reducedMotion = useReducedMotion()
+  const systemReduced = useReducedMotion()
+
+  /*
+   * MOTION PREFERENCE — 'auto' | 'full' | 'reduced'
+   *
+   * 'auto' follows the OS, which is the correct default. But an OS-level
+   * "reduce animations" setting is common (and often enabled for reasons that
+   * have nothing to do with this site), and it silently turned the whole
+   * experience off with no way back. An explicit override means a visitor who
+   * wants the full thing can have it, and one who needs it calm still gets the
+   * right default.
+   */
+  const [motionPref, setMotionPref] = useState(() => {
+    if (typeof window === 'undefined') return 'auto'
+    try {
+      return localStorage.getItem(MOTION_KEY) ?? 'auto'
+    } catch {
+      return 'auto'
+    }
+  })
+
+  const reducedMotion = motionPref === 'auto' ? systemReduced : motionPref === 'reduced'
+
+  const setMotion = useCallback((pref) => {
+    setMotionPref(pref)
+    try {
+      if (pref === 'auto') localStorage.removeItem(MOTION_KEY)
+      else localStorage.setItem(MOTION_KEY, pref)
+    } catch {
+      /* storage blocked — preference simply lasts this session */
+    }
+  }, [])
+
+  const toggleMotion = useCallback(() => {
+    setMotion(reducedMotion ? 'full' : 'reduced')
+  }, [reducedMotion, setMotion])
+
+  /* Keep the CSS flag in sync with the resolved preference, not just the OS. */
+  useEffect(() => {
+    document.documentElement.dataset.reducedMotion = String(reducedMotion)
+  }, [reducedMotion])
   const hasHover = useHasHover()
   const isMobile = useIsMobile()
   const isTablet = useIsTablet()
@@ -73,6 +115,9 @@ export function ExperienceProvider({ children }) {
       skipBoot,
       wasSkipped: skipRef.current,
       reducedMotion,
+      motionPref,
+      setMotion,
+      toggleMotion,
       hasHover,
       isMobile,
       isTablet,
@@ -80,7 +125,7 @@ export function ExperienceProvider({ children }) {
       tier,
       quality,
     }),
-    [booted, completeBoot, skipBoot, reducedMotion, hasHover, isMobile, isTablet, tier, quality],
+    [booted, completeBoot, skipBoot, reducedMotion, motionPref, setMotion, toggleMotion, hasHover, isMobile, isTablet, tier, quality],
   )
 
   return <ExperienceContext.Provider value={value}>{children}</ExperienceContext.Provider>

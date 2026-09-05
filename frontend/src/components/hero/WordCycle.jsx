@@ -23,6 +23,7 @@ export function WordCycle({ words, onCommit, holdMs = 2600, className, style }) 
   const [display, setDisplay] = useState(words[0]?.word ?? '')
   const [phase, setPhase] = useState('enter')
   const letters = useRef([])
+  const wrapRef = useRef(null)
   const timer = useRef(null)
   const { reducedMotion } = useExperience()
 
@@ -30,12 +31,29 @@ export function WordCycle({ words, onCommit, holdMs = 2600, className, style }) 
     letters.current[i] = el
   }, [])
 
-  /* Reduced motion: no cycling at all. The first word stands. */
+  /*
+   * REDUCED MOTION STILL CYCLES.
+   *
+   * It previously froze on the first word, which removed information rather
+   * than motion — a visitor with animations disabled never learned we do
+   * anything beyond apps. `prefers-reduced-motion` asks for less movement, not
+   * less content, so here the word still advances; it just cross-fades in place
+   * instead of displacing, blurring and rotating in 3D.
+   */
   useEffect(() => {
-    if (!reducedMotion) return
-    setDisplay(words[0]?.word ?? '')
-    onCommit?.(0)
-  }, [reducedMotion, words, onCommit])
+    if (!reducedMotion) return undefined
+    const el = wrapRef.current
+    timer.current = setTimeout(() => {
+      const next = (index + 1) % words.length
+      if (el) {
+        gsap.fromTo(el, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.4, ease: 'none' })
+      }
+      setIndex(next)
+      setDisplay(words[next].word)
+      onCommit?.(next)
+    }, holdMs + 900)
+    return () => clearTimeout(timer.current)
+  }, [reducedMotion, index, words, onCommit, holdMs])
 
   /* ── OUT: the current word breaks apart and is carried off. ── */
   useEffect(() => {
@@ -127,7 +145,7 @@ export function WordCycle({ words, onCommit, holdMs = 2600, className, style }) 
       aria-atomic="true"
     >
       <span className="sr-only">{display}</span>
-      <span aria-hidden="true" className="flex whitespace-nowrap preserve-3d">
+      <span ref={wrapRef} aria-hidden="true" className="flex whitespace-nowrap preserve-3d">
         {Array.from(display).map((ch, i) => (
           <span
             key={`${display}-${i}`}
