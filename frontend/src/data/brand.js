@@ -2,7 +2,9 @@ export const brand = {
   name: 'GENTECHNE',
   wordmark: 'GENTECHNE',
   tagline: 'Design, code & motion under one roof.',
-  statement: ['BUILD', 'DIGITAL', 'WORLDS.'],
+  statement: ['WE BUILD', 'DIGITAL'],
+  lede:
+    'From first idea to final product — we design and build digital experiences that people actually use.',
   descriptor: 'Digital product studio',
   since: 2019,
   email: 'studio@gentechne.com',
@@ -35,16 +37,38 @@ export const brand = {
  * at the narrow end of the two-column layout (1280px, column ~650px).
  */
 export const heroStory = [
-  { word: 'APPS.', serviceId: 'app', browser: 'signalyard', phone: 'meridian-health' },
-  { word: 'WEBSITES.', serviceId: 'web', browser: 'obsidian-architects', phone: 'transit-atlas' },
-  { word: 'STORES.', serviceId: 'shopify', browser: 'ashgrove-supply', phone: 'lattice-finance' },
-  { word: 'NEWSROOMS.', serviceId: 'wordpress', browser: 'chronicle-press', phone: 'transit-atlas' },
-  { word: 'PRODUCTS.', serviceId: 'saas', browser: 'signalyard', phone: 'lattice-finance' },
-  { word: 'SYSTEMS.', serviceId: 'design', browser: 'vertex-identity', phone: 'meridian-health' },
-  { word: 'IMAGERY.', serviceId: 'photo', browser: 'aurelia-campaign', phone: 'lattice-finance' },
-  { word: 'FILMS.', serviceId: 'video', browser: 'halcyon-film', phone: 'transit-atlas' },
-  { word: 'CAMPAIGNS.', serviceId: 'graphics', browser: 'vertex-identity', phone: 'meridian-health' },
-  { word: 'WORKFLOWS.', serviceId: 'ai', browser: 'orbit-automation', phone: 'lattice-finance' },
+  {
+    word: 'APPS.',
+    label: 'APPS',
+    scene: 'app',
+    serviceId: 'app',
+    project: 'meridian-health',
+    line: 'Offline-first mobile products, built once for iOS and Android.',
+  },
+  {
+    word: 'WEBSITES.',
+    label: 'WEBSITES',
+    scene: 'web',
+    serviceId: 'web',
+    project: 'obsidian-architects',
+    line: 'Marketing sites and platforms engineered for speed and motion.',
+  },
+  {
+    word: 'AI SYSTEMS.',
+    label: 'AI SYSTEMS',
+    scene: 'ai',
+    serviceId: 'ai',
+    project: 'orbit-automation',
+    line: 'Retrieval pipelines and agents wired into the tools you already run.',
+  },
+  {
+    word: 'SAAS.',
+    label: 'SAAS',
+    scene: 'saas',
+    serviceId: 'saas',
+    project: 'signalyard',
+    line: 'Multi-tenant products with billing, permissions and live data.',
+  },
 ]
 
 /** The chapter spine — drives nav, the scroll rail and the section readout. */

@@ -2,8 +2,9 @@
 import { useIsomorphicLayoutEffect } from '../../hooks/useIsomorphicLayoutEffect'
 import { gsap } from '../../lib/gsap'
 import { brand, heroStory } from '../../data/brand'
-import { Typewriter } from './Typewriter'
-import { services, getService } from '../../data/services'
+import { WordCycle } from './WordCycle'
+import { HeroSequence } from './HeroSequence'
+import { services } from '../../data/services'
 import { HeroField } from './HeroField'
 import { HeroVisual } from './HeroVisual'
 import { Button } from '../ui/Button'
@@ -12,18 +13,20 @@ import { useTransition } from '../transitions/TransitionProvider'
 import { scrollTo } from '../../hooks/useLenis'
 import { buildHeroIntro, buildHeroScrollHandoff } from '../../animations/heroAnimations'
 
+/** One place to tune the hero's rhythm — the word, the bar and the scene share it. */
+const HOLD_MS = 2600
+
 export function Hero() {
   const rootRef = useRef(null)
   const progress = useRef(0)
   const { reducedMotion, booted } = useExperience()
   const { go } = useTransition()
 
-  /* Which story beat the typewriter is on. Stable identity so Typewriter's
-     effect does not re-fire on every parent render. */
+  /* Which beat the hero is on. WordCycle commits this at the exact frame the
+     new word lands, so the scene on the right never disagrees with the word. */
   const [slide, setSlide] = useState(0)
   const setSlideStable = useCallback((i) => setSlide(i), [])
   const story = heroStory[slide] ?? heroStory[0]
-  const service = getService(story.serviceId)
 
   useIsomorphicLayoutEffect(() => {
     if (!booted) return undefined
@@ -106,19 +109,16 @@ export function Hero() {
           </div>
 
           {/*
-            The first two lines are fixed and animate in per character. The
-            third is typed, and cycles — the size is stepped down at xl because
-            the two-column layout narrows this column, and the longest word
-            ("PLATFORMS.") would otherwise run past it at 1280.
-          */}
-          {/*
-            Below 700px of viewport height the statement steps down further.
-            Reclaiming height from the type is the right trade: the words stay
-            large and dominant either way, whereas dropping the service label to
-            make room removes the only thing naming what is on screen.
+            Two fixed lines that animate in per character, then the cycling
+            word. The size steps down twice: at xl because the two-column layout
+            narrows this column (the longest word, "AI SYSTEMS.", would run past
+            it at 1280), and again below 700px of viewport height so the rest of
+            the block still fits. Taking height from the type is the right
+            trade — the words stay dominant either way, whereas dropping the
+            copy removes the only thing naming what is on screen.
           */}
           <h1
-            className="preserve-3d [&_.hero-size]:xl:text-[clamp(2.75rem,min(8.5vw,14svh),7.5rem)] [@media(max-height:700px)]:[&_.hero-size]:text-[clamp(2rem,min(11vw,13svh),5rem)]"
+            className="preserve-3d [&_.hero-size]:xl:text-[clamp(2.5rem,min(8vw,13svh),7rem)] [@media(max-height:700px)]:[&_.hero-size]:text-[clamp(2rem,min(10.5vw,12.5svh),4.75rem)]"
             aria-label={`${brand.statement[0]} ${brand.statement[1]} ${story.word}`}
           >
             {[brand.statement[0], brand.statement[1]].map((line) => (
@@ -135,7 +135,9 @@ export function Hero() {
                       className="hero-size inline-block font-display text-display-1 font-extrabold text-gradient-bone will-change-transform"
                       style={{ transformOrigin: '50% 100%' }}
                     >
-                      {ch}
+                      {/* Non-breaking space: a plain space inside an
+                          inline-block collapses, which rendered "WEBUILD". */}
+                      {ch === ' ' ? '\u00A0' : ch}
                     </span>
                   ))}
                 </span>
@@ -157,7 +159,13 @@ export function Hero() {
                 keeping it out of the 3D context stops Chrome promoting a layer
                 it then has to repaint on every keystroke. */}
             <span data-hero-line className="relative block pb-[0.06em]">
-              <Typewriter onIndexChange={setSlideStable} />
+              <WordCycle
+                words={heroStory}
+                onCommit={setSlideStable}
+                holdMs={HOLD_MS}
+                className="hero-size flex font-display text-display-1 font-extrabold text-brass"
+                style={{ textShadow: '0 0 60px rgba(198,168,124,0.28)' }}
+              />
             </span>
           </h1>
 
@@ -167,21 +175,11 @@ export function Hero() {
             left the whole left column looking static while a single word
             changed. It is line-clamped instead of dropped.
           */}
-          <p
-            data-hero-note
-            className="mt-4 flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.18em] md:mt-5 md:text-[11px]"
-          >
-            <span data-hero-swap className="text-brass tabular-nums">
-              {service?.index}
-            </span>
-            <span className="h-px w-6 bg-smoke" />
-            <span data-hero-swap className="text-silver">
-              {service?.title}
-            </span>
-            <span data-hero-swap className="hidden text-mist lg:inline">
-              — {service?.verb}
-            </span>
-          </p>
+          {/* Sequence position — the hero's own counter, with a bar that fills
+              across each beat so the loop is legible rather than surprising. */}
+          <div data-hero-note className="mt-5 md:mt-6">
+            <HeroSequence index={slide} holdMs={HOLD_MS} />
+          </div>
 
           {/* Side by side while the statement owns the full width; stacked once
               the visual cluster takes the right-hand column. */}
@@ -194,11 +192,14 @@ export function Hero() {
                 same height everywhere — clamping keeps the story; hiding it
                 would not.
               */}
+              {/* Positioning line first, then the line for the active beat —
+                  so the copy says who we are AND what is on screen. */}
+              <p className="text-[14.5px] leading-relaxed text-silver md:text-base">{brand.lede}</p>
               <p
                 data-hero-swap
-                className="line-clamp-2 text-[14.5px] leading-relaxed text-silver [@media(min-height:780px)]:line-clamp-none md:text-base"
+                className="line-clamp-2 font-mono text-[11px] uppercase tracking-[0.13em] text-mist [@media(min-height:780px)]:line-clamp-none"
               >
-                {service?.summary}
+                {story.line}
               </p>
               {/*
                 The stats are the first thing to go on a short viewport — they
@@ -221,10 +222,11 @@ export function Hero() {
 
             <div data-hero-actions className="flex flex-wrap items-center gap-3 md:gap-4">
               <Button onClick={() => go('/contact', { label: 'BEGIN A PROJECT' })} size="lg">
-                Begin a project
+                Start a project
+                <span aria-hidden="true">&rarr;</span>
               </Button>
               <Button variant="ghost" size="lg" onClick={() => scrollTo('#services', { duration: 1.8 })}>
-                Explore the work
+                View our work
                 <span aria-hidden="true" className="transition-transform duration-500 group-hover:translate-y-0.5">
                   ↓
                 </span>
