@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+﻿import { useEffect, useRef } from 'react'
 import { gsap } from '../../lib/gsap'
 import { seeded } from '../../lib/utils'
 import { useExperience } from '../../context/ExperienceContext'
@@ -43,6 +43,16 @@ export function HeroField({ scrollProgress }) {
         hue: rand() > 0.86 ? 'brass' : 'bone',
         tw: rand() * Math.PI * 2,
         tws: 0.4 + rand() * 1.2,
+        /*
+         * Displacement carried by the distortion field, in pixels, plus the
+         * velocity that carries it back. Kept per-particle rather than derived
+         * each frame so the field has memory: push through it quickly and the
+         * wake stays open for a moment behind the pointer.
+         */
+        dx: 0,
+        dy: 0,
+        dvx: 0,
+        dvy: 0,
       }
     })
 
@@ -64,6 +74,8 @@ export function HeroField({ scrollProgress }) {
     }))
 
     const pointer = { tx: 0, ty: 0, x: 0, y: 0 }
+    /* Pointer in canvas pixels — the distortion field works in real distance. */
+    const cursor = { x: -9999, y: -9999, active: false }
 
     const resize = () => {
       dpr = Math.min(window.devicePixelRatio || 1, quality.dpr[1])
@@ -77,7 +89,22 @@ export function HeroField({ scrollProgress }) {
     const onPointer = (e) => {
       pointer.tx = (e.clientX / window.innerWidth) * 2 - 1
       pointer.ty = (e.clientY / window.innerHeight) * 2 - 1
+
+      const rect = canvas.getBoundingClientRect()
+      cursor.x = e.clientX - rect.left
+      cursor.y = e.clientY - rect.top
+      cursor.active = true
     }
+
+    /*
+     * Field radius and strength. Radius is in canvas pixels and squared once
+     * here so the per-particle test is a comparison rather than a sqrt — that
+     * check runs COUNT times a frame (up to 2600), and it is the only part of
+     * this loop that has to be cheap.
+     */
+    const FIELD_R = quality.label === 'low' ? 130 : 210
+    const FIELD_R2 = FIELD_R * FIELD_R
+    const FIELD_STRENGTH = quality.label === 'low' ? 0.9 : 1.7
 
     let t = 0
     const render = () => {
@@ -103,12 +130,50 @@ export function HeroField({ scrollProgress }) {
 
         if (py < -20 || py > h + 20) continue
 
+        /*
+         * DISTORTION FIELD
+         * ----------------
+         * Repulsion falling off with distance, integrated as velocity and
+         * returned by a spring. Three details do the work:
+         *
+         *  - the force is scaled by DEPTH, so near particles are shoved hard
+         *    and far ones barely stir. A uniform push looks like a flat mask
+         *    sliding over the image; a depth-scaled one looks like volume.
+         *  - it is stored as velocity, not applied directly, so the field has
+         *    momentum and leaves a wake behind a fast pointer.
+         *  - the spring is under-damped, so particles overshoot slightly on the
+         *    way home instead of sliding back like a menu closing.
+         */
+        let glow = 0
+        if (cursor.active) {
+          const ddx = px + p.dx - cursor.x
+          const ddy = py + p.dy - cursor.y
+          const dist2 = ddx * ddx + ddy * ddy
+          if (dist2 < FIELD_R2) {
+            const dist = Math.sqrt(dist2) || 1
+            const falloff = 1 - dist / FIELD_R
+            const force = falloff * falloff * FIELD_STRENGTH * depth
+            p.dvx += (ddx / dist) * force
+            p.dvy += (ddy / dist) * force
+            glow = falloff * falloff
+          }
+        }
+        // Spring home + damping.
+        p.dvx += -p.dx * 0.045
+        p.dvy += -p.dy * 0.045
+        p.dvx *= 0.86
+        p.dvy *= 0.86
+        p.dx += p.dvx
+        p.dy += p.dvy
+
         const twinkle = 0.72 + Math.sin(t * p.tws + p.tw) * 0.28
-        const alpha = p.a * twinkle * (1 - sp * 0.75)
+        // Proximity lifts brightness and size — the field reads as lit, not
+        // merely displaced.
+        const alpha = Math.min(1, p.a * twinkle * (1 - sp * 0.75) * (1 + glow * 2.6))
         if (alpha <= 0.004) continue
 
         ctx.beginPath()
-        ctx.arc(px, py, p.r * (1 + sp * 0.4), 0, Math.PI * 2)
+        ctx.arc(px + p.dx, py + p.dy, p.r * (1 + sp * 0.4) * (1 + glow * 1.5), 0, Math.PI * 2)
         ctx.fillStyle =
           p.hue === 'brass'
             ? `rgba(198,168,124,${alpha.toFixed(3)})`
@@ -155,7 +220,7 @@ export function HeroField({ scrollProgress }) {
 
     resize()
     window.addEventListener('resize', resize)
-    if (hasHover && !reducedMotion) window.addEventListener('pointermove', onPointer, { passive: true })
+    if (hasHover) window.addEventListener('pointermove', onPointer, { passive: true })
 
     if (reducedMotion) {
       render()
