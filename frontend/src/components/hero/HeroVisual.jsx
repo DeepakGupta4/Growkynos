@@ -4,30 +4,25 @@ import { heroStory } from '../../data/brand'
 import { getService } from '../../data/services'
 import { getProject } from '../../data/projects'
 import { HeroScene } from './HeroScenes'
+import { HeroLaptop } from './HeroLaptop'
 import { useExperience } from '../../context/ExperienceContext'
 
 /**
  * HERO VISUAL
  * -----------
- * The product half of the hero: one FIXED FRAME that every scene is fitted
- * into, plus the caption naming what is in it.
+ * The product half of the hero: one laptop, always the same size in the same
+ * place, with whatever the active service is playing on its screen.
  *
- * WHY A FIXED FRAME.
- * The four scenes are hand-built compositions and they are not the same size —
- * the phone scene is tall and narrow, the SaaS dashboard is wide and short. Cut
- * to cut, the visual jumped and the panel's balance changed under it. Rather
- * than hand-tuning four scales (which breaks again the moment a scene is
- * edited), the frame is a fixed 16:10 box and each scene is MEASURED at its
- * natural size and scaled to fit it. Every cut now lands in exactly the same
- * rectangle, whatever is inside.
- *
- * This is also the seam that makes video a one-line swap later: the frame is
- * already a fixed-aspect box, so a <video> can take the place of <HeroScene>
- * without anything else moving.
+ * WHY ONE PIECE OF HARDWARE.
+ * The four scenes are not the same shape — a tall phone, a wide dashboard, a
+ * node graph — so cut to cut the visual jumped and the panel never settled.
+ * Rather than hand-tuning four scales (which breaks the moment a scene is
+ * edited), each scene is MEASURED at its natural size and scaled into the
+ * laptop's fixed 16:10 screen. Every cut lands in the same rectangle.
  *
  * The colour wash that used to live here is gone — it covered only this half
  * and met the star canvas at a hard vertical line, which is why the hero
- * rendered as two different backgrounds. Colour is now HeroBackdrop's job, and
+ * rendered as two different backgrounds. Colour is HeroBackdrop's job now, and
  * it spans the whole section.
  */
 
@@ -37,12 +32,35 @@ import { useExperience } from '../../context/ExperienceContext'
  * ones. MetaLab sits at 5% brightness and 62% colour; this hero was at 12% and
  * 12%. The palette's own accents (#C6A87C, #9FB4C9, #A8C0A0) are all near-grey,
  * which is exactly why the frame read as empty.
+ *
+ * SaaS was #12D49C — a mint green that read closer to a status indicator than a
+ * brand, and sat too near the "success" green used for live pills inside the
+ * scenes. Magenta is the only hue left that is genuinely distinct from the
+ * other three (orange / blue / violet) rather than a neighbour of one of them.
  */
 export const HERO_LOOK = {
   app: { key: '#FF7A4D', glow: '#FFD0B8', deep: '#5A2210' },
   web: { key: '#4F86FF', glow: '#BCD2FF', deep: '#152B60' },
   ai: { key: '#9B72FF', glow: '#DAC6FF', deep: '#2D1663' },
-  saas: { key: '#12D49C', glow: '#A5F2DA', deep: '#0B4636' },
+  saas: { key: '#FF4D8D', glow: '#FFBDD6', deep: '#5C1038' },
+}
+
+/**
+ * Screen recordings, one per service.
+ *
+ * Drop a file at `public/hero/<name>.webm` (or .mp4) and put its path here —
+ * that is the whole change. The laptop screen is already a fixed 16:10 box, so
+ * nothing else moves. Until then each screen plays its built scene, which is
+ * animated in the same way; a fabricated "screen recording" would look worse
+ * than a real interface, so there is no placeholder footage.
+ *
+ * Recommended: 16:10, ~12s loop, no audio, under ~1.5MB each.
+ */
+const SCENE_VIDEO = {
+  app: null,
+  web: null,
+  ai: null,
+  saas: null,
 }
 
 export function HeroVisual({ slideIndex = 0 }) {
@@ -52,6 +70,7 @@ export function HeroVisual({ slideIndex = 0 }) {
   const stageRef = useRef(null)
   const captionRef = useRef(null)
   const [fit, setFit] = useState(1)
+  const [brokenVideo, setBrokenVideo] = useState({})
   const { reducedMotion, booted, quality } = useExperience()
 
   const slide = heroStory[slideIndex] ?? heroStory[0]
@@ -59,8 +78,12 @@ export function HeroVisual({ slideIndex = 0 }) {
   const project = getProject(slide.project)
   const look = HERO_LOOK[slide.scene] ?? HERO_LOOK.app
 
+  /* A missing or unplayable file falls back to the built scene rather than
+     leaving a black screen in the middle of the hero. */
+  const videoSrc = brokenVideo[slide.scene] ? null : SCENE_VIDEO[slide.scene]
+
   /*
-   * Measure the scene at its natural size, then scale it into the frame.
+   * Measure the scene at its natural size, then scale it into the screen.
    * The transform has to be cleared before measuring or each pass would
    * compound the previous scale.
    */
@@ -79,8 +102,8 @@ export function HeroVisual({ slideIndex = 0 }) {
     const fh = frame.clientHeight
     if (!cw || !ch || !fw || !fh) return
 
-    // 0.94 keeps a margin so nothing touches the frame edge.
-    setFit(Math.min(fw / cw, fh / ch) * 0.94)
+    // 0.9 keeps a margin so nothing touches the bezel.
+    setFit(Math.min(fw / cw, fh / ch) * 0.9)
   }, [])
 
   useLayoutEffect(() => {
@@ -130,8 +153,8 @@ export function HeroVisual({ slideIndex = 0 }) {
   }, [slideIndex, booted, reducedMotion])
 
   /*
-   * Pointer parallax, kept small. The panel is a wall now, not a floating
-   * object, and a wall that swings 20px with the cursor reads as loose.
+   * Pointer parallax, kept small. The laptop is a solid object sitting in the
+   * frame — a machine that swings 20px with the cursor reads as loose.
    */
   useEffect(() => {
     const stage = stageRef.current
@@ -142,8 +165,8 @@ export function HeroVisual({ slideIndex = 0 }) {
 
     const onMove = (e) => {
       const k = quality.parallax
-      px(((e.clientX / window.innerWidth) * 2 - 1) * 9 * k)
-      py(((e.clientY / window.innerHeight) * 2 - 1) * 6 * k)
+      px(((e.clientX / window.innerWidth) * 2 - 1) * 8 * k)
+      py(((e.clientY / window.innerHeight) * 2 - 1) * 5 * k)
     }
 
     window.addEventListener('pointermove', onMove, { passive: true })
@@ -158,32 +181,40 @@ export function HeroVisual({ slideIndex = 0 }) {
     >
       {/*
         Hidden below sm: on a phone this half spans the full width and the
-        statement sits on top of it, so the composition landed under the copy
-        and the buttons. The backdrop still carries the frame there.
+        statement sits on top of it, so the laptop landed under the copy and the
+        buttons. The backdrop still carries the frame there.
       */}
       <div className="absolute inset-0 hidden items-center justify-center sm:flex">
-        <div ref={stageRef} data-hv className="w-[88%] max-w-[780px] will-change-transform">
-          {/* The fixed box every scene is fitted into. */}
-          <div ref={frameRef} className="relative w-full" style={{ aspectRatio: '16 / 10' }}>
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div
-                ref={innerRef}
-                className="preserve-3d"
-                style={{ transform: `scale(${fit})`, transformOrigin: 'center center' }}
-              >
-                <HeroScene scene={slide.scene} />
+        <div ref={stageRef} data-hv className="w-[86%] max-w-[720px] will-change-transform">
+          <HeroLaptop tint={look.key} video={videoSrc}>
+            <div ref={frameRef} className="relative h-full w-full">
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div
+                  ref={innerRef}
+                  className="preserve-3d"
+                  style={{ transform: `scale(${fit})`, transformOrigin: 'center center' }}
+                >
+                  <HeroScene scene={slide.scene} />
+                </div>
               </div>
             </div>
-          </div>
+          </HeroLaptop>
+          {/* A file that 404s or will not decode reverts to the built scene. */}
+          {videoSrc ? (
+            <video
+              src={videoSrc}
+              className="hidden"
+              onError={() => setBrokenVideo((b) => ({ ...b, [slide.scene]: true }))}
+            />
+          ) : null}
         </div>
       </div>
 
       {/*
-        No scrim here any more. It used to start at this panel's left edge —
-        fully opaque black at x=0 of a panel that itself began mid-screen — so
-        it cut a hard vertical line down the hero exactly where the panel
-        started. The scrim belongs to the hero, where it can span the full
-        width and fade with nothing to butt against; see Hero.jsx.
+        No scrim here. It used to start at this panel's left edge — fully opaque
+        black at x=0 of a panel that itself began mid-screen — so it cut a hard
+        vertical line down the hero. The scrim belongs to the hero, where it can
+        span the full width; see Hero.jsx.
       */}
 
       {/* Names what is on screen, anchored to the panel instead of floating. */}

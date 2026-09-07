@@ -249,11 +249,25 @@ export function Hero() {
             </div>
 
             <div data-hero-actions className="flex flex-wrap items-center gap-3 md:gap-4">
-              <Button onClick={() => go('/contact', { label: 'BEGIN A PROJECT' })} size="lg">
+              {/* Both CTAs take the active service colour, so the buttons
+                  belong to the same frame as the field and the headline word
+                  rather than staying gold on a magenta ground. */}
+              <Button
+                onClick={() => go('/contact', { label: 'BEGIN A PROJECT' })}
+                size="lg"
+                tint={look.key}
+                tintGlow={look.glow}
+              >
                 Start a project
                 <span aria-hidden="true">&rarr;</span>
               </Button>
-              <Button variant="ghost" size="lg" onClick={() => scrollTo('#services', { duration: 1.8 })}>
+              <Button
+                variant="ghost"
+                size="lg"
+                tint={look.key}
+                tintGlow={look.glow}
+                onClick={() => scrollTo('#services', { duration: 1.8 })}
+              >
                 View our work
                 <span aria-hidden="true" className="transition-transform duration-500 group-hover:translate-y-0.5">
                   ↓
