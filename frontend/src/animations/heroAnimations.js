@@ -13,10 +13,8 @@ export function buildHeroIntro(scope, { reducedMotion = false, delay = 0 } = {})
     gsap.set(
       [
         '[data-hero-char]',
-        '[data-hero-eyebrow]',
         '[data-hero-meta]',
         '[data-hero-actions]',
-        '[data-hero-scroll]',
         '[data-hv]',
       ],
       { clearProps: 'all', autoAlpha: 1, y: 0, opacity: 1 },
@@ -25,12 +23,6 @@ export function buildHeroIntro(scope, { reducedMotion = false, delay = 0 } = {})
   }
 
   const tl = gsap.timeline({ delay, defaults: { ease: EASE.settle } })
-
-  tl.from('[data-hero-eyebrow] > span', {
-    yPercent: 120,
-    duration: 0.9,
-    stagger: 0.08,
-  })
 
   tl.from(
     '[data-hero-rule]',
@@ -71,7 +63,6 @@ export function buildHeroIntro(scope, { reducedMotion = false, delay = 0 } = {})
   // NOTE: the visual cluster is NOT animated here. It owns its own entrance in
   // HeroVisual. Two gsap.from() tweens on one element race to capture the end
   // state, which is what previously let a chip bake in a stale position.
-  tl.from('[data-hero-scroll]', { autoAlpha: 0, y: 18, duration: 0.8 }, '-=0.6')
 
   return tl
 }
@@ -99,8 +90,7 @@ export function buildHeroScrollHandoff(scope, { reducedMotion = false, onProgres
   })
 
   tl.to('[data-hero-type]', { yPercent: -18, z: -640, rotateX: 26, opacity: 0, ease: 'power2.in' }, 0)
-    .to('[data-hero-eyebrow], [data-hero-meta], [data-hero-actions]', { autoAlpha: 0, y: -40 }, 0)
-    .to('[data-hero-scroll]', { autoAlpha: 0, duration: 0.2 }, 0)
+    .to('[data-hero-meta], [data-hero-actions]', { autoAlpha: 0, y: -40 }, 0)
     .to('[data-hv]', { z: 420, opacity: 0, stagger: 0.04, ease: 'power2.in' }, 0)
     .fromTo(
       '[data-hero-interface]',

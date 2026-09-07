@@ -5,8 +5,8 @@ import { brand, heroStory } from '../../data/brand'
 import { WordCycle } from './WordCycle'
 import { HeroSequence } from './HeroSequence'
 import { services } from '../../data/services'
-import { HeroField } from './HeroField'
-import { HeroVisual } from './HeroVisual'
+import { HeroBackdrop } from './HeroBackdrop'
+import { HeroVisual, HERO_LOOK } from './HeroVisual'
 import { Button } from '../ui/Button'
 import { useExperience } from '../../context/ExperienceContext'
 import { useTransition } from '../transitions/TransitionProvider'
@@ -27,6 +27,7 @@ export function Hero() {
   const [slide, setSlide] = useState(0)
   const setSlideStable = useCallback((i) => setSlide(i), [])
   const story = heroStory[slide] ?? heroStory[0]
+  const look = HERO_LOOK[story.scene] ?? HERO_LOOK.app
 
   useIsomorphicLayoutEffect(() => {
     if (!booted) return undefined
@@ -74,40 +75,59 @@ export function Hero() {
       aria-label="Introduction"
       className="section relative h-[100svh] w-full overflow-hidden perspective-far"
     >
-      {/* Environment */}
-      <HeroField scrollProgress={progress} />
-      <div className="pointer-events-none absolute inset-0 grid-field opacity-[0.55] mask-fade-edges" />
+      {/*
+        Environment. ONE field across the whole hero — the star canvas covered
+        the full section while the colour wash covered only the right half, and
+        the two met at a hard vertical line down the middle of the frame.
+      */}
+      <HeroBackdrop look={look} />
+      <div className="pointer-events-none absolute inset-0 grid-field opacity-[0.22] mask-fade-edges" />
+      {/*
+        Reading scrim, spanning the FULL width. It has to start at the edge of
+        the section rather than at the edge of the product panel — when it began
+        at the panel's edge it went from nothing to solid black in one pixel and
+        drew a visible seam down the middle of the hero.
+      */}
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            'linear-gradient(90deg, rgba(5,5,7,0.80) 0%, rgba(5,5,7,0.62) 28%, rgba(5,5,7,0.24) 54%, rgba(5,5,7,0) 76%)',
+        }}
+      />
       <div
         className="pointer-events-none absolute inset-x-0 bottom-0 h-64"
         style={{ background: 'linear-gradient(180deg, rgba(5,5,7,0) 0%, #050507 92%)' }}
       />
 
       {/*
-        Fixed height, not min-height: the hero is a single frame. Top padding is
-        derived from the nav so the statement clears it at any size, and the
-        bottom leaves room for the scroll cue.
+        The product panel. A sibling of the content rather than a grid column,
+        so it can run the full height of the section and bleed off the right
+        edge — a composition that has to carry half the frame cannot be boxed
+        inside the same padded container as the text.
+      */}
+      <HeroVisual slideIndex={slide} />
 
-        Two columns from lg up: the statement no longer stretches across the
-        full width leaving a wall of black beside it — the visual cluster holds
-        the right-hand half.
+      {/*
+        Fixed height, not min-height: the hero is a single frame. Top padding is
+        derived from the nav so the statement clears it at any size.
+
+        Single column, capped width: the panel behind it holds the right-hand
+        side, so the statement no longer has to stretch to fill the viewport.
       */}
       <div
-        className="shell relative z-20 grid h-full grid-cols-1 items-center gap-10 pb-20 xl:grid-cols-[minmax(0,1.06fr)_minmax(0,0.94fr)] xl:gap-8"
+        className="shell relative z-20 flex h-full items-center pb-16"
         style={{ paddingTop: 'calc(var(--nav-h) + 1.5rem)' }}
       >
-        <div data-hero-type className="preserve-3d">
+        <div data-hero-type className="w-full max-w-[36rem] preserve-3d lg:max-w-[40rem]">
           {/*
-            The old eyebrow read "GENTECHNE — DIGITAL PRODUCT STUDIO — EST. 2019",
-            which is word-for-word what the nav already says two inches above it.
-            Removing it costs no information and returns ~55px of height to the
-            statement, which is the element that actually has to carry the page.
+            No eyebrow. "EST. 2019" sat here restating what the footer already
+            says, and it was one of ELEVEN small mono labels competing in the
+            first frame (nav items, motion toggle, sequence counter, per-beat
+            line, three stat labels, scroll cue). Small uppercase type is the
+            most expensive kind to read and the least worth reading; the frame
+            is down to three.
           */}
-          <div data-hero-eyebrow className="mb-4 flex overflow-hidden md:mb-5">
-            <span className="inline-block overflow-hidden">
-              <span className="label inline-block">EST. {brand.since}</span>
-            </span>
-          </div>
-
           {/*
             Two fixed lines that animate in per character, then the cycling
             word. The size steps down twice: at xl because the two-column layout
@@ -159,12 +179,19 @@ export function Hero() {
                 keeping it out of the 3D context stops Chrome promoting a layer
                 it then has to repaint on every keystroke. */}
             <span data-hero-line className="relative block pb-[0.06em]">
+              {/*
+                The cycling word takes the ACTIVE SERVICE's colour rather than a
+                fixed brass. With the panel behind it now washed in that same
+                colour, a gold word over a blue panel read as two designs
+                fighting; tying them together is what makes the frame look
+                deliberate instead of decorated.
+              */}
               <WordCycle
                 words={heroStory}
                 onCommit={setSlideStable}
                 holdMs={HOLD_MS}
-                className="hero-size flex font-display text-display-1 font-extrabold text-brass"
-                style={{ textShadow: '0 0 60px rgba(198,168,124,0.28)' }}
+                className="hero-size flex font-display text-display-1 font-extrabold transition-colors duration-700"
+                style={{ color: look.glow, textShadow: `0 0 70px ${look.key}59` }}
               />
             </span>
           </h1>
@@ -213,22 +240,12 @@ export function Hero() {
                 {story.line}
               </p>
               {/*
-                The stats are the first thing to go on a short viewport — they
-                are the least load-bearing element here, and dropping them keeps
-                the CTAs above the fold on 720–800px-tall laptops.
+                The "90+ projects / 14 countries / 10 disciplines" block is gone.
+                Those numbers were invented, and invented numbers on an agency
+                homepage are the fastest way to lose a client who checks — the
+                same reason no project in data/projects.js carries a `results`
+                block yet. Real figures go back in here the moment they exist.
               */}
-              <dl className="hidden flex-wrap gap-x-8 gap-y-3 pt-1 [@media(min-height:780px)]:flex">
-                {[
-                  ['90+', 'Projects'],
-                  ['14', 'Countries'],
-                  ['10', 'Disciplines'],
-                ].map(([v, k]) => (
-                  <div key={k} className="flex flex-col gap-1">
-                    <dt className="label">{k}</dt>
-                    <dd className="font-display text-2xl font-semibold tabular-nums text-bone">{v}</dd>
-                  </div>
-                ))}
-              </dl>
             </div>
 
             <div data-hero-actions className="flex flex-wrap items-center gap-3 md:gap-4">
@@ -246,22 +263,13 @@ export function Hero() {
           </div>
         </div>
 
-        {/* Right column: the products the statement is claiming */}
-        <HeroVisual slideIndex={slide} />
-
-        {/* Scroll cue */}
-        <div
-          data-hero-scroll
-          className="pointer-events-none absolute inset-x-0 bottom-6 flex items-center justify-center gap-3 md:bottom-8"
-        >
-          <span className="label">SCROLL TO ENTER</span>
-          <span className="relative block h-8 w-px overflow-hidden bg-smoke">
-            <span
-              className="absolute inset-x-0 top-0 h-3 bg-brass"
-              style={{ animation: 'gt-scanline 2.2s cubic-bezier(0.4,0,0.1,1) infinite' }}
-            />
-          </span>
-        </div>
+        {/*
+          The "SCROLL TO ENTER" cue came out. It sat centred across the bottom
+          of the frame, which put it on top of the product panel, and it told
+          the visitor to do the one thing every visitor already does. The bar
+          under the sequence counter carries the same "there is more" signal
+          without spending a line of the frame on it.
+        */}
       </div>
 
       {/* The interface the typography becomes — the first world's index */}

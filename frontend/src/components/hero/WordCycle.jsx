@@ -72,12 +72,16 @@ export function WordCycle({ words, onCommit, holdMs = 2600, className, style }) 
     })
 
     tl.to(els, {
-      xPercent: -46,
-      yPercent: -12,
-      rotateX: 34,
-      filter: 'blur(9px)',
+      xPercent: -28,
+      yPercent: -8,
+      rotateX: 26,
+      /* Was blur(9px)/blur(11px) over 1.14s. At that strength the word spent a
+         third of every cycle as an unreadable smudge — the headline's own third
+         line, illegible more often than not. Softer and shorter: still a cut,
+         but the word is readable almost all the time. */
+      filter: 'blur(4px)',
       autoAlpha: 0,
-      duration: 0.42,
+      duration: 0.32,
       ease: 'power2.in',
       stagger: { each: 0.024, from: 'start' },
     })
@@ -94,21 +98,21 @@ export function WordCycle({ words, onCommit, holdMs = 2600, className, style }) 
     const tl = gsap.timeline()
     tl.fromTo(
       els,
-      { xPercent: 54, yPercent: 16, rotateX: -42, filter: 'blur(11px)', autoAlpha: 0 },
+      { xPercent: 32, yPercent: 10, rotateX: -30, filter: 'blur(5px)', autoAlpha: 0 },
       {
         xPercent: 0,
         yPercent: 0,
         rotateX: 0,
         filter: 'blur(0px)',
         autoAlpha: 1,
-        duration: 0.72,
+        duration: 0.58,
         ease: 'expo.out',
-        stagger: { each: 0.032, from: 'start' },
+        stagger: { each: 0.026, from: 'start' },
       },
     )
 
     // Hold, then start the next cut. Paused while the tab is backgrounded.
-    const total = 0.72 + els.length * 0.032
+    const total = 0.58 + els.length * 0.026
     timer.current = setTimeout(
       () => {
         if (document.hidden) return
