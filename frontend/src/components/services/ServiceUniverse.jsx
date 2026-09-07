@@ -48,7 +48,7 @@ export function ServiceUniverse() {
       const spreadY = isMobile ? 120 : 170
       const x = (col / (cols - 1) - 0.5) * spreadX + (rand() - 0.5) * (isMobile ? 26 : 58)
       const y = (row - 0.5) * spreadY + (rand() - 0.5) * (isMobile ? 34 : 76)
-      const z = -600 + rand() * 700
+      const z = -220 + rand() * 320
       return {
         ...s,
         x,
@@ -83,15 +83,13 @@ export function ServiceUniverse() {
           rotateY: d.rotY,
           scale: d.scale,
         })
-        // Idle drift — small, slow, never synchronised.
-        gsap.to(el, {
-          y: `+=${8 + Math.random() * 10}`,
-          duration: d.drift,
-          ease: 'sine.inOut',
-          repeat: -1,
-          yoyo: true,
-          delay: Math.random() * 2,
-        })
+        /*
+         * The idle drift is gone. Four plates each floating on their own loop
+         * read as "running around", and worse: a target that never stops moving
+         * is genuinely hard to hover — the pointer keeps falling off the plate
+         * it was aimed at. They are still placed in depth and still respond to
+         * scroll and hover; they just hold still while you reach for them.
+         */
       })
 
       // Entrance
@@ -148,14 +146,21 @@ export function ServiceUniverse() {
     return () => ctx.revert()
   }, [reducedMotion, isMobile])
 
-  /* Pointer parallax on the whole cloud — the viewer leans into the space. */
+  /*
+   * Pointer parallax — now barely there.
+   *
+   * At ±13° the entire field swung as the pointer moved, which meant reaching
+   * for a card moved that card AND the three next to it. The cards are
+   * click targets first and a spatial composition second, so the lean is now
+   * small enough to read as depth without making anything a moving target.
+   */
   useIsomorphicLayoutEffect(() => {
     const stage = stageRef.current
     const cloud = cloudRef.current
     if (!stage || !cloud || reducedMotion || isMobile) return undefined
 
-    const rx = gsap.quickTo(cloud, 'rotateY', { duration: 1.1, ease: 'power3.out' })
-    const ry = gsap.quickTo(cloud, 'rotateX', { duration: 1.1, ease: 'power3.out' })
+    const rx = gsap.quickTo(cloud, 'rotateY', { duration: 1.4, ease: 'power3.out' })
+    const ry = gsap.quickTo(cloud, 'rotateX', { duration: 1.4, ease: 'power3.out' })
     let inside = false
 
     const onMove = (e) => {
@@ -163,8 +168,8 @@ export function ServiceUniverse() {
       const r = stage.getBoundingClientRect()
       const nx = (e.clientX - r.left) / r.width - 0.5
       const ny = (e.clientY - r.top) / r.height - 0.5
-      rx(nx * 13)
-      ry(-ny * 9)
+      rx(nx * 3.5)
+      ry(-ny * 2.5)
     }
     const onEnter = () => {
       inside = true
@@ -192,12 +197,20 @@ export function ServiceUniverse() {
     plates.forEach((el) => {
       const d = JSON.parse(el.dataset.plate)
       const isTarget = el.dataset.plateId === hovered
+      /*
+       * Restrained on purpose. This used to throw the focused plate 340px
+       * toward the viewer and shove the other three 130px back while rescaling
+       * all four — the whole field lurched every time the pointer crossed a
+       * card, and you could not tell where anything had gone. The unfocused
+       * plates now hold their exact position and only dim; the focused one
+       * lifts just enough to read as picked up.
+       */
       gsap.to(el, {
-        z: hovered ? (isTarget ? d.z + 340 : d.z - 130) : d.z,
-        scale: hovered ? (isTarget ? d.scale * 1.12 : d.scale * 0.94) : d.scale,
-        opacity: hovered ? (isTarget ? 1 : 0.34) : 1,
-        duration: 0.9,
-        ease: EASE.settle,
+        z: hovered && isTarget ? d.z + 90 : d.z,
+        scale: hovered && isTarget ? d.scale * 1.05 : d.scale,
+        opacity: hovered ? (isTarget ? 1 : 0.45) : 1,
+        duration: 0.55,
+        ease: 'power3.out',
         overwrite: 'auto',
       })
     })
@@ -246,7 +259,18 @@ export function ServiceUniverse() {
         className="relative mt-14 h-[68svh] w-full overflow-hidden md:mt-20 md:h-[78svh]"
         style={{ perspective: isMobile ? '1100px' : '1700px' }}
       >
-        <div ref={cloudRef} className="absolute inset-0 preserve-3d will-change-transform">
+        {/*
+          pointer-events-none on the container is load-bearing, not tidiness.
+          Inside a preserve-3d context a child at negative Z renders BEHIND its
+          parent's own plane, so this full-size div was intercepting the pointer
+          for exactly the plates sitting furthest back — two of the four never
+          received hover and never showed the VIEW cursor. The plates re-enable
+          pointer events on themselves.
+        */}
+        <div
+          ref={cloudRef}
+          className="pointer-events-none absolute inset-0 preserve-3d will-change-transform"
+        >
           {layout.map((s) => (
             <ServicePlate
               key={s.id}
@@ -344,12 +368,12 @@ function ServicePlate({ service, hovered, dimmed, onEnter, onLeave, onSelect, co
       onBlur={onLeave}
       onClick={onSelect}
       aria-label={`${service.title} — ${service.summary}`}
-      className="absolute left-1/2 top-1/2 preserve-3d text-left will-change-transform"
+      className="pointer-events-auto absolute left-1/2 top-1/2 preserve-3d text-left will-change-transform"
       style={{ width: compact ? 178 : 236 }}
     >
       <div
         className={cn(
-          'surface relative overflow-hidden rounded-xl p-4 transition-colors duration-500 md:p-5',
+          'surface-raised relative overflow-hidden rounded-xl p-4 transition-colors duration-500 md:p-5',
           hovered && 'border-brass/50',
         )}
         style={{

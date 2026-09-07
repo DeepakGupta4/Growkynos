@@ -28,26 +28,18 @@ export function Nav() {
     const nav = navRef.current
     if (!nav) return undefined
 
-    let hidden = false
+    /*
+     * The nav no longer hides on downward scroll. It used to slide away past
+     * 560px, which meant the primary CTA disappeared for most of a very long
+     * page — on an agency site the one button that converts should never be
+     * more than a glance away. It only condenses now.
+     */
     const st = ScrollTrigger.create({
       start: 0,
       end: 'max',
-      onUpdate: (self) => {
-        const y = self.scroll()
-        setCondensed(y > 80)
-        const goingDown = self.direction === 1
-        const shouldHide = goingDown && y > 560 && !menuOpen
-        if (shouldHide !== hidden) {
-          hidden = shouldHide
-          gsap.to(nav, {
-            yPercent: shouldHide ? -130 : 0,
-            duration: 0.65,
-            ease: EASE.settle,
-            overwrite: true,
-          })
-        }
-      },
+      onUpdate: (self) => setCondensed(self.scroll() > 80),
     })
+    gsap.set(nav, { yPercent: 0 })
     return () => st.kill()
   }, [booted, menuOpen])
 

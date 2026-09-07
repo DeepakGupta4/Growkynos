@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+﻿import { useEffect, useRef, useState } from 'react'
 import { gsap } from '../../lib/gsap'
 import { useExperience } from '../../context/ExperienceContext'
 
@@ -20,13 +20,21 @@ import { useExperience } from '../../context/ExperienceContext'
  * now smaller and dimmer at rest, and only grows where there is something to
  * act on. A cursor should support the interaction, not join the composition.
  */
+/*
+ * `view` and `drag` used to be a solid 68px disc of brass. At that size a
+ * filled shape stops reading as a cursor and becomes a paint blob sitting on
+ * top of the thing you are trying to look at — and it covered the card it was
+ * meant to be labelling. They are now a thin brass ring over near-black glass:
+ * the label is legible, the artwork underneath still shows through, and the
+ * shape reads as a lens rather than a sticker.
+ */
 const MODES = {
-  default: { size: 5, ring: 0, mix: 'difference', alpha: 0.62 },
-  link: { size: 6, ring: 30, mix: 'difference', alpha: 0.8 },
-  view: { size: 68, ring: 0, mix: 'normal', alpha: 1 },
-  drag: { size: 52, ring: 0, mix: 'normal', alpha: 1 },
-  text: { size: 3, ring: 0, mix: 'difference', alpha: 0.7 },
-  hidden: { size: 0, ring: 0, mix: 'difference', alpha: 0 },
+  default: { size: 5, ring: 26, mix: 'difference', alpha: 0.62, fill: null },
+  link: { size: 6, ring: 40, mix: 'difference', alpha: 0.85, fill: null },
+  view: { size: 76, ring: 0, mix: 'normal', alpha: 1, fill: 'glass' },
+  drag: { size: 62, ring: 0, mix: 'normal', alpha: 1, fill: 'glass' },
+  text: { size: 3, ring: 0, mix: 'difference', alpha: 0.7, fill: null },
+  hidden: { size: 0, ring: 0, mix: 'difference', alpha: 0, fill: null },
 }
 
 export function CustomCursor() {
@@ -55,10 +63,22 @@ export function CustomCursor() {
 
     gsap.set([dot, ring], { xPercent: -50, yPercent: -50 })
 
-    const dotX = gsap.quickTo(dot, 'x', { duration: 0.15, ease: 'power3.out' })
-    const dotY = gsap.quickTo(dot, 'y', { duration: 0.15, ease: 'power3.out' })
-    const ringX = gsap.quickTo(ring, 'x', { duration: 0.55, ease: 'power3.out' })
-    const ringY = gsap.quickTo(ring, 'y', { duration: 0.55, ease: 'power3.out' })
+    /*
+     * Two speeds, and the gap between them is the whole effect: the dot tracks
+     * almost instantly so aiming never feels laggy, while the ring trails on a
+     * softer curve and springs to rest. A single-speed cursor reads as a
+     * graphic stuck to the pointer; the offset between the two reads as weight.
+     */
+    const dotX = gsap.quickTo(dot, 'x', { duration: 0.1, ease: 'power3.out' })
+    const dotY = gsap.quickTo(dot, 'y', { duration: 0.1, ease: 'power3.out' })
+    const ringX = gsap.quickTo(ring, 'x', { duration: 0.62, ease: 'elastic.out(1, 0.75)' })
+    const ringY = gsap.quickTo(ring, 'y', { duration: 0.62, ease: 'elastic.out(1, 0.75)' })
+    /* Velocity stretches the ring along its travel — inertia you can see. */
+    const ringRot = gsap.quickTo(ring, 'rotate', { duration: 0.5, ease: 'power3.out' })
+    const ringScaleX = gsap.quickTo(ring, 'scaleX', { duration: 0.45, ease: 'power3.out' })
+    const ringScaleY = gsap.quickTo(ring, 'scaleY', { duration: 0.45, ease: 'power3.out' })
+    let lastX = 0
+    let lastY = 0
 
     let visible = false
     const show = () => {
@@ -71,8 +91,39 @@ export function CustomCursor() {
       show()
       dotX(e.clientX)
       dotY(e.clientY)
-      ringX(e.clientX)
-      ringY(e.clientY)
+
+      /*
+       * Magnetic snap: near an interactive target the ring leaves the pointer
+       * and settles on the element's centre. It is what makes a cursor feel
+       * like it is co-operating with the interface rather than sliding over it.
+       */
+      const target = e.target instanceof Element ? e.target.closest('[data-cursor-magnetic]') : null
+      if (target) {
+        const r = target.getBoundingClientRect()
+        ringX(r.left + r.width / 2)
+        ringY(r.top + r.height / 2)
+        ringRot(0)
+        ringScaleX(1)
+        ringScaleY(1)
+      } else {
+        ringX(e.clientX)
+        ringY(e.clientY)
+
+        const dx = e.clientX - lastX
+        const dy = e.clientY - lastY
+        const speed = Math.min(Math.hypot(dx, dy), 90)
+        if (speed > 2) {
+          ringRot((Math.atan2(dy, dx) * 180) / Math.PI)
+          ringScaleX(1 + speed / 190)
+          ringScaleY(1 - speed / 440)
+        } else {
+          ringScaleX(1)
+          ringScaleY(1)
+        }
+      }
+
+      lastX = e.clientX
+      lastY = e.clientY
     }
 
     const onLeave = () => {
@@ -128,11 +179,15 @@ export function CustomCursor() {
   useEffect(() => {
     if (!enabled) return
     const cfg = MODES[mode] ?? MODES.default
+    const glass = cfg.fill === 'glass'
     gsap.to(dotRef.current, {
       width: cfg.size,
       height: cfg.size,
       opacity: cfg.alpha,
-      backgroundColor: cfg.mix === 'difference' ? '#ffffff' : 'rgba(198,168,124,0.94)',
+      backgroundColor: glass ? 'rgba(8,8,11,0.72)' : '#ffffff',
+      borderColor: glass ? 'rgba(198,168,124,0.85)' : 'rgba(198,168,124,0)',
+      borderWidth: glass ? 1 : 0,
+      backdropFilter: glass ? 'blur(3px)' : 'blur(0px)',
       mixBlendMode: cfg.mix,
       duration: 0.5,
       ease: 'expo.out',
@@ -158,17 +213,17 @@ export function CustomCursor() {
     <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-cursor">
       <div
         ref={ringRef}
-        className="absolute left-0 top-0 rounded-full border border-bone/40 opacity-0"
+        className="absolute left-0 top-0 rounded-full border border-bone/30 opacity-0"
         style={{ width: 0, height: 0, visibility: 'hidden' }}
       />
       <div
         ref={dotRef}
-        className="absolute left-0 top-0 grid place-items-center rounded-full bg-white"
+        className="absolute left-0 top-0 grid place-items-center rounded-full border border-transparent bg-white"
         style={{ width: 8, height: 8, visibility: 'hidden', mixBlendMode: 'difference' }}
       >
         <span
           ref={labelRef}
-          className="select-none whitespace-nowrap font-mono text-[9px] uppercase tracking-[0.2em] text-void opacity-0"
+          className="select-none whitespace-nowrap font-mono text-[9px] uppercase tracking-[0.22em] text-brass opacity-0"
         >
           {label}
         </span>

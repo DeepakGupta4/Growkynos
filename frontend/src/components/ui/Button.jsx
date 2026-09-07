@@ -1,4 +1,4 @@
-import { forwardRef } from 'react'
+﻿import { forwardRef } from 'react'
 import { useMagnetic } from '../../hooks/useMagnetic'
 import { useSound } from '../../context/SoundContext'
 import { cn } from '../../lib/utils'
@@ -47,6 +47,7 @@ export const Button = forwardRef(function Button(
         else if (externalRef) externalRef.current = node
       }}
       data-cursor="link"
+      data-cursor-magnetic=""
       onClick={(e) => {
         sfx('click')
         onClick?.(e)
