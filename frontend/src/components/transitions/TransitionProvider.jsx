@@ -196,13 +196,46 @@ export function TransitionProvider({ children }) {
         // against the full document rather than the clipped one.
         void document.body.offsetHeight
 
+        const el = typeof target === 'string' ? document.querySelector(target) : target
         const lenis = getLenis()
-        if (lenis) {
-          lenis.scrollTo(target, { immediate: true, force: true, offset })
-        } else {
-          const el = typeof target === 'string' ? document.querySelector(target) : target
-          if (el instanceof Element) el.scrollIntoView({ behavior: 'auto', block: 'start' })
+
+        if (!el) return
+        if (!lenis) {
+          el.scrollIntoView({ behavior: 'auto', block: 'start' })
+          return
         }
+
+        /*
+         * SEEK, THEN CONVERGE.
+         *
+         * A single jump is not enough on this page. Most of it is pinned
+         * ScrollTriggers, and their pin-spacers resize as the scroll position
+         * moves through them — so the coordinate a section reports while you
+         * are at the top is not where it ends up once you are next to it.
+         * Measured: aiming once put Services 1047px past its section and Studio
+         * 876px short of its own.
+         *
+         * So instead of trusting one measurement, this re-reads the element's
+         * position each frame and closes the remaining gap, up to six times.
+         * It converges in two or three, and the whole thing happens behind the
+         * cover, which stays up for another ~1.3s.
+         *
+         * `lenis.resize()` on every pass for the same reason it is needed on
+         * the first: Lenis caches its scroll limit, does not re-measure on
+         * start(), and had cached 0 while the body was clipped to 100vh — which
+         * clamped every scrollTo to zero and was why the page did not move at
+         * all before this.
+         */
+        const want = -offset // where the section's top should end up, in px
+        let tries = 6
+        const converge = () => {
+          lenis.resize()
+          const delta = el.getBoundingClientRect().top - want
+          if (Math.abs(delta) < 6 || tries-- <= 0) return
+          lenis.scrollTo(window.scrollY + delta, { immediate: true, force: true })
+          requestAnimationFrame(converge)
+        }
+        converge()
       })
     },
     [reducedMotion, run],
