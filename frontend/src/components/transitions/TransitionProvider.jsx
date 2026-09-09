@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { gsap, ScrollTrigger, EASE } from '../../lib/gsap'
-import { getLenis, lockScroll } from '../../hooks/useLenis'
+import { getLenis, lockScroll, scrollTo } from '../../hooks/useLenis'
 import { useExperience } from '../../context/ExperienceContext'
 import { useSound } from '../../context/SoundContext'
 
@@ -34,17 +34,20 @@ export function TransitionProvider({ children }) {
   }, [])
 
   /**
-   * Navigate with the full sequence. `label` is stamped mid-transition so the
-   * viewer knows which world they are entering.
+   * The sequence itself, with the destination swap left to the caller.
+   *
+   * Both kinds of navigation on this site now run it: a route change, and a
+   * jump to a section of the page you are already on. Previously only the
+   * former had it, so "Contact" arrived cinematically while "Studio",
+   * "Services", "Projects" and "Technology" just scrolled — four of the five
+   * nav items behaved like a different website from the fifth.
+   *
+   * `onSwap` fires at 0.95s, the moment the columns have the viewport fully
+   * covered. Whatever it does — navigate, or seek — is invisible.
    */
-  const go = useCallback(
-    (to, { label: nextLabel = '', replace = false } = {}) => {
+  const run = useCallback(
+    (nextLabel, onSwap) => {
       if (busy.current) return
-      if (reducedMotion) {
-        navigate(to, { replace })
-        window.scrollTo(0, 0)
-        return
-      }
 
       busy.current = true
       setLabel(nextLabel)
@@ -70,13 +73,18 @@ export function TransitionProvider({ children }) {
         },
       })
 
-      // 1 — outgoing page recedes
+      /*
+       * 1 — outgoing page recedes.
+       *
+       * No blur here any more. A `filter: blur()` on the page root forces the
+       * whole document to raster into one layer for the duration, which is the
+       * most expensive thing this timeline could ask for — and it was visible
+       * for the ~0.5s before the columns finished covering, which read as the
+       * page going out of focus rather than moving away. Scale and opacity say
+       * "receding" on their own.
+       */
       if (page) {
-        tl.to(
-          page,
-          { scale: 0.94, y: -34, filter: 'blur(5px)', opacity: 0.35, duration: 0.75, ease: 'power3.inOut' },
-          0,
-        )
+        tl.to(page, { scale: 0.94, y: -34, opacity: 0.35, duration: 0.75, ease: 'power3.inOut' }, 0)
       }
 
       // 2 — columns sweep up
@@ -94,12 +102,9 @@ export function TransitionProvider({ children }) {
         0.62,
       )
 
-      // 4 — swap route behind the cover
+      // 4 — swap the destination behind the cover
       tl.add(() => {
-        navigate(to, { replace })
-        const lenis = getLenis()
-        if (lenis) lenis.scrollTo(0, { immediate: true })
-        else window.scrollTo(0, 0)
+        onSwap()
         // clearProps, not set-to-identity: an inline `transform: matrix(1,0,0,1,0,0)`
         // still makes this a containing block for position:fixed, which would
         // break every pinned ScrollTrigger on the arriving page.
@@ -144,10 +149,66 @@ export function TransitionProvider({ children }) {
         )
       }
     },
-    [navigate, reducedMotion, sfx],
+    [sfx],
   )
 
-  const value = useMemo(() => ({ go, pageRef }), [go])
+  /** Navigate to another route with the full sequence. */
+  const go = useCallback(
+    (to, { label: nextLabel = '', replace = false } = {}) => {
+      if (reducedMotion) {
+        navigate(to, { replace })
+        window.scrollTo(0, 0)
+        return
+      }
+      run(nextLabel, () => {
+        navigate(to, { replace })
+        const lenis = getLenis()
+        if (lenis) lenis.scrollTo(0, { immediate: true, force: true })
+        else window.scrollTo(0, 0)
+      })
+    },
+    [navigate, reducedMotion, run],
+  )
+
+  /**
+   * Jump to a section of the current page with the same sequence.
+   *
+   * THE LOCK HAS TO COME OFF BEFORE THE SEEK. `lockScroll(true)` puts
+   * `overflow: hidden; height: 100vh` on the body, so while it is on the
+   * document is clipped to one viewport and has nowhere to scroll to — the
+   * cover played perfectly and the page never moved, scrollY pinned at 0
+   * through the whole sequence. Releasing it here is safe: the columns still
+   * have the viewport covered for another ~1.3s, so nothing about the seek is
+   * visible, and the timeline's own `lockScroll(false)` later is then a no-op.
+   *
+   * `force: true` is still needed on top of that — the lock also stops Lenis,
+   * and a stopped Lenis ignores scrollTo without it.
+   */
+  const travel = useCallback(
+    (target, { label: nextLabel = '', offset = -20 } = {}) => {
+      if (reducedMotion) {
+        scrollTo(target, { duration: 1.2, offset })
+        return
+      }
+      run(nextLabel, () => {
+        lockScroll(false)
+        // Force the body's height back before seeking, so the scroll lands
+        // against the full document rather than the clipped one.
+        void document.body.offsetHeight
+
+        const lenis = getLenis()
+        if (lenis) {
+          lenis.scrollTo(target, { immediate: true, force: true, offset })
+        } else {
+          const el = typeof target === 'string' ? document.querySelector(target) : target
+          if (el instanceof Element) el.scrollIntoView({ behavior: 'auto', block: 'start' })
+        }
+      })
+    },
+    [reducedMotion, run],
+  )
+
+  const value = useMemo(() => ({ go, travel, pageRef }), [go, travel])
 
   return (
     <TransitionContext.Provider value={value}>

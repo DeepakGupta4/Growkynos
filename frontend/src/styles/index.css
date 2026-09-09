@@ -11,6 +11,17 @@
   :root {
     --gutter: 1.25rem;
 
+    /*
+     * The page's live accent. The hero writes the ACTIVE SERVICE's colour here
+     * on every cut (see Hero.jsx), so chrome that outlives the hero — the nav,
+     * its indicator, the scroll progress line — belongs to the same frame as
+     * the field behind it instead of staying gold on a magenta ground.
+     *
+     * Brass is the standing value: it is what applies on routes with no hero,
+     * and what the nav falls back to before the first cut lands.
+     */
+    --accent: #c6a87c;
+
     /* Depth / atmosphere */
     --atmos-x: 50%;
     --atmos-y: 40%;

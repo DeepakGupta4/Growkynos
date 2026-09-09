@@ -1,4 +1,4 @@
-﻿import { useCallback, useRef, useState } from 'react'
+﻿import { useCallback, useEffect, useRef, useState } from 'react'
 import { useIsomorphicLayoutEffect } from '../../hooks/useIsomorphicLayoutEffect'
 import { gsap } from '../../lib/gsap'
 import { brand, heroStory } from '../../data/brand'
@@ -28,6 +28,17 @@ export function Hero() {
   const setSlideStable = useCallback((i) => setSlide(i), [])
   const story = heroStory[slide] ?? heroStory[0]
   const look = HERO_LOOK[story.scene] ?? HERO_LOOK.app
+
+  /*
+   * Publish the active service colour to the document, so chrome that lives
+   * outside the hero — the nav, its sliding indicator, the scroll progress
+   * line — can follow the same cut. Cleared on unmount so routes without a
+   * hero fall back to brass rather than keeping whatever was last on screen.
+   */
+  useEffect(() => {
+    document.documentElement.style.setProperty('--accent', look.key)
+    return () => document.documentElement.style.removeProperty('--accent')
+  }, [look.key])
 
   useIsomorphicLayoutEffect(() => {
     if (!booted) return undefined

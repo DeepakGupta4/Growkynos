@@ -69,7 +69,7 @@ export function HeroVisual({ slideIndex = 0 }) {
   const innerRef = useRef(null)
   const stageRef = useRef(null)
   const captionRef = useRef(null)
-  const [fit, setFit] = useState(1)
+  const [fit, setFit] = useState({ s: 1, dx: 0, dy: 0 })
   const [brokenVideo, setBrokenVideo] = useState({})
   const { reducedMotion, booted, quality } = useExperience()
 
@@ -94,16 +94,49 @@ export function HeroVisual({ slideIndex = 0 }) {
 
     const prev = inner.style.transform
     inner.style.transform = 'none'
-    const cw = inner.offsetWidth
-    const ch = inner.offsetHeight
+
+    /*
+     * The UNION of the scene and everything inside it, not the scene's own box.
+     *
+     * The scenes deliberately hang elements outside their bounds — the SaaS
+     * "NEW UNIT ONLINE" pill sits at -right-12%, the app scene's stat chips
+     * likewise. offsetWidth does not count an absolutely positioned child that
+     * overflows, so fitting to it put those pills past the bezel, where the
+     * screen's overflow:hidden sliced them mid-word.
+     *
+     * Measuring the union also means the fit stays correct if a scene is edited
+     * later, which hand-tuned per-scene scales would not.
+     */
+    const base = inner.getBoundingClientRect()
+    let minX = base.left
+    let minY = base.top
+    let maxX = base.right
+    let maxY = base.bottom
+    for (const el of inner.querySelectorAll('*')) {
+      const r = el.getBoundingClientRect()
+      if (!r.width || !r.height) continue
+      if (r.left < minX) minX = r.left
+      if (r.top < minY) minY = r.top
+      if (r.right > maxX) maxX = r.right
+      if (r.bottom > maxY) maxY = r.bottom
+    }
+
+    /* How far the union's centre sits from the element's own centre. The scene
+       is then shifted by that much so what gets centred in the screen is
+       everything, rather than the box the overflow hangs off. */
+    const dx = (base.left + base.right) / 2 - (minX + maxX) / 2
+    const dy = (base.top + base.bottom) / 2 - (minY + maxY) / 2
+
     inner.style.transform = prev
 
+    const cw = maxX - minX
+    const ch = maxY - minY
     const fw = frame.clientWidth
     const fh = frame.clientHeight
     if (!cw || !ch || !fw || !fh) return
 
-    // 0.9 keeps a margin so nothing touches the bezel.
-    setFit(Math.min(fw / cw, fh / ch) * 0.9)
+    // 0.92 keeps a margin so nothing touches the bezel.
+    setFit({ s: Math.min(fw / cw, fh / ch) * 0.92, dx, dy })
   }, [])
 
   useLayoutEffect(() => {
@@ -192,7 +225,13 @@ export function HeroVisual({ slideIndex = 0 }) {
                 <div
                   ref={innerRef}
                   className="preserve-3d"
-                  style={{ transform: `scale(${fit})`, transformOrigin: 'center center' }}
+                  style={{
+                    /* scale() then translate(): the shift is expressed in the
+                       scene's own units and carried by the scale, which keeps it
+                       correct at every breakpoint. */
+                    transform: `scale(${fit.s}) translate(${fit.dx}px, ${fit.dy}px)`,
+                    transformOrigin: 'center center',
+                  }}
                 >
                   <HeroScene scene={slide.scene} />
                 </div>

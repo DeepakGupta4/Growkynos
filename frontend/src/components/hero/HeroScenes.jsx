@@ -493,8 +493,8 @@ export function HeroScene({ scene }) {
     if (reducedMotion || !wrapRef.current) return
     gsap.fromTo(
       wrapRef.current,
-      { autoAlpha: 0, scale: 0.965, filter: 'blur(6px)' },
-      { autoAlpha: 1, scale: 1, filter: 'blur(0px)', duration: 0.75, ease: EASE.settle },
+      { autoAlpha: 0, scale: 0.965 },
+      { autoAlpha: 1, scale: 1, duration: 0.75, ease: EASE.settle },
     )
   }, [scene, reducedMotion])
 
