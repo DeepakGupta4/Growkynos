@@ -208,7 +208,7 @@ export function AIShowcase() {
     /* 07 — APPROACH */
     tl.to(
       graph,
-      { scale: mobile ? 1.04 : 1.34, z: mobile ? 180 : 300, duration: 1.8, ease: 'power2.in' },
+      { scale: mobile ? 1 : 1.01, z: mobile ? 90 : 120, duration: 1.8, ease: 'power2.in' },
       '+=0.4',
     )
       .to(glow, { opacity: 1.7, duration: 1.2 }, '<')

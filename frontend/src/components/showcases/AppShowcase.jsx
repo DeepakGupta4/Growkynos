@@ -197,13 +197,22 @@ export function AppShowcase() {
         stagger: { each: 0.05, from: 'edges' },
       })
 
-      /* 08 — APPROACH: the device advances and fills the frame. */
+      /*
+       * 08 — APPROACH: the device advances to fill the frame.
+       *
+       * It used to overshoot it. At z:700 / scale:1.85 the perspective
+       * magnification stacked on top of the scale and the phone finished 1502px
+       * tall inside a 762px stage — measured 345px cut off the top and 396px
+       * off the bottom, which is the 'phone is cut at the top' this section was
+       * reported for. Filling the frame means reaching its edges, not passing
+       * through them.
+       */
       tl.to(
         phone,
         {
-          z: mobile ? 420 : 700,
-          scale: mobile ? 1.16 : 1.85,
-          y: mobile ? -10 : -24,
+          z: mobile ? 180 : 260,
+          scale: mobile ? 1.04 : 1.05,
+          y: mobile ? -6 : -12,
           duration: 2.1,
           ease: 'power2.in',
         },

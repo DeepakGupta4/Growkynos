@@ -33,14 +33,6 @@ import { cn } from '../../lib/utils'
  */
 
 /**
- * The saturated palette, matched to the hero and the page field.
- *
- * services.js still carries the original accents (#C6A87C, #9FB4C9, #A8C0A0,
- * #B0A8C8) — all near-grey, which is what made the whole page measure 12%
- * colour. These are the colours the rest of the site now runs on, so the cards
- * belong to the same frame as the field behind them.
- */
-/**
  * The ring that travels around every card: one continuous line carrying all
  * four brand colours, rotating forever. A single-accent comet read as a
  * highlight passing by; a full multicolour ring reads as the card being alive.
@@ -48,13 +40,6 @@ import { cn } from '../../lib/utils'
  * hard seam where the gradient wraps.
  */
 const RING = '#FF7A4D, #4F86FF, #FF4D8D, #9B72FF, #FF7A4D'
-
-const CARD_ACCENT = {
-  app: '#FF7A4D',
-  web: '#4F86FF',
-  saas: '#FF4D8D',
-  ai: '#9B72FF',
-}
 
 export function ServiceUniverse() {
   const rootRef = useRef(null)
@@ -187,7 +172,7 @@ export function ServiceUniverse() {
               /* Staggered so the four lights never travel in lockstep — four
                  identical orbits read as one mechanism, not four objects. */
               orbitSeconds={5.5 + i * 1.3}
-              accent={CARD_ACCENT[s.id] ?? s.accent}
+              accent={s.accent}
               hovered={hovered === s.id}
               dimmed={hovered !== null && hovered !== s.id}
               reducedMotion={reducedMotion}

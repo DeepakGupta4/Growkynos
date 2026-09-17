@@ -167,7 +167,7 @@ export function SaaSShowcase() {
     /* 06 — APPROACH */
     tl.to(
       dash,
-      { scale: mobile ? 1.1 : 1.62, z: mobile ? 240 : 420, rotateX: -3, duration: 2, ease: 'power2.in' },
+      { scale: mobile ? 1 : 1.01, z: mobile ? 100 : 140, rotateX: -3, duration: 2, ease: 'power2.in' },
       '+=0.35',
     )
       .to(glow, { opacity: 1.7, duration: 1.3 }, '<')

@@ -113,11 +113,14 @@ export function WebShowcase() {
           [128, 196, 340, -8],
         ]
       : [
+          /* Downward exits pulled in. A 211px card sent to y:292 from the
+             centre of a 762px stage finished 97px below its floor — the cards
+             are meant to escape the BROWSER frame, not the section. */
           [-470, -172, 420, -14],
           [500, -216, 330, 12],
-          [-520, 176, 260, 10],
-          [452, 232, 400, -9],
-          [-238, 292, 190, 6],
+          [-520, 128, 260, 10],
+          [452, 158, 400, -9],
+          [-238, 178, 190, 6],
         ]
 
     escaped.forEach((el, i) => {
@@ -174,8 +177,8 @@ export function WebShowcase() {
       .to(
         browser,
         {
-          scale: mobile ? 1.22 : 2.35,
-          z: mobile ? 260 : 460,
+          scale: mobile ? 1.04 : 1.06,
+          z: mobile ? 140 : 210,
           borderRadius: 0,
           duration: 2,
           ease: 'power2.in',

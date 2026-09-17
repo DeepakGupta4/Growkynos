@@ -17,7 +17,7 @@ const RAW_SERVICES = [
       'Native-grade iOS and Android products built once, in React Native and Swift — offline-first, animated, and fast enough to feel invisible.',
     capabilities: ['React Native', 'iOS / Android', 'Offline-first sync', 'Push & realtime', 'App Store delivery'],
     metric: { value: '4.8', unit: '★', caption: 'Average store rating' },
-    accent: '#C6A87C',
+    accent: '#FF7A4D',
   },
   {
     id: 'web',
@@ -31,7 +31,7 @@ const RAW_SERVICES = [
       'Marketing sites and web platforms with production-grade engineering underneath — server rendering, edge caching, and motion that never costs a frame.',
     capabilities: ['Next.js', 'Design systems', 'Edge & SSR', 'CMS integration', 'Core Web Vitals'],
     metric: { value: '98', unit: '/100', caption: 'Median Lighthouse' },
-    accent: '#9FB4C9',
+    accent: '#4F86FF',
   },
   {
     id: 'shopify',
@@ -71,7 +71,7 @@ const RAW_SERVICES = [
       'End-to-end product engineering: multi-tenant architecture, billing, permissions, analytics and the dashboard your customers actually live inside.',
     capabilities: ['Multi-tenant', 'Stripe billing', 'RBAC & SSO', 'Realtime data', 'Analytics'],
     metric: { value: '99.9', unit: '%', caption: 'Uptime target' },
-    accent: '#C6A87C',
+    accent: '#FF4D8D',
   },
   {
     id: 'design',
@@ -137,7 +137,7 @@ const RAW_SERVICES = [
       'Retrieval systems, agents and internal automation wired into the tools you already run — evaluated, observable, and safe to put in front of customers.',
     capabilities: ['LLM integration', 'RAG pipelines', 'Agent workflows', 'Internal tooling', 'Evals & guardrails'],
     metric: { value: '31', unit: 'hrs', caption: 'Saved per week' },
-    accent: '#9FB4C9',
+    accent: '#9B72FF',
   },
 ]
 

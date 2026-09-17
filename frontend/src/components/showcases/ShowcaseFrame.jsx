@@ -163,7 +163,7 @@ export function ShowcaseFrame({
         */}
         <div
           className="relative flex flex-1 items-center justify-center overflow-hidden perspective-far"
-          style={{ paddingTop: 'calc(var(--nav-h) + 1.75rem)' }}
+          style={{ paddingTop: 'calc(var(--nav-h) + 0.25rem)' }}
         >
           {children}
         </div>
