@@ -85,74 +85,62 @@ export function ServiceUniverse() {
         scrollTrigger: { trigger: root, start: 'top 75%' },
       })
       /*
-       * Cards arrive from the side they sit on: the left column slides in from
-       * the left, the right column from the right. The two halves closing on
-       * the centre reads as the grid assembling itself, where a uniform rise
-       * read as a list loading.
-       */
-      /*
-       * DRIVEN BY IntersectionObserver, NOT ScrollTrigger.
+       * Cards arrive from the side they sit on: the left column from the left,
+       * the right column from the right, closing on the centre.
        *
-       * ScrollTrigger would not fire for this grid. Measured with the grid
-       * sitting at y=304 in a 900px viewport — far past its own `top 85%` start
-       * at 765 — the cards stayed at opacity 0 and x=-90 indefinitely, through
-       * a gradual scroll and three seconds of waiting. Its cached start/end had
-       * gone stale against a layout that changed underneath it (the hero pin
-       * came out, section padding changed), and nothing re-fired it.
+       * NOT ScrollTrigger. It would not fire for this grid at all — measured
+       * with the grid at y=304 in a 900px viewport, far past its own "top 85%"
+       * start at 765, the cards stayed at opacity 0 and x=-90 indefinitely,
+       * through a gradual scroll and three seconds of waiting. Its cached
+       * geometry had gone stale against a layout that changed underneath it
+       * (the hero pin came out, section padding changed) and nothing re-fired
+       * it. Two workarounds made it worse: immediateRender:false kept the cards
+       * visible but cut the travel to 29px of the 90 asked for, and a
+       * setTimeout guard ran 2.2s after mount, when the grid was still far
+       * below the fold, so it never saw anything to fix.
        *
-       * Two attempts to work around that made things worse rather than better:
-       * `immediateRender: false` kept the cards visible but gutted the movement
-       * to 29px of the 90 asked for, and a plain setTimeout guard ran 2.2s after
-       * mount when the grid was still far below the fold and so never saw
-       * anything to fix.
-       *
-       * An observer has no cached geometry to go stale, and it fires
-       * immediately if the element is already on screen when observation
-       * starts. For a one-shot entrance that is simply the right tool.
+       * An observer has no cached geometry to go stale.
        */
       const cards = gsap.utils.toArray('[data-service-card]')
-      gsap.set(cards, {
-        autoAlpha: 0,
-        x: (i, el) => (el.dataset.side === 'right' ? 90 : -90),
-        y: 28,
-      })
+      const restX = (el) => (el.dataset.side === 'right' ? 90 : -90)
+      gsap.set(cards, { autoAlpha: 0, x: (i, el) => restX(el), y: 28 })
 
       /*
-       * Safety net, and the reason it exists.
+       * ONE OBSERVER PER CARD, AND IT RUNS BOTH WAYS.
        *
-       * `gsap.from` applies its start state immediately, so if the ScrollTrigger
-       * never fires the cards stay at opacity 0 forever — which is exactly what
-       * happened when arriving at this section straight from the nav, where the
-       * page is seeked behind a cover rather than scrolled. The first fix was
-       * `immediateRender: false`, and that traded one bug for another: measured,
-       * the card then travelled 29px of the 90 it was asked for and dipped to
-       * 0.68 opacity instead of starting from nothing.
+       * Watching the grid as a single element was wrong twice over. It fired
+       * when the grid was 12% visible — which is the moment only the top row is
+       * on screen — so the bottom two cards played their entrance below the
+       * fold and were already settled by the time anyone scrolled to them. Only
+       * two cards ever appeared to animate. And `disconnect()` on first fire
+       * meant scrolling back up left them sitting there; they never left the
+       * way they arrived.
        *
-       * So the animation is left intact and the failure mode is closed here: if
-       * the grid is on screen and still hidden after a beat, finish the tween.
+       * Per-card observation fixes both: each card animates as it personally
+       * enters, and reverses to the side it came from when it leaves.
        */
-      const grid = root.querySelector('[data-service-grid]')
-      const io = new IntersectionObserver(
-        ([entry]) => {
-          if (!entry.isIntersecting) return
-          io.disconnect()
-          gsap.to(cards, {
-            autoAlpha: 1,
-            x: 0,
-            y: 0,
-            duration: 1,
-            ease: EASE.settle,
-            stagger: 0.12,
-            /* Leave no inline transform behind: the cards carry a CSS
-               translate on hover, and a residual matrix would fight it. */
-            clearProps: 'transform',
-          })
-        },
-        { threshold: 0.12 },
-      )
-      if (grid) io.observe(grid)
+      const observers = cards.map((el) => {
+        const io = new IntersectionObserver(
+          ([entry]) => {
+            gsap.to(el, {
+              autoAlpha: entry.isIntersecting ? 1 : 0,
+              x: entry.isIntersecting ? 0 : restX(el),
+              y: entry.isIntersecting ? 0 : 28,
+              duration: entry.isIntersecting ? 0.9 : 0.5,
+              ease: entry.isIntersecting ? EASE.settle : 'power2.in',
+              overwrite: 'auto',
+            })
+          },
+          /* A shallow threshold with a bottom margin: the card starts moving
+             while it is still a little below the fold, so it arrives settled
+             rather than catching up after it is already in view. */
+          { threshold: 0.18, rootMargin: '0px 0px -8% 0px' },
+        )
+        io.observe(el)
+        return io
+      })
 
-      return () => io.disconnect()
+      return () => observers.forEach((io) => io.disconnect())
     }, root)
 
     return () => ctx.revert()
@@ -410,49 +398,38 @@ function ServiceCard({
 }
 
 /**
- * The remaining disciplines, as a panel beside the statement rather than a
- * strip at the foot of the section.
+ * The remaining disciplines.
  *
- * The first version of this was plain rows separated by hairlines, which read
- * as a table of contents someone forgot to style. It is a panel now — its own
- * surface, numbered, with the rows reacting to the pointer — so it sits beside
- * the four cards as a deliberate second column rather than leftover text.
+ * Third attempt at this, and the first two are why it looks like this. Plain
+ * hairline rows read as an unstyled table of contents; wrapping them in a
+ * bordered panel with numbered rows just made a second, weaker card sitting
+ * next to four strong ones.
  *
- * Still a list and not six more cards: these are real services, but they are
- * not what this page argues for, and six more cards would double the section
- * to say something a column covers.
+ * So it stops competing with the cards and starts matching them instead: the
+ * same pill language the cards already use for their capabilities, at the same
+ * size, wrapped into a block. It reads as the same system rather than another
+ * box, and a pill is honest about what these are — a list of things we also do,
+ * not four more headline services.
  */
 function SupportingList() {
   if (!supportingServices.length) return null
   return (
-    <div
-      data-universe-sub
-      className="relative overflow-hidden rounded-2xl border border-smoke/70 p-5 md:p-6"
-      style={{
-        background: 'linear-gradient(158deg, rgba(20,20,25,0.72) 0%, rgba(9,9,12,0.8) 100%)',
-        backdropFilter: 'blur(14px)',
-        WebkitBackdropFilter: 'blur(14px)',
-      }}
-    >
-      <div className="mb-4 flex items-baseline justify-between gap-3 border-b border-smoke/60 pb-3">
+    <div data-universe-sub className="flex flex-col gap-4">
+      <div className="flex items-baseline gap-3">
+        <span className="h-px w-6 shrink-0" style={{ background: 'var(--accent)' }} />
         <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-mist">
           Also in the studio
         </span>
-        <span className="font-mono text-[11px] tabular-nums text-silver">
-          {String(supportingServices.length).padStart(2, '0')}
-        </span>
       </div>
 
-      <ul className="flex flex-col">
-        {supportingServices.map((s, i) => (
+      <ul className="flex flex-wrap gap-2">
+        {supportingServices.map((s) => (
           <li key={s.id}>
-            <span className="group flex items-center gap-3 py-2">
-              <span className="font-mono text-[9px] tabular-nums text-steel transition-colors duration-400 group-hover:text-[color:var(--accent)]">
-                {String(i + 1).padStart(2, '0')}
-              </span>
-              <span className="font-display text-[14px] font-medium text-silver transition-all duration-400 group-hover:translate-x-1 group-hover:text-bone">
-                {s.title}
-              </span>
+            <span
+              className="inline-flex items-center rounded-full border border-smoke/80 px-3.5 py-2 font-mono text-[10px] uppercase tracking-[0.12em] text-silver transition-all duration-500 hover:border-[color:var(--accent)] hover:text-bone"
+              style={{ backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)' }}
+            >
+              {s.title}
             </span>
           </li>
         ))}
