@@ -185,7 +185,21 @@ export function TransitionProvider({ children }) {
    * and a stopped Lenis ignores scrollTo without it.
    */
   const travel = useCallback(
-    (target, { label: nextLabel = '', offset = -20 } = {}) => {
+    (
+      target,
+      {
+        label: nextLabel = '',
+        /*
+         * Land the section clear of the fixed nav, not 20px from the raw top of
+         * the viewport — at 20px the bar was covering the first ~77px of
+         * whatever you had just navigated to. Read from the variable the nav
+         * measures itself into, so it stays right if the bar changes.
+         */
+        offset = -(
+          parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nav-h'), 10) || 84
+        ) - 16,
+      } = {},
+    ) => {
       if (reducedMotion) {
         scrollTo(target, { duration: 1.2, offset })
         return

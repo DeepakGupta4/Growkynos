@@ -4,13 +4,12 @@ import { gsap } from '../../lib/gsap'
 import { brand, heroStory } from '../../data/brand'
 import { WordCycle } from './WordCycle'
 import { HeroSequence } from './HeroSequence'
-import { services } from '../../data/services'
 import { HeroVisual, HERO_LOOK } from './HeroVisual'
 import { Button } from '../ui/Button'
 import { useExperience } from '../../context/ExperienceContext'
 import { useTransition } from '../transitions/TransitionProvider'
 import { scrollTo } from '../../hooks/useLenis'
-import { buildHeroIntro, buildHeroScrollHandoff } from '../../animations/heroAnimations'
+import { buildHeroIntro } from '../../animations/heroAnimations'
 import { setAccent } from '../../lib/accent'
 
 /** One place to tune the hero's rhythm — the word, the bar and the scene share it. */
@@ -18,7 +17,6 @@ const HOLD_MS = 2600
 
 export function Hero() {
   const rootRef = useRef(null)
-  const progress = useRef(0)
   const { reducedMotion, booted } = useExperience()
   const { go } = useTransition()
 
@@ -62,12 +60,6 @@ export function Hero() {
 
     const ctx = gsap.context(() => {
       buildHeroIntro(el, { reducedMotion, delay: 0.15 })
-      buildHeroScrollHandoff(el, {
-        reducedMotion,
-        onProgress: (p) => {
-          progress.current = p
-        },
-      })
     }, el)
 
     return () => ctx.revert()
@@ -311,39 +303,6 @@ export function Hero() {
         */}
       </div>
 
-      {/* The interface the typography becomes — the first world's index */}
-      <div
-        data-hero-interface
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 z-30 flex items-center opacity-0"
-      >
-        <div className="shell w-full">
-          <div className="surface-raised overflow-hidden rounded-2xl">
-            <div className="flex items-center justify-between border-b border-smoke/60 px-5 py-3.5 md:px-8">
-              <span className="label-brass">GENTECHNE / SERVICE INDEX</span>
-              <span className="label hidden md:block">SELECT A WORLD</span>
-              <span className="font-mono text-[10px] text-mist tabular-nums">{services.length} MODULES</span>
-            </div>
-            <ul className="max-h-[52svh] overflow-hidden">
-              {services.slice(0, 6).map((s) => (
-                <li
-                  key={s.id}
-                  data-hero-interface-row
-                  className="flex items-center gap-4 border-b border-smoke/40 px-5 py-3 last:border-0 md:gap-8 md:px-8 md:py-4"
-                >
-                  <span className="font-mono text-[10px] text-brass tabular-nums">{s.index}</span>
-                  <span className="font-display text-[clamp(0.95rem,2.6vw,1.5rem)] font-medium text-bone">
-                    {s.title}
-                  </span>
-                  <span className="ml-auto hidden font-mono text-[10px] uppercase tracking-[0.14em] text-mist md:block">
-                    {s.verb}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </div>
     </section>
   )
 }

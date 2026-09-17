@@ -219,8 +219,15 @@ export function Nav() {
             background: condensed
               ? 'linear-gradient(180deg, rgba(5,5,7,0.88) 0%, rgba(5,5,7,0.72) 100%)'
               : 'linear-gradient(180deg, rgba(5,5,7,0.72) 0%, rgba(5,5,7,0.28) 55%, rgba(5,5,7,0) 100%)',
-            backdropFilter: condensed ? 'blur(14px)' : 'blur(2px)',
-            WebkitBackdropFilter: condensed ? 'blur(14px)' : 'blur(2px)',
+            /*
+             * Blur ONLY when condensed, where this layer is exactly the height
+             * of the bar. At rest it is 160% tall so it hangs below the
+             * progress line, and a backdrop-filter has a hard edge — that left
+             * a visibly blurred band sitting under the line with nothing to
+             * explain it. The gradient alone fades out cleanly.
+             */
+            backdropFilter: condensed ? 'blur(14px)' : 'none',
+            WebkitBackdropFilter: condensed ? 'blur(14px)' : 'none',
           }}
         />
 

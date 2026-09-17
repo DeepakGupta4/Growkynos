@@ -67,45 +67,5 @@ export function buildHeroIntro(scope, { reducedMotion = false, delay = 0 } = {})
   return tl
 }
 
-/**
- * HERO → FIRST WORLD
- * ------------------
- * Scroll drives the statement back into depth while the interface panel that
- * replaces it rises and takes focus. The two are choreographed on one timeline
- * so the handover is continuous rather than two separate reveals.
- */
-export function buildHeroScrollHandoff(scope, { reducedMotion = false, onProgress } = {}) {
-  if (reducedMotion) return null
-
-  const tl = gsap.timeline({
-    scrollTrigger: {
-      trigger: scope,
-      start: 'top top',
-      end: '+=120%',
-      scrub: SCRUB,
-      pin: true,
-      anticipatePin: 1,
-      onUpdate: (self) => onProgress?.(self.progress),
-    },
-  })
-
-  tl.to('[data-hero-type]', { yPercent: -18, z: -640, rotateX: 26, opacity: 0, ease: 'power2.in' }, 0)
-    .to('[data-hero-meta], [data-hero-actions]', { autoAlpha: 0, y: -40 }, 0)
-    .to('[data-hv]', { z: 420, opacity: 0, stagger: 0.04, ease: 'power2.in' }, 0)
-    .fromTo(
-      '[data-hero-interface]',
-      { yPercent: 34, z: -520, opacity: 0, rotateX: 18 },
-      { yPercent: 0, z: 0, opacity: 1, rotateX: 0, ease: 'power2.out' },
-      0.28,
-    )
-    .fromTo(
-      '[data-hero-interface-row]',
-      { yPercent: 60, opacity: 0 },
-      { yPercent: 0, opacity: 1, stagger: 0.06, ease: 'power2.out' },
-      0.44,
-    )
-
-  return tl
-}
 
 export { ScrollTrigger }
