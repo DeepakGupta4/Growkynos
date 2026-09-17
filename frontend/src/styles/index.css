@@ -22,6 +22,13 @@
      */
     --accent: #c6a87c;
 
+    /*
+     * Where the hero product panel begins. On a wide screen it sits beside the
+     * statement and starts just under the nav; on a phone there is no beside,
+     * so it takes the lower half and the statement keeps the upper one.
+     */
+    --hero-visual-top: var(--nav-h);
+
     /* Depth / atmosphere */
     --atmos-x: 50%;
     --atmos-y: 40%;
@@ -45,6 +52,17 @@
     :root {
       --gutter: 2.5rem;
       --nav-h: 5.25rem;
+    }
+  }
+
+  /* Below the two-column hero: the product takes the lower half of the frame
+     instead of sharing a row with the statement. */
+  @media (max-width: 1023px) {
+    :root {
+      /* A plain percentage collided on short phones: 58% of 740px is 429px
+         and the text block ends at 482px. The floor keeps the panel below the
+         copy on a 360x740 as well as a 430x932. */
+      --hero-visual-top: max(58%, 32.5rem);
     }
   }
 

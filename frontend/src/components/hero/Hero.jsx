@@ -17,7 +17,7 @@ const HOLD_MS = 2600
 
 export function Hero() {
   const rootRef = useRef(null)
-  const { reducedMotion, booted } = useExperience()
+  const { reducedMotion, booted, isMobile } = useExperience()
   const { go } = useTransition()
 
   /* Which beat the hero is on. WordCycle commits this at the exact frame the
@@ -133,7 +133,7 @@ export function Hero() {
         side, so the statement no longer has to stretch to fill the viewport.
       */}
       <div
-        className="shell relative z-20 flex h-full items-center pb-16"
+        className="shell relative z-20 flex h-full items-start pb-8 lg:items-center lg:pb-16"
         style={{ paddingTop: 'calc(var(--nav-h) + 2.75rem)' }}
       >
         <div data-hero-type className="w-full max-w-[36rem] preserve-3d lg:max-w-[40rem]">
@@ -252,7 +252,7 @@ export function Hero() {
               */}
               <p
                 data-hero-swap
-                className="hidden font-mono text-[11px] uppercase tracking-[0.13em] text-mist [@media(min-height:820px)]:block"
+                className="hidden font-mono text-[11px] uppercase tracking-[0.13em] text-mist lg:[@media(min-height:820px)]:block"
               >
                 {story.line}
               </p>
@@ -271,7 +271,7 @@ export function Hero() {
                   rather than staying gold on a magenta ground. */}
               <Button
                 onClick={() => go('/contact', { label: 'BEGIN A PROJECT' })}
-                size="lg"
+                size={isMobile ? 'md' : 'lg'}
                 tint={look.key}
                 tintGlow={look.glow}
               >
@@ -280,7 +280,7 @@ export function Hero() {
               </Button>
               <Button
                 variant="ghost"
-                size="lg"
+                size={isMobile ? 'md' : 'lg'}
                 tint={look.key}
                 tintGlow={look.glow}
                 onClick={() => scrollTo('#services', { duration: 1.8 })}

@@ -4,7 +4,7 @@ import { heroStory } from '../../data/brand'
 import { getService } from '../../data/services'
 import { getProject } from '../../data/projects'
 import { HeroScene } from './HeroScenes'
-import { HeroLaptop } from './HeroLaptop'
+import { SceneShell } from './SceneShell'
 import { useExperience } from '../../context/ExperienceContext'
 
 /**
@@ -71,7 +71,7 @@ export function HeroVisual({ slideIndex = 0 }) {
   const captionRef = useRef(null)
   const [fit, setFit] = useState({ s: 1, dx: 0, dy: 0 })
   const [brokenVideo, setBrokenVideo] = useState({})
-  const { reducedMotion, booted, quality } = useExperience()
+  const { reducedMotion, booted, quality, isMobile } = useExperience()
 
   const slide = heroStory[slideIndex] ?? heroStory[0]
   const service = getService(slide.serviceId)
@@ -217,16 +217,23 @@ export function HeroVisual({ slideIndex = 0 }) {
        * reached up into the navbar and lit it from underneath.
        */
       className="pointer-events-none absolute bottom-0 right-0 z-10 w-full overflow-hidden lg:w-[55%] xl:w-[53%]"
-      style={{ top: 'var(--nav-h)' }}
+      /* On a phone there is no "beside": the panel takes the lower part of the
+         frame and the statement keeps the upper one. See --hero-visual-top. */
+      style={{ top: 'var(--hero-visual-top, var(--nav-h))' }}
     >
       {/*
-        Hidden below sm: on a phone this half spans the full width and the
-        statement sits on top of it, so the laptop landed under the copy and the
-        buttons. The backdrop still carries the frame there.
+        Shown at every size now. It used to be hidden below `sm` because the
+        panel spanned the whole hero and the laptop ended up underneath the copy
+        and the buttons — a positioning problem, not a reason to drop the
+        product from every phone, which is where most people will see this.
       */}
-      <div className="absolute inset-0 hidden items-center justify-center sm:flex">
-        <div ref={stageRef} data-hv className="w-[86%] max-w-[720px] will-change-transform">
-          <HeroLaptop tint={look.key} video={videoSrc}>
+      <div className="absolute inset-0 flex items-center justify-center">
+        <div
+          ref={stageRef}
+          data-hv
+          className="w-[94%] max-w-[720px] will-change-transform sm:w-[86%]"
+        >
+          <SceneShell laptop={!isMobile} tint={look.key} video={videoSrc}>
             <div ref={frameRef} className="relative h-full w-full">
               <div className="absolute inset-0 flex items-center justify-center">
                 <div
@@ -244,7 +251,7 @@ export function HeroVisual({ slideIndex = 0 }) {
                 </div>
               </div>
             </div>
-          </HeroLaptop>
+          </SceneShell>
           {/* A file that 404s or will not decode reverts to the built scene. */}
           {videoSrc ? (
             <video
