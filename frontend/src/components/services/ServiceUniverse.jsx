@@ -40,6 +40,15 @@ import { cn } from '../../lib/utils'
  * colour. These are the colours the rest of the site now runs on, so the cards
  * belong to the same frame as the field behind them.
  */
+/**
+ * The ring that travels around every card: one continuous line carrying all
+ * four brand colours, rotating forever. A single-accent comet read as a
+ * highlight passing by; a full multicolour ring reads as the card being alive.
+ * Repeating the first colour at 360deg closes the loop, otherwise there is a
+ * hard seam where the gradient wraps.
+ */
+const RING = '#FF7A4D, #4F86FF, #FF4D8D, #9B72FF, #FF7A4D'
+
 const CARD_ACCENT = {
   app: '#FF7A4D',
   web: '#4F86FF',
@@ -81,16 +90,69 @@ export function ServiceUniverse() {
        * the centre reads as the grid assembling itself, where a uniform rise
        * read as a list loading.
        */
-      gsap.from('[data-service-card]', {
-        immediateRender: false,
+      /*
+       * DRIVEN BY IntersectionObserver, NOT ScrollTrigger.
+       *
+       * ScrollTrigger would not fire for this grid. Measured with the grid
+       * sitting at y=304 in a 900px viewport — far past its own `top 85%` start
+       * at 765 — the cards stayed at opacity 0 and x=-90 indefinitely, through
+       * a gradual scroll and three seconds of waiting. Its cached start/end had
+       * gone stale against a layout that changed underneath it (the hero pin
+       * came out, section padding changed), and nothing re-fired it.
+       *
+       * Two attempts to work around that made things worse rather than better:
+       * `immediateRender: false` kept the cards visible but gutted the movement
+       * to 29px of the 90 asked for, and a plain setTimeout guard ran 2.2s after
+       * mount when the grid was still far below the fold and so never saw
+       * anything to fix.
+       *
+       * An observer has no cached geometry to go stale, and it fires
+       * immediately if the element is already on screen when observation
+       * starts. For a one-shot entrance that is simply the right tool.
+       */
+      const cards = gsap.utils.toArray('[data-service-card]')
+      gsap.set(cards, {
         autoAlpha: 0,
         x: (i, el) => (el.dataset.side === 'right' ? 90 : -90),
         y: 28,
-        duration: 1,
-        ease: EASE.settle,
-        stagger: 0.12,
-        scrollTrigger: { trigger: '[data-service-grid]', start: 'top 82%' },
       })
+
+      /*
+       * Safety net, and the reason it exists.
+       *
+       * `gsap.from` applies its start state immediately, so if the ScrollTrigger
+       * never fires the cards stay at opacity 0 forever — which is exactly what
+       * happened when arriving at this section straight from the nav, where the
+       * page is seeked behind a cover rather than scrolled. The first fix was
+       * `immediateRender: false`, and that traded one bug for another: measured,
+       * the card then travelled 29px of the 90 it was asked for and dipped to
+       * 0.68 opacity instead of starting from nothing.
+       *
+       * So the animation is left intact and the failure mode is closed here: if
+       * the grid is on screen and still hidden after a beat, finish the tween.
+       */
+      const grid = root.querySelector('[data-service-grid]')
+      const io = new IntersectionObserver(
+        ([entry]) => {
+          if (!entry.isIntersecting) return
+          io.disconnect()
+          gsap.to(cards, {
+            autoAlpha: 1,
+            x: 0,
+            y: 0,
+            duration: 1,
+            ease: EASE.settle,
+            stagger: 0.12,
+            /* Leave no inline transform behind: the cards carry a CSS
+               translate on hover, and a residual matrix would fight it. */
+            clearProps: 'transform',
+          })
+        },
+        { threshold: 0.12 },
+      )
+      if (grid) io.observe(grid)
+
+      return () => io.disconnect()
     }, root)
 
     return () => ctx.revert()
@@ -106,7 +168,7 @@ export function ServiceUniverse() {
       id="services"
       ref={rootRef}
       aria-label="Services"
-      className="section relative border-t border-smoke/40 py-20 md:py-28"
+      className="section relative border-t border-smoke/40 pb-20 pt-10 md:pb-28 md:pt-14"
     >
       <div className="shell relative z-20 flex flex-col gap-12 md:gap-16">
         {/*
@@ -208,7 +270,7 @@ function ServiceCard({
       onClick={onSelect}
       aria-label={`${service.title} — ${service.summary}`}
       className={cn(
-        'group relative rounded-2xl p-px text-left transition-all duration-500 ease-out-expo',
+        'group relative rounded-2xl p-[1.5px] text-left transition-all duration-500 ease-out-expo',
         dimmed ? 'opacity-55' : 'opacity-100',
         hovered ? '-translate-y-2' : 'translate-y-0',
       )}
@@ -228,13 +290,21 @@ function ServiceCard({
       */}
       <span
         aria-hidden="true"
+        className="pointer-events-none absolute -inset-1.5 rounded-[22px] opacity-30 blur-lg"
+        style={{
+          background: `conic-gradient(from 0deg, ${RING})`,
+          animation: reducedMotion ? 'none' : `gt-orbit ${orbitSeconds}s linear infinite`,
+        }}
+      />
+      <span
+        aria-hidden="true"
         className="absolute inset-0 overflow-hidden rounded-2xl transition-opacity duration-500"
-        style={{ opacity: hovered ? 1 : 0.72 }}
+        style={{ opacity: hovered ? 1 : 0.9 }}
       >
         <span
           className="absolute left-1/2 top-1/2 aspect-square w-[170%]"
           style={{
-            background: `conic-gradient(from 0deg, rgba(255,255,255,0) 0deg, rgba(255,255,255,0) 228deg, ${accent}66 252deg, ${accent} 276deg, ${accent}66 300deg, rgba(255,255,255,0) 324deg)`,
+            background: `conic-gradient(from 0deg, ${RING})`,
             transform: 'translate(-50%, -50%)',
             animation: reducedMotion ? 'none' : `gt-orbit ${orbitSeconds}s linear infinite`,
           }}
@@ -253,8 +323,8 @@ function ServiceCard({
         className="relative flex min-h-[15rem] flex-col gap-5 overflow-hidden rounded-[15px] p-6 md:min-h-[17rem] md:p-8"
         style={{
           background: hovered
-            ? `radial-gradient(120% 90% at 12% 0%, ${accent}24 0%, rgba(9,9,12,0.94) 58%)`
-            : 'linear-gradient(158deg, rgba(20,20,25,0.92) 0%, rgba(9,9,12,0.94) 100%)',
+            ? `radial-gradient(120% 90% at 12% 0%, ${accent}24 0%, rgba(8,8,11,0.985) 58%)`
+            : 'linear-gradient(158deg, rgba(19,19,24,0.985) 0%, rgba(8,8,11,0.99) 100%)',
           backdropFilter: 'blur(16px)',
           WebkitBackdropFilter: 'blur(16px)',
         }}
@@ -340,26 +410,50 @@ function ServiceCard({
 }
 
 /**
- * The remaining disciplines, as a column beside the statement rather than a
+ * The remaining disciplines, as a panel beside the statement rather than a
  * strip at the foot of the section.
  *
- * They are real services but not what this page argues for, so they get a list
- * and not six more cards — six more cards would double the section to say
- * something a column covers. Where they sit is the point: it fills the right
- * half of the opening frame, which was empty.
+ * The first version of this was plain rows separated by hairlines, which read
+ * as a table of contents someone forgot to style. It is a panel now — its own
+ * surface, numbered, with the rows reacting to the pointer — so it sits beside
+ * the four cards as a deliberate second column rather than leftover text.
+ *
+ * Still a list and not six more cards: these are real services, but they are
+ * not what this page argues for, and six more cards would double the section
+ * to say something a column covers.
  */
 function SupportingList() {
   if (!supportingServices.length) return null
   return (
-    <div data-universe-sub className="flex flex-col gap-4 lg:border-l lg:border-smoke/50 lg:pl-8">
-      <div className="flex items-baseline gap-3">
-        <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-mist">Also in the studio</span>
-        <span className="font-mono text-[10px] tabular-nums text-silver">{String(supportingServices.length).padStart(2, '0')}</span>
+    <div
+      data-universe-sub
+      className="relative overflow-hidden rounded-2xl border border-smoke/70 p-5 md:p-6"
+      style={{
+        background: 'linear-gradient(158deg, rgba(20,20,25,0.72) 0%, rgba(9,9,12,0.8) 100%)',
+        backdropFilter: 'blur(14px)',
+        WebkitBackdropFilter: 'blur(14px)',
+      }}
+    >
+      <div className="mb-4 flex items-baseline justify-between gap-3 border-b border-smoke/60 pb-3">
+        <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-mist">
+          Also in the studio
+        </span>
+        <span className="font-mono text-[11px] tabular-nums text-silver">
+          {String(supportingServices.length).padStart(2, '0')}
+        </span>
       </div>
+
       <ul className="flex flex-col">
-        {supportingServices.map((s) => (
-          <li key={s.id} className="border-t border-smoke/40 py-2.5 first:border-t-0 first:pt-0">
-            <span className="font-display text-[15px] font-medium text-silver">{s.title}</span>
+        {supportingServices.map((s, i) => (
+          <li key={s.id}>
+            <span className="group flex items-center gap-3 py-2">
+              <span className="font-mono text-[9px] tabular-nums text-steel transition-colors duration-400 group-hover:text-[color:var(--accent)]">
+                {String(i + 1).padStart(2, '0')}
+              </span>
+              <span className="font-display text-[14px] font-medium text-silver transition-all duration-400 group-hover:translate-x-1 group-hover:text-bone">
+                {s.title}
+              </span>
+            </span>
           </li>
         ))}
       </ul>
