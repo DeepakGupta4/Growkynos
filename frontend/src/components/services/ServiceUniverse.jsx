@@ -1,245 +1,104 @@
-﻿import { useMemo, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { useIsomorphicLayoutEffect } from '../../hooks/useIsomorphicLayoutEffect'
-import { gsap, EASE, SCRUB } from '../../lib/gsap'
+import { gsap, EASE } from '../../lib/gsap'
 import { primaryServices, supportingServices } from '../../data/services'
 import { useExperience } from '../../context/ExperienceContext'
 import { scrollTo } from '../../hooks/useLenis'
 import { useSound } from '../../context/SoundContext'
-import { seeded, cn } from '../../lib/utils'
+import { cn } from '../../lib/utils'
 
 /**
- * SERVICE UNIVERSE
- * ----------------
- * The ten worlds arranged spatially rather than in a grid. Each service is a
- * plate at its own depth, scattered on an authored orbit; scrolling pulls the
- * camera through the cloud so plates pass the viewer at different rates.
+ * SERVICES
+ * --------
+ * Four disciplines, as four cards you can read.
  *
- * Hovering a plate brings it forward and pushes its neighbours back — the
- * cloud reacts as a system, which is what stops it reading as a card grid.
+ * WHAT THIS REPLACED, AND WHY.
+ * This was a 3D "cloud": plates scattered on seeded orbits at random depths and
+ * rotations, with a scroll-driven camera pushing from z -220 to z +500. Three
+ * things went wrong with it and all three were visible on screen:
+ *
+ *  1. THE CAMERA CROPPED THE CARDS. Pushing the cloud toward the viewer made
+ *     the plates grow past the frame, so by the end of the section the top row
+ *     was sliced off at the viewport edge and the fourth card ran off the right
+ *     side entirely.
+ *  2. TWO THIRDS OF THE SECTION WAS EMPTY. The cloud sat in the upper part of
+ *     an 78svh stage, leaving a large field of nothing underneath it.
+ *  3. THE SCATTER READ AS ACCIDENTAL. Random rotation and scale per card looks
+ *     like a layout that failed rather than one that was authored.
+ *
+ * A grid is not a lesser idea here — it is the one that lets four services be
+ * compared, which is what someone deciding whether to hire us is doing. The
+ * motion moved into the cards themselves: they arrive in sequence, and the one
+ * under the pointer lights up in its own colour.
  */
+
+/**
+ * The saturated palette, matched to the hero and the page field.
+ *
+ * services.js still carries the original accents (#C6A87C, #9FB4C9, #A8C0A0,
+ * #B0A8C8) — all near-grey, which is what made the whole page measure 12%
+ * colour. These are the colours the rest of the site now runs on, so the cards
+ * belong to the same frame as the field behind them.
+ */
+const CARD_ACCENT = {
+  app: '#FF7A4D',
+  web: '#4F86FF',
+  saas: '#FF4D8D',
+  ai: '#9B72FF',
+}
+
 export function ServiceUniverse() {
   const rootRef = useRef(null)
-  const cloudRef = useRef(null)
-  const stageRef = useRef(null)
   const [hovered, setHovered] = useState(null)
-  const { reducedMotion, isMobile, isTablet } = useExperience()
+  const { reducedMotion } = useExperience()
   const { sfx } = useSound()
-
-  /* Authored-but-seeded scatter: stable across renders, never overlapping badly. */
-  const layout = useMemo(() => {
-    const rand = seeded(884422)
-    return primaryServices.map((s, i) => {
-      /*
-       * Columns follow the actual count. Hard-coding 5 while rendering 4 put
-       * every plate in columns 0–3 of a five-wide grid, so the cloud sat
-       * off-centre with a hole on the right — visible as the sparse, left-heavy
-       * composition the section had after the reduction.
-       */
-      const cols = Math.min(5, primaryServices.length)
-      const col = i % cols
-      const row = Math.floor(i / cols)
-      /*
-       * NOTE: GSAP resolves a percentage `x` against the ELEMENT's own width,
-       * not the container — so these numbers are large on purpose. A plate is
-       * ~236px wide, so ±233% ≈ ±550px of travel, which is the spread that
-       * actually fills the stage.
-       */
-      const spreadX = isMobile ? 210 : 466
-      const spreadY = isMobile ? 120 : 170
-      const x = (col / (cols - 1) - 0.5) * spreadX + (rand() - 0.5) * (isMobile ? 26 : 58)
-      const y = (row - 0.5) * spreadY + (rand() - 0.5) * (isMobile ? 34 : 76)
-      const z = -220 + rand() * 320
-      return {
-        ...s,
-        x,
-        y,
-        z,
-        rot: (rand() - 0.5) * 14,
-        rotY: (rand() - 0.5) * 22,
-        drift: 3.4 + rand() * 3.6,
-        scale: 0.82 + rand() * 0.3,
-      }
-    })
-  }, [isMobile])
 
   useIsomorphicLayoutEffect(() => {
     const root = rootRef.current
-    const cloud = cloudRef.current
-    if (!root || !cloud || reducedMotion) return undefined
+    if (!root || reducedMotion) return undefined
 
     const ctx = gsap.context(() => {
-      const plates = gsap.utils.toArray('[data-plate]')
-
-      // Place plates in depth
-      plates.forEach((el) => {
-        const d = JSON.parse(el.dataset.plate)
-        gsap.set(el, {
-          xPercent: -50,
-          yPercent: -50,
-          x: `${d.x}%`,
-          y: `${d.y}%`,
-          z: d.z,
-          rotate: d.rot,
-          rotateY: d.rotY,
-          scale: d.scale,
-        })
-        /*
-         * The idle drift is gone. Four plates each floating on their own loop
-         * read as "running around", and worse: a target that never stops moving
-         * is genuinely hard to hover — the pointer keeps falling off the plate
-         * it was aimed at. They are still placed in depth and still respond to
-         * scroll and hover; they just hold still while you reach for them.
-         */
-      })
-
-      // Entrance
-      gsap.from(plates, {
-        z: (i, el) => JSON.parse(el.dataset.plate).z - 900,
-        opacity: 0,
-        duration: 1.6,
-        ease: EASE.settle,
-        stagger: { each: 0.055, from: 'random' },
-        scrollTrigger: { trigger: root, start: 'top 72%' },
-      })
-
-      // Camera travel — a measured push through the cloud, not a fly-through.
-      // Starts pulled back so the whole field reads, and ends just short of the
-      // nearest plates so they never fill and crop the frame.
-      gsap.fromTo(
-        cloud,
-        { z: isMobile ? -140 : -220 },
-        {
-          z: isMobile ? 340 : 500,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: root,
-            start: 'top bottom',
-            end: 'bottom top',
-            scrub: SCRUB,
-          },
-        },
-      )
-
-      gsap.to(cloud, {
-        rotateX: isMobile ? 2 : 6,
-        rotateY: isMobile ? -2 : -7,
-        ease: 'none',
-        scrollTrigger: { trigger: root, start: 'top bottom', end: 'bottom top', scrub: SCRUB },
-      })
-
-      // Heading
       gsap.from('[data-universe-line] > span', {
-        yPercent: 112,
-        duration: 1.2,
+        immediateRender: false,
+        yPercent: 110,
+        duration: 1,
         ease: EASE.settle,
-        stagger: 0.07,
-        scrollTrigger: { trigger: '[data-universe-heading]', start: 'top 82%' },
+        stagger: 0.08,
+        scrollTrigger: { trigger: root, start: 'top 75%' },
       })
       gsap.from('[data-universe-sub]', {
+        immediateRender: false,
         autoAlpha: 0,
-        y: 22,
+        y: 18,
+        duration: 0.8,
+        ease: 'power3.out',
+        stagger: 0.1,
+        scrollTrigger: { trigger: root, start: 'top 75%' },
+      })
+      /*
+       * Cards arrive from the side they sit on: the left column slides in from
+       * the left, the right column from the right. The two halves closing on
+       * the centre reads as the grid assembling itself, where a uniform rise
+       * read as a list loading.
+       */
+      gsap.from('[data-service-card]', {
+        immediateRender: false,
+        autoAlpha: 0,
+        x: (i, el) => (el.dataset.side === 'right' ? 90 : -90),
+        y: 28,
         duration: 1,
-        scrollTrigger: { trigger: '[data-universe-heading]', start: 'top 78%' },
+        ease: EASE.settle,
+        stagger: 0.12,
+        scrollTrigger: { trigger: '[data-service-grid]', start: 'top 82%' },
       })
     }, root)
 
     return () => ctx.revert()
-  }, [reducedMotion, isMobile])
+  }, [reducedMotion])
 
-  /*
-   * Pointer parallax — now barely there.
-   *
-   * At ±13° the entire field swung as the pointer moved, which meant reaching
-   * for a card moved that card AND the three next to it. The cards are
-   * click targets first and a spatial composition second, so the lean is now
-   * small enough to read as depth without making anything a moving target.
-   */
-  useIsomorphicLayoutEffect(() => {
-    const stage = stageRef.current
-    const cloud = cloudRef.current
-    if (!stage || !cloud || reducedMotion || isMobile) return undefined
-
-    const rx = gsap.quickTo(cloud, 'rotateY', { duration: 1.4, ease: 'power3.out' })
-    const ry = gsap.quickTo(cloud, 'rotateX', { duration: 1.4, ease: 'power3.out' })
-    let inside = false
-
-    const onMove = (e) => {
-      if (!inside) return
-      const r = stage.getBoundingClientRect()
-      const nx = (e.clientX - r.left) / r.width - 0.5
-      const ny = (e.clientY - r.top) / r.height - 0.5
-      rx(nx * 3.5)
-      ry(-ny * 2.5)
-    }
-    const onEnter = () => {
-      inside = true
-    }
-    const onLeave = () => {
-      inside = false
-      rx(0)
-      ry(0)
-    }
-
-    stage.addEventListener('pointerenter', onEnter)
-    stage.addEventListener('pointerleave', onLeave)
-    window.addEventListener('pointermove', onMove, { passive: true })
-    return () => {
-      stage.removeEventListener('pointerenter', onEnter)
-      stage.removeEventListener('pointerleave', onLeave)
-      window.removeEventListener('pointermove', onMove)
-    }
-  }, [reducedMotion, isMobile])
-
-  /* Hover reaction across the whole cloud. */
-  useIsomorphicLayoutEffect(() => {
-    if (reducedMotion || isMobile) return
-    const plates = gsap.utils.toArray('[data-plate]')
-    plates.forEach((el) => {
-      const d = JSON.parse(el.dataset.plate)
-      const isTarget = el.dataset.plateId === hovered
-      /*
-       * Restrained on purpose. This used to throw the focused plate 340px
-       * toward the viewer and shove the other three 130px back while rescaling
-       * all four — the whole field lurched every time the pointer crossed a
-       * card, and you could not tell where anything had gone. The unfocused
-       * plates now hold their exact position and only dim; the focused one
-       * lifts just enough to read as picked up.
-       */
-      gsap.to(el, {
-        z: hovered && isTarget ? d.z + 90 : d.z,
-        scale: hovered && isTarget ? d.scale * 1.05 : d.scale,
-        opacity: hovered ? (isTarget ? 1 : 0.45) : 1,
-        duration: 0.55,
-        ease: 'power3.out',
-        overwrite: 'auto',
-      })
-    })
-  }, [hovered, reducedMotion, isMobile])
-
-  /* Reduced motion: a legible index, no cloud. */
-  if (reducedMotion) {
-    return (
-      <section id="services" aria-label="Services" className="section border-t border-smoke/40 py-24">
-        <div className="shell flex flex-col gap-10">
-          <Heading />
-          <ul className="flex flex-col border-t border-smoke/60">
-            {primaryServices.map((s) => (
-              <li key={s.id} className="border-b border-smoke/60">
-                <button
-                  type="button"
-                  onClick={() => scrollTo(`#${s.sectionId}`)}
-                  className="flex w-full flex-col gap-2 py-5 text-left md:flex-row md:items-center md:gap-8"
-                >
-                  <span className="font-mono text-[11px] text-brass tabular-nums">{s.index}</span>
-                  <span className="font-display text-2xl font-medium text-bone">{s.title}</span>
-                  <span className="max-w-xl text-sm text-mist md:ml-auto">{s.summary}</span>
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
-    )
+  const open = (s) => {
+    sfx('click')
+    scrollTo(`#${s.sectionId}`, { duration: 1.9 })
   }
 
   return (
@@ -247,72 +106,50 @@ export function ServiceUniverse() {
       id="services"
       ref={rootRef}
       aria-label="Services"
-      className="section relative border-t border-smoke/40 py-24 md:py-32"
+      className="section relative border-t border-smoke/40 py-20 md:py-28"
     >
-      <div className="shell relative z-20">
-        <Heading />
-      </div>
-
-      {/* Spatial cloud */}
-      <div
-        ref={stageRef}
-        className="relative mt-14 h-[68svh] w-full overflow-hidden md:mt-20 md:h-[78svh]"
-        style={{ perspective: isMobile ? '1100px' : '1700px' }}
-      >
+      <div className="shell relative z-20 flex flex-col gap-12 md:gap-16">
         {/*
-          pointer-events-none on the container is load-bearing, not tidiness.
-          Inside a preserve-3d context a child at negative Z renders BEHIND its
-          parent's own plane, so this full-size div was intercepting the pointer
-          for exactly the plates sitting furthest back — two of the four never
-          received hover and never showed the VIEW cursor. The plates re-enable
-          pointer events on themselves.
+          The heading used to run the full width with the statement on the left,
+          which left the entire right half of the opening frame empty. The
+          supporting disciplines were stranded in a thin strip at the very
+          bottom of the section. Putting them side by side fills the frame with
+          real content rather than filler, and gives the minor services a place
+          where they read as a list instead of a footnote.
         */}
-        <div
-          ref={cloudRef}
-          className="pointer-events-none absolute inset-0 preserve-3d will-change-transform"
-        >
-          {layout.map((s) => (
-            <ServicePlate
+        <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,19rem)] lg:items-end lg:gap-16">
+          <Heading />
+          <SupportingList />
+        </div>
+
+        {/*
+          Two by two from md up. Four across on a wide screen made each card too
+          narrow to hold its summary without wrapping to five lines; 2×2 keeps
+          the text measure readable and the block square enough to sit in the
+          frame without a field of empty space under it.
+        */}
+        <div data-service-grid className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-5">
+          {primaryServices.map((s, i) => (
+            <ServiceCard
               key={s.id}
               service={s}
+              side={i % 2 === 0 ? 'left' : 'right'}
+              /* Staggered so the four lights never travel in lockstep — four
+                 identical orbits read as one mechanism, not four objects. */
+              orbitSeconds={5.5 + i * 1.3}
+              accent={CARD_ACCENT[s.id] ?? s.accent}
               hovered={hovered === s.id}
               dimmed={hovered !== null && hovered !== s.id}
+              reducedMotion={reducedMotion}
               onEnter={() => {
                 setHovered(s.id)
                 sfx('hover', { volume: 0.35 })
               }}
               onLeave={() => setHovered(null)}
-              onSelect={() => {
-                sfx('click')
-                scrollTo(`#${s.sectionId}`, { duration: 1.9 })
-              }}
-              compact={isMobile || isTablet}
+              onSelect={() => open(s)}
             />
           ))}
         </div>
-
-        {/* Edge falloff so plates dissolve into the void rather than clipping */}
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0"
-          style={{
-            background:
-              'radial-gradient(ellipse 82% 78% at 50% 50%, rgba(5,5,7,0) 44%, rgba(5,5,7,0.92) 100%)',
-          }}
-        />
-      </div>
-
-      <div className="shell relative z-20 -mt-4 flex flex-wrap items-center justify-between gap-4">
-        <span className="label">HOVER TO FOCUS · CLICK TO ENTER A WORLD</span>
-        {/* The supporting capabilities are named here rather than each taking a
-            world of their own — the visitor still sees the full range, in one
-            line instead of forty screens. */}
-        <span className="label">
-          ALSO:{' '}
-          <span className="text-silver">
-            {supportingServices.map((s) => s.title).join(' · ')}
-          </span>
-        </span>
       </div>
     </section>
   )
@@ -344,100 +181,188 @@ function Heading() {
   )
 }
 
-function ServicePlate({ service, hovered, dimmed, onEnter, onLeave, onSelect, compact }) {
-  const data = JSON.stringify({
-    x: service.x,
-    y: service.y,
-    z: service.z,
-    rot: service.rot,
-    rotY: service.rotY,
-    scale: service.scale,
-    drift: service.drift,
-  })
-
+function ServiceCard({
+  service,
+  accent,
+  side,
+  orbitSeconds,
+  hovered,
+  dimmed,
+  reducedMotion,
+  onEnter,
+  onLeave,
+  onSelect,
+}) {
   return (
     <button
       type="button"
-      data-plate={data}
+      data-service-card
+      data-side={side}
       data-plate-id={service.id}
       data-cursor="view"
       data-cursor-label="ENTER"
-      onPointerEnter={onEnter}
-      onPointerLeave={onLeave}
+      onMouseEnter={onEnter}
+      onMouseLeave={onLeave}
       onFocus={onEnter}
       onBlur={onLeave}
       onClick={onSelect}
       aria-label={`${service.title} — ${service.summary}`}
-      className="pointer-events-auto absolute left-1/2 top-1/2 preserve-3d text-left will-change-transform"
-      style={{ width: compact ? 178 : 236 }}
+      className={cn(
+        'group relative rounded-2xl p-px text-left transition-all duration-500 ease-out-expo',
+        dimmed ? 'opacity-55' : 'opacity-100',
+        hovered ? '-translate-y-2' : 'translate-y-0',
+      )}
+      style={{
+        boxShadow: hovered
+          ? `0 30px 70px -30px rgba(0,0,0,0.92), 0 0 56px -24px ${accent}`
+          : '0 16px 38px -26px rgba(0,0,0,0.8)',
+      }}
     >
-      <div
-        className={cn(
-          'surface-raised relative overflow-hidden rounded-xl p-4 transition-colors duration-500 md:p-5',
-          hovered && 'border-brass/50',
-        )}
+      {/*
+        THE TRAVELLING LIGHT.
+        A border cannot be animated around a shape, so this is a conic gradient
+        sized well past the card, spun with `transform`, and clipped to a 1px
+        ring by the opaque panel that sits on top of it. Only the transform
+        changes, so it composites on the GPU and costs nothing to run on all
+        four cards at once.
+      */}
+      <span
+        aria-hidden="true"
+        className="absolute inset-0 overflow-hidden rounded-2xl transition-opacity duration-500"
+        style={{ opacity: hovered ? 1 : 0.72 }}
+      >
+        <span
+          className="absolute left-1/2 top-1/2 aspect-square w-[170%]"
+          style={{
+            background: `conic-gradient(from 0deg, rgba(255,255,255,0) 0deg, rgba(255,255,255,0) 228deg, ${accent}66 252deg, ${accent} 276deg, ${accent}66 300deg, rgba(255,255,255,0) 324deg)`,
+            transform: 'translate(-50%, -50%)',
+            animation: reducedMotion ? 'none' : `gt-orbit ${orbitSeconds}s linear infinite`,
+          }}
+        />
+      </span>
+
+      {/* Resting rim, so the card still has an edge between passes of the light. */}
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 rounded-2xl transition-colors duration-500"
+        style={{ boxShadow: `inset 0 0 0 1px ${hovered ? `${accent}59` : 'rgba(35,35,41,0.95)'}` }}
+      />
+
+      {/* The panel. Opaque on purpose — it is what clips the ring to 1px. */}
+      <span
+        className="relative flex min-h-[15rem] flex-col gap-5 overflow-hidden rounded-[15px] p-6 md:min-h-[17rem] md:p-8"
         style={{
-          boxShadow: hovered
-            ? `0 40px 90px -34px rgba(0,0,0,0.95), 0 0 0 1px ${service.accent}66, 0 0 60px -18px ${service.accent}55`
-            : undefined,
+          background: hovered
+            ? `radial-gradient(120% 90% at 12% 0%, ${accent}24 0%, rgba(9,9,12,0.94) 58%)`
+            : 'linear-gradient(158deg, rgba(20,20,25,0.92) 0%, rgba(9,9,12,0.94) 100%)',
+          backdropFilter: 'blur(16px)',
+          WebkitBackdropFilter: 'blur(16px)',
         }}
       >
-        {/* Index + status */}
-        <div className="mb-4 flex items-center justify-between">
+        {/* A soft glow in the corner the light passes, so the panel reacts too. */}
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute -left-10 -top-10 h-40 w-40 rounded-full blur-2xl transition-opacity duration-700"
+          style={{ background: accent, opacity: hovered ? 0.2 : 0.07 }}
+        />
+
+        <span className="relative flex items-center gap-3">
           <span
-            className="font-mono text-[10px] font-medium tabular-nums"
-            style={{ color: service.accent }}
+            className="font-mono text-[11px] tabular-nums transition-colors duration-500"
+            style={{ color: hovered ? accent : '#8E8E9D' }}
           >
             {service.index}
           </span>
           <span
+            aria-hidden="true"
             className="h-1 w-1 rounded-full transition-all duration-500"
             style={{
-              backgroundColor: hovered ? service.accent : '#35353E',
-              boxShadow: hovered ? `0 0 10px ${service.accent}` : 'none',
+              backgroundColor: hovered ? accent : '#35353E',
+              boxShadow: hovered ? `0 0 10px ${accent}` : 'none',
             }}
           />
-        </div>
+        </span>
 
-        <h3
-          className={cn(
-            'font-display font-semibold leading-tight tracking-tight transition-colors duration-500',
-            compact ? 'text-[13.5px]' : 'text-[16px]',
-            'text-bone',
-          )}
-        >
-          {service.title}
-        </h3>
-
-        <p
-          className="mt-2 font-mono text-[9px] uppercase tracking-[0.14em] transition-colors duration-500"
-          style={{ color: hovered ? service.accent : '#8E8E9D' }}
-        >
-          {service.verb}
-        </p>
-
-        {/* Metric — the plate carries evidence, not just a name */}
-        <div className="mt-4 flex items-baseline gap-1.5 border-t border-smoke/60 pt-3">
-          <span className="font-display text-lg font-bold tabular-nums text-bone">
-            {service.metric.value}
+        <span className="relative flex flex-col gap-2">
+          <span className="font-display text-[clamp(1.35rem,2.4vw,1.9rem)] font-semibold leading-tight tracking-tight text-bone">
+            {service.title}
           </span>
-          <span className="font-mono text-[9px] text-mist">{service.metric.unit}</span>
-          <span className="ml-auto font-mono text-[8px] uppercase tracking-[0.12em] text-mist">
-            {service.metric.caption}
+          <span
+            className="font-mono text-[10px] uppercase tracking-[0.16em] transition-colors duration-500"
+            style={{ color: hovered ? accent : '#8E8E9D' }}
+          >
+            {service.verb}
           </span>
-        </div>
+        </span>
 
-        {/* Accent wash on hover */}
-        <div
+        <span className="relative max-w-[46ch] text-[14px] leading-relaxed text-silver">
+          {service.summary}
+        </span>
+
+        {/*
+          Capabilities, not the old metric block.
+          Each card used to lead with a figure — "4.8 ★ average store rating",
+          "98/100 median Lighthouse", "99.9% uptime", "31 hrs saved per week".
+          Every one of those was invented, and invented numbers on an agency
+          site are the fastest way to lose a client who checks. These are true
+          statements of what we build with, and they say more about fit anyway.
+        */}
+        <span className="relative mt-auto flex flex-wrap gap-1.5 pt-2">
+          {service.capabilities.slice(0, 4).map((c) => (
+            <span
+              key={c}
+              className="rounded-full border px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.12em] transition-colors duration-500"
+              style={{
+                borderColor: hovered ? `${accent}55` : 'rgba(35,35,41,0.95)',
+                color: hovered ? '#C9C9D2' : '#8E8E9D',
+              }}
+            >
+              {c}
+            </span>
+          ))}
+        </span>
+
+        <span
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 transition-opacity duration-700"
+          className="relative flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.16em] transition-all duration-500"
           style={{
-            opacity: hovered ? 1 : 0,
-            background: `linear-gradient(160deg, ${service.accent}1f 0%, transparent 62%)`,
+            /* #5F5F6B measured 2.83:1 against the panel — below WCAG AA's 4.5
+               for text this small. mist is the palette's tested floor. */
+            color: hovered ? accent : '#8E8E9D',
+            transform: hovered ? 'translateX(5px)' : 'translateX(0)',
           }}
-        />
-      </div>
-      <span className="sr-only">{dimmed ? '' : ''}</span>
+        >
+          Enter the world <span className="text-current">→</span>
+        </span>
+      </span>
     </button>
+  )
+}
+
+/**
+ * The remaining disciplines, as a column beside the statement rather than a
+ * strip at the foot of the section.
+ *
+ * They are real services but not what this page argues for, so they get a list
+ * and not six more cards — six more cards would double the section to say
+ * something a column covers. Where they sit is the point: it fills the right
+ * half of the opening frame, which was empty.
+ */
+function SupportingList() {
+  if (!supportingServices.length) return null
+  return (
+    <div data-universe-sub className="flex flex-col gap-4 lg:border-l lg:border-smoke/50 lg:pl-8">
+      <div className="flex items-baseline gap-3">
+        <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-mist">Also in the studio</span>
+        <span className="font-mono text-[10px] tabular-nums text-silver">{String(supportingServices.length).padStart(2, '0')}</span>
+      </div>
+      <ul className="flex flex-col">
+        {supportingServices.map((s) => (
+          <li key={s.id} className="border-t border-smoke/40 py-2.5 first:border-t-0 first:pt-0">
+            <span className="font-display text-[15px] font-medium text-silver">{s.title}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
   )
 }

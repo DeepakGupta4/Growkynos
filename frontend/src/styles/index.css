@@ -382,6 +382,20 @@ html[data-reduced-motion='true'] .line-mask > * {
   }
 }
 
+/*
+ * A light travelling around a card's edge.
+ *
+ * The rotating element is a conic gradient sized well past the card and then
+ * clipped to a 1px ring by an opaque inner panel — rotating a *border* is not
+ * possible, but rotating a big gradient behind a mask is, and it composites on
+ * the GPU because only `transform` changes.
+ */
+@keyframes gt-orbit {
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
 @keyframes gt-drift {
   0% {
     transform: translate3d(0, 0, 0);
