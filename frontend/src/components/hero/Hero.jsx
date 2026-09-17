@@ -5,13 +5,13 @@ import { brand, heroStory } from '../../data/brand'
 import { WordCycle } from './WordCycle'
 import { HeroSequence } from './HeroSequence'
 import { services } from '../../data/services'
-import { HeroBackdrop } from './HeroBackdrop'
 import { HeroVisual, HERO_LOOK } from './HeroVisual'
 import { Button } from '../ui/Button'
 import { useExperience } from '../../context/ExperienceContext'
 import { useTransition } from '../transitions/TransitionProvider'
 import { scrollTo } from '../../hooks/useLenis'
 import { buildHeroIntro, buildHeroScrollHandoff } from '../../animations/heroAnimations'
+import { setAccent } from '../../lib/accent'
 
 /** One place to tune the hero's rhythm — the word, the bar and the scene share it. */
 const HOLD_MS = 2600
@@ -30,15 +30,30 @@ export function Hero() {
   const look = HERO_LOOK[story.scene] ?? HERO_LOOK.app
 
   /*
-   * Publish the active service colour to the document, so chrome that lives
-   * outside the hero — the nav, its sliding indicator, the scroll progress
-   * line — can follow the same cut. Cleared on unmount so routes without a
-   * hero fall back to brass rather than keeping whatever was last on screen.
+   * Publish the active service colour, so everything that has to agree on
+   * colour — the field behind the page, the nav's indicator, the progress
+   * line, the CTA — follows the hero's cut.
+   *
+   * ONLY WHILE THE HERO IS ON SCREEN. The word cycle keeps running after the
+   * hero has scrolled away, and without this gate each of its beats kept
+   * overwriting the accent that the section further down had just set —
+   * Services was showing the AI violet instead of its own brass, changing
+   * every few seconds, with no hero anywhere in sight to explain it.
    */
+  const heroInView = useRef(true)
   useEffect(() => {
-    document.documentElement.style.setProperty('--accent', look.key)
-    return () => document.documentElement.style.removeProperty('--accent')
-  }, [look.key])
+    const onScroll = () => {
+      heroInView.current = window.scrollY < window.innerHeight * 0.8
+    }
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
+  useEffect(() => {
+    if (!heroInView.current) return
+    setAccent({ key: look.key, deep: look.deep })
+  }, [look.key, look.deep])
 
   useIsomorphicLayoutEffect(() => {
     if (!booted) return undefined
@@ -91,7 +106,6 @@ export function Hero() {
         the full section while the colour wash covered only the right half, and
         the two met at a hard vertical line down the middle of the frame.
       */}
-      <HeroBackdrop look={look} />
       <div className="pointer-events-none absolute inset-0 grid-field opacity-[0.22] mask-fade-edges" />
       {/*
         Reading scrim, spanning the FULL width. It has to start at the edge of
@@ -128,7 +142,7 @@ export function Hero() {
       */}
       <div
         className="shell relative z-20 flex h-full items-center pb-16"
-        style={{ paddingTop: 'calc(var(--nav-h) + 1.5rem)' }}
+        style={{ paddingTop: 'calc(var(--nav-h) + 2.75rem)' }}
       >
         <div data-hero-type className="w-full max-w-[36rem] preserve-3d lg:max-w-[40rem]">
           {/*

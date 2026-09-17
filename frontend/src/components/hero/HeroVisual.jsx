@@ -22,8 +22,8 @@ import { useExperience } from '../../context/ExperienceContext'
  *
  * The colour wash that used to live here is gone — it covered only this half
  * and met the star canvas at a hard vertical line, which is why the hero
- * rendered as two different backgrounds. Colour is HeroBackdrop's job now, and
- * it spans the whole section.
+ * rendered as two different backgrounds. Colour is PageField's job now — one
+ * field behind the entire site, whose hue follows the active section.
  */
 
 /**
@@ -210,7 +210,14 @@ export function HeroVisual({ slideIndex = 0 }) {
     <div
       ref={rootRef}
       aria-hidden="true"
-      className="pointer-events-none absolute inset-y-0 right-0 z-10 w-full overflow-hidden lg:w-[55%] xl:w-[53%]"
+      /*
+       * Starts BELOW the nav, not at the top of the section. At inset-y-0 this
+       * panel ran the full height of the hero — behind the bar — so the
+       * laptop's ambient bloom, which extends well past the machine itself,
+       * reached up into the navbar and lit it from underneath.
+       */
+      className="pointer-events-none absolute bottom-0 right-0 z-10 w-full overflow-hidden lg:w-[55%] xl:w-[53%]"
+      style={{ top: 'var(--nav-h)' }}
     >
       {/*
         Hidden below sm: on a phone this half spans the full width and the

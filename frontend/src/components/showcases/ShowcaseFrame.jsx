@@ -122,7 +122,11 @@ export function ShowcaseFrame({
         <div
           data-showcase-approach
           aria-hidden="true"
-          className="pointer-events-none absolute inset-x-0 top-1/2 z-10 -translate-y-1/2 px-gutter"
+          /* Centred in the area BELOW the nav, not in the raw viewport — the
+             nav is fixed and ~97px tall, so true-centre sat the title nearly
+             50px into the bar. */
+          className="pointer-events-none absolute inset-x-0 z-10 -translate-y-1/2 px-gutter"
+          style={{ top: 'calc(50% + var(--nav-h) / 2)' }}
         >
           <div className="mx-auto flex w-full max-w-shell items-baseline gap-5">
             <span
@@ -137,14 +141,12 @@ export function ShowcaseFrame({
           </div>
         </div>
 
-        {/* Ambient world tint — each world has its own light temperature */}
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0"
-          style={{
-            background: `radial-gradient(70vmax 55vmax at 50% 32%, ${service.accent}14 0%, rgba(5,5,7,0) 68%)`,
-          }}
-        />
+        {/*
+          The flat accent wash came out. PageField now lights the whole site
+          with the section's own colour, and a second static radial on top of a
+          moving field is the "five motifs" problem this frame already warns
+          about — one dominant treatment per section, not two.
+        */}
         {/*
           The fine grid came out. Each world stage was stacking three texture
           layers — backdrop artwork, accent wash, and this grid — on top of the
@@ -153,8 +155,16 @@ export function ShowcaseFrame({
           fight all of them.
         */}
 
-        {/* Stage */}
-        <div className="relative flex flex-1 items-center justify-center overflow-hidden perspective-far">
+        {/*
+          Stage. Padded clear of the fixed nav: the world pins at `top top`, so
+          without this the top ~97px of every composition sat behind the bar.
+          Measured before the fix — Signalyard's title and the AI graph's INPUT
+          and RETRIEVE nodes were under it for 9 of 11 sampled scroll positions.
+        */}
+        <div
+          className="relative flex flex-1 items-center justify-center overflow-hidden perspective-far"
+          style={{ paddingTop: 'calc(var(--nav-h) + 1.75rem)' }}
+        >
           {children}
         </div>
 

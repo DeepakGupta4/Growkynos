@@ -351,6 +351,9 @@ export function ProjectUniverse() {
         {/* The volume */}
         <div
           className="relative flex flex-1 items-center justify-center overflow-hidden"
+          /* Clear of the fixed nav — this stage pins at the top of the
+             viewport, so without it the convergence ran under the bar. */
+          style={{ paddingTop: 'calc(var(--nav-h) + 1.75rem)' }}
           style={{ perspective: isMobile ? '1200px' : '2000px' }}
         >
           <div ref={fieldRef} className="absolute inset-0 preserve-3d will-change-transform">

@@ -18,8 +18,8 @@ const BASE = process.argv[3] ?? 'http://localhost:5173'
 mkdirSync(OUT, { recursive: true })
 
 const exe = [
-  'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
-  'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe',
+  'C:/Program Files/Google/Chrome/Application/chrome.exe',
+  'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe',
 ].find((p) => existsSync(p))
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms))

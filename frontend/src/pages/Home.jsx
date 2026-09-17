@@ -14,8 +14,11 @@ import { ProjectUniverse } from '../components/projects/ProjectUniverse'
 import { StudioSection } from '../components/studio/StudioSection'
 import { TechConstellation } from '../components/technology/TechConstellation'
 import { ContactCta } from '../components/contact/ContactCta'
+import { useEffect } from 'react'
 import { useSEO } from '../hooks/useSEO'
 import { brand } from '../data/brand'
+import { ScrollTrigger } from '../lib/gsap'
+import { SECTION_ACCENT, setAccent, resetAccent } from '../lib/accent'
 
 export default function Home() {
   useSEO({
@@ -23,6 +26,38 @@ export default function Home() {
     description: brand.seo.description,
     path: '/',
   })
+
+  /*
+   * Hand the page's colour over to whichever section the reader is in.
+   *
+   * One field sits behind the whole site (see PageField) and everything that
+   * has to agree on colour reads from the same store — the field itself, the
+   * nav's indicator, the scroll progress line, the hero's CTA. Driving it from
+   * here rather than from inside each section keeps the sequence in one place,
+   * next to the section order it belongs to.
+   *
+   * The hero is absent from the map on purpose: it changes colour four times
+   * on its own beat, so it owns its own accent while it is on screen.
+   */
+  useEffect(() => {
+    const triggers = Object.entries(SECTION_ACCENT)
+      .map(([id, accent]) => {
+        const el = document.getElementById(id)
+        if (!el) return null
+        return ScrollTrigger.create({
+          trigger: el,
+          start: 'top 60%',
+          end: 'bottom 40%',
+          onToggle: (self) => self.isActive && setAccent(accent),
+        })
+      })
+      .filter(Boolean)
+
+    return () => {
+      triggers.forEach((t) => t.kill())
+      resetAccent()
+    }
+  }, [])
 
   return (
     <>

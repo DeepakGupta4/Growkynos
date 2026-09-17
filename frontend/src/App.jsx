@@ -8,7 +8,7 @@ import { BootSequence } from './components/boot/BootSequence'
 import { Nav } from './components/navigation/Nav'
 import { CustomCursor } from './components/ui/CustomCursor'
 import { Grain } from './components/effects/Grain'
-import { Atmosphere } from './components/effects/Atmosphere'
+import { PageField } from './components/ui/PageField'
 import { Footer } from './components/layout/Footer'
 import { ErrorBoundary } from './components/layout/ErrorBoundary'
 import { useLenisScroll } from './hooks/useLenis'
@@ -52,7 +52,10 @@ function Shell() {
         Skip to content
       </a>
 
-      <Atmosphere />
+      {/* One field behind the whole site; its colour follows the active
+          section. Replaces the pointer-following CSS wash — two ambient
+          layers on the same page read as noise, not art direction. */}
+      <PageField />
       {!booted && <BootSequence />}
 
       {/* Persistent chrome lives outside the stage so it never travels with a route. */}

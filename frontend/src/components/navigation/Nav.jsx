@@ -49,6 +49,53 @@ export function Nav() {
   const [chapter, setChapter] = useState(chapters[0])
   const isHome = pathname === '/'
 
+  /*
+   * PUBLISH THE REAL HEIGHT.
+   *
+   * `--nav-h` used to be a hand-written 4.5rem / 5.25rem, and the bar actually
+   * renders at 97px — padding, the capsule and the progress line add up past
+   * the guess. Every clearance on the site is derived from this variable, so
+   * all of them were 13px short: the hero statement crowded the bar and the
+   * laptop's bloom reached up behind it.
+   *
+   * Measuring it here means the bar owns its own dimension, and anything that
+   * has to stay clear of it stays correct when the bar changes — including
+   * when it condenses on scroll.
+   */
+  useEffect(() => {
+    const el = navRef.current
+    if (!el) return undefined
+
+    /*
+     * The TALLEST height, not the current one. The bar condenses on scroll, and
+     * publishing the live value would shrink every clearance mid-scroll —
+     * the hero statement would visibly step upward as you started scrolling.
+     * The resting height is the one content has to stay clear of.
+     */
+    let tallest = 0
+    const publish = () => {
+      const h = el.getBoundingClientRect().height
+      if (h > tallest) {
+        tallest = h
+        document.documentElement.style.setProperty('--nav-h', `${Math.round(h)}px`)
+      }
+    }
+    publish()
+    const ro = new ResizeObserver(publish)
+    ro.observe(el)
+    /* A viewport change can make the resting bar genuinely shorter or taller,
+       so the high-water mark is reset and re-taken rather than kept forever. */
+    const onResize = () => {
+      tallest = 0
+      publish()
+    }
+    window.addEventListener('resize', onResize)
+    return () => {
+      ro.disconnect()
+      window.removeEventListener('resize', onResize)
+    }
+  }, [booted])
+
   /* ── Scroll state ─────────────────────────────────────────── */
   useEffect(() => {
     if (!booted) return undefined
