@@ -345,7 +345,7 @@ export function ContactForm() {
           <label htmlFor="attachment" className="label">
             Attachment <span className="text-steel">— optional</span>
           </label>
-          <span className="font-mono text-[9px] uppercase tracking-[0.13em] text-steel">
+          <span className="font-mono text-[9px] max-md:text-[10px] uppercase tracking-[0.13em] text-steel">
             PDF · DOC · IMAGE · ZIP · MAX 10 MB
           </span>
         </div>
@@ -364,7 +364,7 @@ export function ContactForm() {
             <span className="truncate text-[13.5px] text-bone">
               {file ? file.name : 'Attach a brief, deck or reference'}
             </span>
-            <span className="font-mono text-[9.5px] uppercase tracking-[0.13em] text-mist">
+            <span className="font-mono text-[9.5px] max-md:text-[10px] uppercase tracking-[0.13em] text-mist">
               {file ? formatBytes(file.size) : 'Drag a file here or click to browse'}
             </span>
           </span>
@@ -377,7 +377,7 @@ export function ContactForm() {
                 if (fileInputRef.current) fileInputRef.current.value = ''
                 setErrors((prev) => ({ ...prev, file: undefined }))
               }}
-              className="ml-auto shrink-0 font-mono text-[9.5px] uppercase tracking-[0.14em] text-mist transition-colors hover:text-bone"
+              className="ml-auto shrink-0 font-mono text-[9.5px] max-md:text-[10px] uppercase tracking-[0.14em] text-mist transition-colors hover:text-bone"
             >
               Remove ✕
             </button>
@@ -470,7 +470,7 @@ function Field({ label, name, error, hint, textarea, optional, required, ...prop
           {label} {optional && <span className="text-steel">— optional</span>}
           {required && <span className="text-brass"> *</span>}
         </label>
-        {hint && <span className="font-mono text-[9px] tabular-nums text-steel">{hint}</span>}
+        {hint && <span className="font-mono text-[9px] max-md:text-[10px] tabular-nums text-steel">{hint}</span>}
       </div>
       <Tag
         id={id}

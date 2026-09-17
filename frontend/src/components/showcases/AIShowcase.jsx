@@ -250,7 +250,7 @@ export function AIShowcase() {
                   className="h-1 w-1 rounded-full"
                   style={{ backgroundColor: i === 2 ? service.accent : '#35353E' }}
                 />
-                <span className="font-mono text-[7.5px] uppercase tracking-[0.16em] text-mist md:text-[9px]">
+                <span className="font-mono text-[7.5px] max-md:text-[10px] uppercase tracking-[0.16em] text-mist md:text-[9px]">
                   {s}
                 </span>
               </span>
@@ -376,7 +376,7 @@ export function AIShowcase() {
                 >
                   0
                 </span>
-                <span className="mt-1.5 block font-mono text-[7px] uppercase tracking-[0.14em] text-mist md:text-[8px]">
+                <span className="mt-1.5 block font-mono text-[7px] uppercase tracking-[0.14em] text-mist md:text-[8px] max-md:text-[10px]">
                   {m.label}
                 </span>
               </div>

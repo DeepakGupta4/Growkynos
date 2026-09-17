@@ -131,7 +131,7 @@ export default function WorkPage() {
                     onClick={() => setFilter(c)}
                     aria-pressed={filter === c}
                     className={cn(
-                      'rounded-full border px-3.5 py-2 font-mono text-[9.5px] uppercase tracking-[0.14em] transition-colors duration-400',
+                      'rounded-full border px-3.5 py-2 font-mono text-[9.5px] max-md:text-[10px] uppercase tracking-[0.14em] transition-colors duration-400',
                       filter === c
                         ? 'border-brass bg-brass text-void'
                         : 'border-smoke text-mist hover:border-brass/60 hover:text-bone',
@@ -184,10 +184,10 @@ export default function WorkPage() {
                 <span className="max-w-md flex-1 text-[13px] leading-relaxed text-mist">{p.excerpt}</span>
 
                 <span className="flex shrink-0 items-center gap-5">
-                  <span className="font-mono text-[9.5px] uppercase tracking-[0.13em] text-mist">
+                  <span className="font-mono text-[9.5px] max-md:text-[10px] uppercase tracking-[0.13em] text-mist">
                     {p.category}
                   </span>
-                  <span className="font-mono text-[9.5px] tabular-nums text-mist">{p.year}</span>
+                  <span className="font-mono text-[9.5px] max-md:text-[10px] tabular-nums text-mist">{p.year}</span>
                   <span className="text-mist transition-all duration-500 group-hover:translate-x-1 group-hover:text-brass">
                     →
                   </span>

@@ -314,7 +314,7 @@ export function ProjectUniverse() {
                   />
                   <span className="flex flex-col gap-1 p-4">
                     <span className="font-display text-base font-semibold text-bone">{p.title}</span>
-                    <span className="font-mono text-[9px] uppercase tracking-[0.14em] text-mist">
+                    <span className="font-mono text-[9px] max-md:text-[10px] uppercase tracking-[0.14em] text-mist">
                       {p.category} · {p.year}
                     </span>
                   </span>
@@ -441,7 +441,7 @@ export function ProjectUniverse() {
               </div>
 
               <div className="flex items-center gap-4">
-                <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-mist">
+                <span className="font-mono text-[9px] max-md:text-[10px] uppercase tracking-[0.16em] text-mist">
                   <span className="text-brass">{String(phase + 1).padStart(2, '0')}</span> / 04 ·{' '}
                   {PHASES[phase]}
                 </span>
@@ -451,7 +451,7 @@ export function ProjectUniverse() {
                   onClick={() => go('/work', { label: 'ALL WORK' })}
                   className="group flex items-center gap-2 rounded-full border border-smoke px-4 py-2.5 transition-colors duration-500 hover:border-brass/70"
                 >
-                  <span className="font-mono text-[9.5px] uppercase tracking-[0.16em] text-silver transition-colors group-hover:text-brass">
+                  <span className="font-mono text-[9.5px] max-md:text-[10px] uppercase tracking-[0.16em] text-silver transition-colors group-hover:text-brass">
                     All work
                   </span>
                   <span className="text-mist transition-all duration-500 group-hover:translate-x-0.5 group-hover:text-brass">
@@ -468,7 +468,7 @@ export function ProjectUniverse() {
           data-universe-outro
           className="pointer-events-none absolute inset-x-0 bottom-[22%] z-40 flex justify-center opacity-0"
         >
-          <span className="rounded-full border border-smoke/80 bg-void/70 px-4 py-2 font-mono text-[9px] uppercase tracking-[0.2em] text-silver backdrop-blur-md">
+          <span className="rounded-full border border-smoke/80 bg-void/70 px-4 py-2 font-mono text-[9px] max-md:text-[10px] uppercase tracking-[0.2em] text-silver backdrop-blur-md">
             {projects.length} projects · click to enter
           </span>
         </div>

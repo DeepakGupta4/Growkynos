@@ -214,7 +214,7 @@ export function MoreServices() {
                   {c.deliverables.map((d) => (
                     <span
                       key={d}
-                      className="rounded-full border border-smoke px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.12em] text-silver"
+                      className="rounded-full border border-smoke px-2.5 py-1 font-mono text-[9px] max-md:text-[10px] uppercase tracking-[0.12em] text-silver"
                     >
                       {d}
                     </span>
@@ -306,7 +306,8 @@ export function MoreServices() {
                 <span
                   data-more-label
                   className={cn(
-                    'flex items-center gap-2.5 whitespace-nowrap rounded-full border px-3.5 py-2.5 transition-colors duration-500 md:px-4',
+                    /* min-h on phones: these measured 37px, under the 44px a thumb needs. */
+                    'flex min-h-[44px] items-center gap-2.5 whitespace-nowrap rounded-full border px-3.5 py-2.5 transition-colors duration-500 md:min-h-0 md:px-4',
                     isActive ? 'bg-void/92' : 'bg-void/62',
                   )}
                   style={{
@@ -329,7 +330,7 @@ export function MoreServices() {
                   <span
                     className={cn(
                       'font-mono uppercase tracking-[0.12em] transition-colors duration-500',
-                      isMobile ? 'text-[9px]' : 'text-[10.5px]',
+                      isMobile ? 'text-[9px] max-md:text-[10px]' : 'text-[10.5px]',
                     )}
                     style={{ color: isActive ? '#E6E6EA' : '#C3C3CD' }}
                   >
@@ -373,7 +374,7 @@ export function MoreServices() {
                   {activeCap.deliverables.map((d) => (
                     <li
                       key={d}
-                      className="rounded-full border border-smoke px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.12em] text-mist"
+                      className="rounded-full border border-smoke px-2.5 py-1 font-mono text-[9px] max-md:text-[10px] uppercase tracking-[0.12em] text-mist"
                     >
                       {d}
                     </li>
@@ -397,7 +398,7 @@ export function MoreServices() {
           onClick={() => go('/contact', { label: 'BEGIN A PROJECT' })}
           className="group flex items-center gap-2 rounded-full border border-smoke px-4 py-2.5 transition-colors duration-500 hover:border-brass/70"
         >
-          <span className="font-mono text-[9.5px] uppercase tracking-[0.16em] text-silver transition-colors group-hover:text-brass">
+          <span className="font-mono text-[9.5px] max-md:text-[10px] uppercase tracking-[0.16em] text-silver transition-colors group-hover:text-brass">
             Need something else? Ask us
           </span>
           <span className="text-mist transition-all duration-500 group-hover:translate-x-0.5 group-hover:text-brass">

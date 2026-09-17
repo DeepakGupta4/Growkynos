@@ -256,7 +256,7 @@ export function TechConstellation() {
             {Object.entries(techGroups).map(([key, g]) => (
               <li key={key} className="flex items-center gap-2">
                 <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: g.color }} />
-                <span className="font-mono text-[9px] uppercase tracking-[0.14em] text-mist">{g.label}</span>
+                <span className="font-mono text-[9px] max-md:text-[10px] uppercase tracking-[0.14em] text-mist">{g.label}</span>
               </li>
             ))}
           </ul>
@@ -336,7 +336,8 @@ export function TechConstellation() {
               >
                 <span
                   className={cn(
-                    'relative flex items-center gap-2.5 rounded-full border px-3 py-2 transition-colors duration-500 md:px-4 md:py-2.5',
+                    /* min-h on phones: these measured 38-39px, under the 44px guideline. */
+                    'relative flex min-h-[44px] items-center gap-2.5 rounded-full border px-3 py-2 transition-colors duration-500 md:min-h-0 md:px-4 md:py-2.5',
                     isActive ? 'bg-void/90' : 'bg-void/60',
                   )}
                   style={{
@@ -355,14 +356,14 @@ export function TechConstellation() {
                   <span
                     className={cn(
                       'whitespace-nowrap font-mono uppercase tracking-[0.12em] transition-colors duration-500',
-                      isMobile ? 'text-[9px]' : 'text-[10.5px]',
+                      isMobile ? 'text-[9px] max-md:text-[10px]' : 'text-[10.5px]',
                     )}
                     style={{ color: isActive ? '#E6E6EA' : isNeighbour ? '#9C9CA8' : '#8E8E9D' }}
                   >
                     {t.name}
                   </span>
                   {locked === t.id && (
-                    <span className="ml-0.5 font-mono text-[8px]" style={{ color }}>
+                    <span className="ml-0.5 font-mono text-[8px] max-md:text-[10px]" style={{ color }}>
                       ●
                     </span>
                   )}
@@ -402,20 +403,20 @@ export function TechConstellation() {
                     style={{ backgroundColor: techGroups[activeTech.group].color }}
                   />
                   <span className="font-display text-lg font-semibold text-bone">{activeTech.name}</span>
-                  <span className="font-mono text-[9px] uppercase tracking-[0.14em] text-mist">
+                  <span className="font-mono text-[9px] max-md:text-[10px] uppercase tracking-[0.14em] text-mist">
                     {techGroups[activeTech.group].label}
                   </span>
                 </div>
                 <p className="flex-1 text-[13.5px] leading-relaxed text-silver">{activeTech.note}</p>
                 <div className="flex items-center gap-5">
                   <span className="flex flex-col">
-                    <span className="font-mono text-[8px] uppercase tracking-[0.14em] text-mist">SINCE</span>
+                    <span className="font-mono text-[8px] max-md:text-[10px] uppercase tracking-[0.14em] text-mist">SINCE</span>
                     <span className="font-display text-base font-semibold tabular-nums text-bone">
                       {activeTech.since}
                     </span>
                   </span>
                   <span className="flex flex-col">
-                    <span className="font-mono text-[8px] uppercase tracking-[0.14em] text-mist">
+                    <span className="font-mono text-[8px] max-md:text-[10px] uppercase tracking-[0.14em] text-mist">
                       CONNECTS
                     </span>
                     <span className="font-display text-base font-semibold tabular-nums text-bone">

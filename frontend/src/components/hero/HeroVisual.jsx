@@ -275,7 +275,7 @@ export function HeroVisual({ slideIndex = 0 }) {
         ref={captionRef}
         className="absolute bottom-7 right-6 flex items-center gap-3 md:right-10 lg:bottom-10"
       >
-        <span className="font-mono text-[9px] uppercase tracking-[0.16em]" style={{ color: look.glow }}>
+        <span className="font-mono text-[9px] max-md:text-[10px] uppercase tracking-[0.16em]" style={{ color: look.glow }}>
           {service?.title}
         </span>
         <span className="h-1 w-1 rounded-full bg-smoke" />

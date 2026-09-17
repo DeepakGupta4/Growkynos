@@ -163,7 +163,7 @@ export function ShowcaseFrame({
         */}
         <div
           className="relative flex flex-1 items-center justify-center overflow-hidden perspective-far"
-          style={{ paddingTop: 'calc(var(--nav-h) + 0.25rem)' }}
+          style={{ paddingTop: 'calc(var(--nav-h) + 0.75rem)' }}
         >
           {children}
         </div>
@@ -182,7 +182,9 @@ function Chrome({ service, phase, beats, side = 'left', barRef, static: isStatic
     <div
       className={cn(
         'relative z-20 w-full',
-        isStatic ? '' : 'pointer-events-none px-gutter pb-6 md:pb-8',
+        /* Trimmed: the stage above needs the height more than the chrome needs
+           the breathing room, and this is the only place to get it from. */
+        isStatic ? '' : 'pointer-events-none px-gutter pb-3 md:pb-5',
       )}
     >
       <div className="mx-auto flex w-full max-w-shell flex-col gap-4">
@@ -225,14 +227,14 @@ function Chrome({ service, phase, beats, side = 'left', barRef, static: isStatic
               {service.capabilities.map((c) => (
                 <li
                   key={c}
-                  className="rounded-full border border-smoke/80 px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.13em] text-silver"
+                  className="rounded-full border border-smoke/80 px-2.5 py-1 font-mono text-[9px] max-md:text-[10px] uppercase tracking-[0.13em] text-silver"
                 >
                   {c}
                 </li>
               ))}
             </ul>
             {!isStatic && (
-              <div className="flex items-center gap-2 font-mono text-[9px] uppercase tracking-[0.16em] text-mist">
+              <div className="flex items-center gap-2 font-mono text-[9px] max-md:text-[10px] uppercase tracking-[0.16em] text-mist">
                 <span style={{ color: service.accent }}>{String(phase + 1).padStart(2, '0')}</span>
                 <span>/</span>
                 <span>{String(beats).padStart(2, '0')}</span>

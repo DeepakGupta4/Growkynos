@@ -117,7 +117,7 @@ export default function ContactPage() {
                     key={s.id}
                     className="flex items-baseline gap-3 border-b border-smoke/50 py-2.5"
                   >
-                    <span className="font-mono text-[9px] text-mist tabular-nums">{s.index}</span>
+                    <span className="font-mono text-[9px] max-md:text-[10px] text-mist tabular-nums">{s.index}</span>
                     <span className="text-[13.5px] text-silver">{s.title}</span>
                   </li>
                 ))}
@@ -134,7 +134,7 @@ export default function ContactPage() {
                   'A written proposal with a fixed scope and price.',
                 ].map((t, i) => (
                   <li key={t} className="flex gap-3">
-                    <span className="font-mono text-[9px] text-brass tabular-nums">
+                    <span className="font-mono text-[9px] max-md:text-[10px] text-brass tabular-nums">
                       {String(i + 1).padStart(2, '0')}
                     </span>
                     <span className="text-[13px] leading-relaxed text-silver">{t}</span>

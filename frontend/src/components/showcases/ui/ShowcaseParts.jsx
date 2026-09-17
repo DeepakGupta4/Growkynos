@@ -7,9 +7,9 @@ export function ProjectTag({ project, accent = '#C6A87C', className }) {
     <div className={cn('flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5 text-center', className)}>
       <span className="font-display text-[13px] font-semibold text-bone">{project.title}</span>
       <span className="h-1 w-1 rounded-full bg-smoke" />
-      <span className="font-mono text-[9px] uppercase tracking-[0.14em] text-mist">{project.client}</span>
+      <span className="font-mono text-[9px] max-md:text-[10px] uppercase tracking-[0.14em] text-mist">{project.client}</span>
       <span className="h-1 w-1 rounded-full bg-smoke" />
-      <span className="font-mono text-[9px] tabular-nums" style={{ color: accent }}>
+      <span className="font-mono text-[9px] max-md:text-[10px] tabular-nums" style={{ color: accent }}>
         {project.year}
       </span>
       {project.url && (
@@ -20,7 +20,7 @@ export function ProjectTag({ project, accent = '#C6A87C', className }) {
             target="_blank"
             rel="noreferrer noopener"
             data-cursor="link"
-            className="font-mono text-[9px] uppercase tracking-[0.14em] text-silver underline decoration-smoke underline-offset-4 transition-colors hover:text-brass"
+            className="font-mono text-[9px] max-md:text-[10px] uppercase tracking-[0.14em] text-silver underline decoration-smoke underline-offset-4 transition-colors hover:text-brass"
           >
             Live ↗
           </a>
@@ -69,7 +69,7 @@ export function StaticShowcase({ project, service, aspect = 'wide' }) {
             {project.technologies.map((t) => (
               <li
                 key={t}
-                className="rounded-full border border-smoke px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.12em] text-mist"
+                className="rounded-full border border-smoke px-2.5 py-1 font-mono text-[9px] max-md:text-[10px] uppercase tracking-[0.12em] text-mist"
               >
                 {t}
               </li>
@@ -100,7 +100,7 @@ export function MetricRow({ items, accent = '#C6A87C', className }) {
           >
             {it.value}
           </dd>
-          <dt className="font-mono text-[8.5px] uppercase tracking-[0.14em] text-mist">{it.label}</dt>
+          <dt className="font-mono text-[8.5px] max-md:text-[10px] uppercase tracking-[0.14em] text-mist">{it.label}</dt>
         </div>
       ))}
     </dl>

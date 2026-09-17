@@ -354,7 +354,7 @@ function ServiceCard({
           {service.capabilities.slice(0, 4).map((c) => (
             <span
               key={c}
-              className="rounded-full border px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.12em] transition-colors duration-500"
+              className="rounded-full border px-2.5 py-1 font-mono text-[9px] max-md:text-[10px] uppercase tracking-[0.12em] transition-colors duration-500"
               style={{
                 borderColor: hovered ? `${accent}55` : 'rgba(35,35,41,0.95)',
                 color: hovered ? '#C9C9D2' : '#8E8E9D',

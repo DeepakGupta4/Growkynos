@@ -43,7 +43,15 @@ export function SceneShell({ laptop, tint, video, children }) {
       <div
         className="relative w-full overflow-hidden rounded-2xl"
         style={{
-          aspectRatio: '16 / 10',
+          /*
+           * 4:3, not the laptop's 16:10.
+           * The scenes are tall and narrow at phone width, so the fit is limited
+           * by HEIGHT — a landscape box wastes the constraint that matters. At
+           * 367px wide a 16:10 box is 229px tall and a 4:3 box is 275px, which
+           * is 20% more of the only dimension the scene can actually use, and
+           * it still clears the space the panel has (277px on a 390x844).
+           */
+          aspectRatio: '4 / 3',
           background: 'linear-gradient(158deg, rgba(16,16,21,0.96) 0%, rgba(7,7,10,0.98) 100%)',
           boxShadow: `inset 0 0 0 1px ${tint}33, 0 26px 60px -30px rgba(0,0,0,0.9)`,
         }}

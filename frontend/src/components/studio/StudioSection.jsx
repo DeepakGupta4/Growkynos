@@ -235,7 +235,7 @@ export function StudioSection() {
                 style={{ background: 'linear-gradient(180deg, rgba(5,5,7,0.25) 0%, rgba(5,5,7,0.82) 100%)' }}
               />
               <figcaption className="absolute inset-x-0 bottom-0 flex items-center justify-between p-3 md:p-4">
-                <span className="font-mono text-[8px] uppercase tracking-[0.14em] text-silver md:text-[9px]">
+                <span className="font-mono text-[8px] max-md:text-[10px] uppercase tracking-[0.14em] text-silver md:text-[9px] max-md:text-[10px]">
                   FIG. {String(i + 1).padStart(2, '0')}
                 </span>
                 <span className="h-1 w-1 rounded-full bg-brass" />
