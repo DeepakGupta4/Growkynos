@@ -237,6 +237,7 @@ export function AppShowcase() {
       service={service}
       id={service.sectionId}
       beats={5}
+      mobileZoom={1}
       build={build}
       fallback={<StaticShowcase project={project} service={service} aspect="phone" />}
     >
@@ -257,14 +258,14 @@ export function AppShowcase() {
         className="surface-raised pointer-events-none absolute z-30 w-[168px] rounded-xl p-3.5 opacity-0 will-change-transform md:w-[212px] md:p-4"
       >
         <div className="mb-3 flex items-center justify-between">
-          <span className="font-mono text-[8px] uppercase tracking-[0.16em] text-mist">TODAY</span>
+          <span className="font-mono text-[8px] max-md:text-[10px] uppercase tracking-[0.16em] text-mist">TODAY</span>
           <span className="h-1 w-1 rounded-full" style={{ backgroundColor: service.accent }} />
         </div>
         <div className="flex items-end gap-2">
           <span className="font-display text-3xl font-bold leading-none tabular-nums text-bone md:text-4xl">
             82
           </span>
-          <span className="pb-1 font-mono text-[9px] text-mist">bpm</span>
+          <span className="pb-1 font-mono text-[9px] max-md:text-[10px] text-mist">bpm</span>
         </div>
         <div className="mt-3 flex h-8 items-end gap-[3px]">
           {[38, 62, 44, 78, 56, 90, 48, 70, 36, 84, 52, 66].map((h, i) => (
@@ -275,7 +276,7 @@ export function AppShowcase() {
             />
           ))}
         </div>
-        <p className="mt-3 font-mono text-[8px] uppercase tracking-[0.13em] text-mist">
+        <p className="mt-3 font-mono text-[8px] max-md:text-[10px] uppercase tracking-[0.13em] text-mist">
           SYNCED · 2 MIN AGO
         </p>
       </div>
@@ -296,13 +297,13 @@ export function AppShowcase() {
           <p className="truncate font-display text-[11px] font-semibold text-bone md:text-[12.5px]">
             Medication due
           </p>
-          <p className="mt-0.5 truncate font-mono text-[8.5px] text-mist md:text-[9px]">
+          <p className="mt-0.5 truncate font-mono text-[8.5px] max-md:text-[10px] text-mist md:text-[9px]">
             Ward 4 · Bed 12 · 14:00
           </p>
           <div className="mt-2 flex gap-1.5">
-            <span className="rounded-full bg-smoke px-2 py-0.5 font-mono text-[8px] text-silver">LATER</span>
+            <span className="rounded-full bg-smoke px-2 py-0.5 font-mono text-[8px] max-md:text-[10px] text-silver">LATER</span>
             <span
-              className="rounded-full px-2 py-0.5 font-mono text-[8px] text-void"
+              className="rounded-full px-2 py-0.5 font-mono text-[8px] max-md:text-[10px] text-void"
               style={{ backgroundColor: service.accent }}
             >
               DONE
@@ -327,8 +328,8 @@ export function AppShowcase() {
             aria-hidden="true"
             className="surface pointer-events-none absolute z-20 flex items-center gap-2.5 rounded-full px-3 py-2 opacity-0 will-change-transform md:px-3.5 md:py-2.5"
           >
-            <span className="font-mono text-[8px] uppercase tracking-[0.15em] text-mist">{f.label}</span>
-            <span className="font-mono text-[9px] tabular-nums" style={{ color: service.accent }}>
+            <span className="font-mono text-[8px] max-md:text-[10px] uppercase tracking-[0.15em] text-mist">{f.label}</span>
+            <span className="font-mono text-[9px] max-md:text-[10px] tabular-nums" style={{ color: service.accent }}>
               {f.value}
             </span>
           </div>
@@ -361,7 +362,7 @@ export function AppShowcase() {
                   className="flex items-center gap-2 rounded-lg bg-black/70 px-2.5 py-1.5 backdrop-blur-sm"
                 >
                   <span className="h-1 w-1 rounded-full" style={{ backgroundColor: service.accent }} />
-                  <span className="font-mono text-[7.5px] uppercase tracking-[0.12em] text-silver">{t}</span>
+                  <span className="font-mono text-[7.5px] max-md:text-[10px] uppercase tracking-[0.12em] text-silver">{t}</span>
                 </div>
               ))}
             </div>

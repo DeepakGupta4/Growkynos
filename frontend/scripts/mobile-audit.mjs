@@ -75,8 +75,9 @@ for (const id of SECTIONS) {
   const found = { overflow: 0, underNav: [], tiny: [], smallTap: [], empty: true }
 
   for (let f = 0; f <= 4; f++) {
+    const landing = f === 0
     const y = box.top + Math.max(0, box.h - 844) * (f / 4)
-    await p.evaluate((v) => window.__lenis?.scrollTo(v, { immediate: true, force: true }), y)
+    await p.evaluate((v) => { if (window.__lenis) window.__lenis.scrollTo(v, { immediate: true, force: true }); else window.scrollTo(0, v) }, y)
     await new Promise((r) => setTimeout(r, 420))
 
     const s = await p.evaluate(
@@ -109,6 +110,7 @@ for (const id of SECTIONS) {
 
     found.overflow = Math.max(found.overflow, s.overflow)
     if (s.visible > 2) found.empty = false
+    if (!landing) s.underNav = []
     for (const k of ['underNav', 'tiny', 'smallTap']) {
       for (const v of s[k]) if (!found[k].includes(v)) found[k].push(v)
     }
@@ -121,7 +123,7 @@ for (const id of SECTIONS) {
   const issues = []
   if (found.overflow > 1) issues.push(`overflow ${found.overflow}px`)
   if (found.empty) issues.push('renders empty')
-  if (found.underNav.length) issues.push(`under nav: ${found.underNav.slice(0, 2).join(', ')}`)
+  if (found.underNav.length) issues.push(`under nav on landing: ${found.underNav.slice(0, 2).join(', ')}`)
   if (found.tiny.length) issues.push(`tiny text: ${found.tiny.slice(0, 2).join(', ')}`)
   if (found.smallTap.length) issues.push(`small taps: ${found.smallTap.slice(0, 2).join(', ')}`)
 

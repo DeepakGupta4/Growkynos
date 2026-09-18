@@ -209,16 +209,26 @@ export function Nav() {
           to be doing. A gradient rather than a bar so the page still reads as
           one continuous surface at the top.
         */}
+        {/*
+          SOLID ON PHONES, a gradient on wider screens.
+          A translucent scrim works on a monitor, where the bar is a small part
+          of a large frame and whatever slides behind it is out at the edge of
+          vision. On a 390px screen it is a fifth of the viewport and every
+          heading in the page passes straight through it — "THE STACK", "HOW WE
+          WORK" and the rest were legible through the bar while the wordmark
+          and the CTA sat on top of them. A phone needs the bar to be a lid.
+        */}
         <div
           aria-hidden="true"
           className={cn(
             'pointer-events-none absolute inset-x-0 top-0 transition-all duration-700 ease-out-expo',
-            condensed ? 'h-full opacity-100' : 'h-[160%] opacity-90',
+            condensed ? 'h-full opacity-100' : 'h-[160%] opacity-90 max-md:h-full max-md:opacity-100',
           )}
           style={{
-            background: condensed
-              ? 'linear-gradient(180deg, rgba(5,5,7,0.88) 0%, rgba(5,5,7,0.72) 100%)'
-              : 'linear-gradient(180deg, rgba(5,5,7,0.72) 0%, rgba(5,5,7,0.28) 55%, rgba(5,5,7,0) 100%)',
+            background:
+              condensed || isMobile
+                ? 'linear-gradient(180deg, rgba(5,5,7,0.97) 0%, rgba(5,5,7,0.94) 100%)'
+                : 'linear-gradient(180deg, rgba(5,5,7,0.72) 0%, rgba(5,5,7,0.28) 55%, rgba(5,5,7,0) 100%)',
             /*
              * Blur ONLY when condensed, where this layer is exactly the height
              * of the bar. At rest it is 160% tall so it hangs below the
@@ -226,8 +236,8 @@ export function Nav() {
              * a visibly blurred band sitting under the line with nothing to
              * explain it. The gradient alone fades out cleanly.
              */
-            backdropFilter: condensed ? 'blur(14px)' : 'none',
-            WebkitBackdropFilter: condensed ? 'blur(14px)' : 'none',
+            backdropFilter: condensed || isMobile ? 'blur(14px)' : 'none',
+            WebkitBackdropFilter: condensed || isMobile ? 'blur(14px)' : 'none',
           }}
         />
 

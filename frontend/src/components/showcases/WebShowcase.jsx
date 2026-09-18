@@ -203,6 +203,7 @@ export function WebShowcase() {
       service={service}
       id={service.sectionId}
       beats={5}
+      mobileZoom={1}
       chromeSide="right"
       build={build}
       fallback={<StaticShowcase project={project} service={service} />}
@@ -244,7 +245,7 @@ export function WebShowcase() {
                   <p className="font-display text-[11.5px] font-semibold text-bone md:text-[13px]">
                     {item.title}
                   </p>
-                  <p className="mt-1 font-mono text-[8px] uppercase tracking-[0.14em] text-mist">{item.meta}</p>
+                  <p className="mt-1 font-mono text-[8px] max-md:text-[10px] uppercase tracking-[0.14em] text-mist">{item.meta}</p>
                 </div>
               </div>
             )}
@@ -266,7 +267,7 @@ export function WebShowcase() {
                 >
                   {item.value}
                 </span>
-                <span className="font-mono text-[8px] uppercase tracking-[0.14em] text-mist">{item.label}</span>
+                <span className="font-mono text-[8px] max-md:text-[10px] uppercase tracking-[0.14em] text-mist">{item.label}</span>
               </div>
             )}
           </div>
@@ -284,7 +285,7 @@ export function WebShowcase() {
         {['WORK', 'PRACTICE', 'CONTACT'].map((n, i) => (
           <span
             key={n}
-            className="font-mono text-[8.5px] uppercase tracking-[0.14em] md:text-[9px]"
+            className="font-mono text-[8.5px] max-md:text-[10px] uppercase tracking-[0.14em] md:text-[9px]"
             style={{ color: i === 0 ? service.accent : '#8E8E9D' }}
           >
             {n}

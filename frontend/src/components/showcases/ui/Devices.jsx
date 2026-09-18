@@ -111,7 +111,7 @@ export const BrowserFrame = forwardRef(function BrowserFrame(
         </div>
         <div className="flex flex-1 items-center gap-2 rounded-md bg-black/45 px-3 py-1.5">
           <span className="h-2 w-2 rounded-full" style={{ backgroundColor: accent }} />
-          <span className="truncate font-mono text-[9px] tracking-[0.06em] text-silver md:text-[10px]">
+          <span className="truncate font-mono text-[9px] max-md:text-[10px] tracking-[0.06em] text-silver md:text-[10px]">
             {url}
           </span>
         </div>
@@ -163,7 +163,7 @@ export const PanelFrame = forwardRef(function PanelFrame(
     >
       {label && (
         <div className="flex items-center justify-between border-b border-white/[0.06] px-3.5 py-2">
-          <span className="font-mono text-[9px] uppercase tracking-[0.16em]" style={{ color: accent }}>
+          <span className="font-mono text-[9px] max-md:text-[10px] uppercase tracking-[0.16em]" style={{ color: accent }}>
             {label}
           </span>
           <span className="flex gap-1">

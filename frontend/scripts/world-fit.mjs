@@ -14,7 +14,7 @@
 import { existsSync } from 'node:fs'
 import puppeteer from 'puppeteer-core'
 
-const BASE = process.argv[2] ?? 'http://localhost:5173'
+const BASE = process.argv.slice(2).find((a) => !a.startsWith('--')) ?? 'http://localhost:5173'
 const exe = [
   'C:/Program Files/Google/Chrome/Application/chrome.exe',
   'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe',
@@ -26,7 +26,15 @@ const b = await puppeteer.launch({
   args: ['--no-sandbox', '--use-gl=swiftshader', '--enable-unsafe-swiftshader'],
 })
 const p = await b.newPage()
-await p.setViewport({ width: 1600, height: 900 })
+/* `node scripts/world-fit.mjs --mobile` walks the same worlds at phone size.
+   The phone is where the stages are tightest, so it needs checking as often as
+   the desktop does. */
+const MOBILE = process.argv.includes('--mobile')
+await p.setViewport(
+  MOBILE
+    ? { width: 390, height: 844, deviceScaleFactor: 2, isMobile: true, hasTouch: true }
+    : { width: 1600, height: 900 },
+)
 await p.emulateMediaFeatures([{ name: 'prefers-reduced-motion', value: 'no-preference' }])
 await p.goto(BASE, { waitUntil: 'domcontentloaded', timeout: 60000 })
 await p.evaluate(() => sessionStorage.setItem('gt:booted', '1'))
@@ -78,7 +86,10 @@ const overflowOf = (id) =>
   })()
 
 const WORLDS = ['world-app', 'world-web', 'world-saas', 'world-ai']
-console.log('\n──────── WORLD FIT (1600×900) ────────\n')
+const VH = MOBILE ? 844 : 900
+console.log(`
+──────── WORLD FIT (${MOBILE ? '390×844' : '1600×900'}) ────────
+`)
 let bad = 0
 
 for (const id of WORLDS) {
@@ -93,8 +104,8 @@ for (const id of WORLDS) {
   let worstBottom = 0
   let at = ''
   for (let f = 0; f <= 8; f++) {
-    const y = box.top + Math.max(0, box.h - 900) * (f / 8)
-    await p.evaluate((v) => window.__lenis?.scrollTo(v, { immediate: true, force: true }), y)
+    const y = box.top + Math.max(0, box.h - VH) * (f / 8)
+    await p.evaluate((v) => { if (window.__lenis) window.__lenis.scrollTo(v, { immediate: true, force: true }); else window.scrollTo(0, v) }, y)
     await new Promise((r) => setTimeout(r, 480))
     const o = await p.evaluate(overflowOf, id)
     if (!o) continue

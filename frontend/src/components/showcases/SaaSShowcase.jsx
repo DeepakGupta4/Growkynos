@@ -193,6 +193,7 @@ export function SaaSShowcase() {
       service={service}
       id={service.sectionId}
       beats={5}
+      mobileZoom={0.84}
       build={build}
       fallback={<StaticShowcase project={project} service={service} />}
     >
@@ -211,7 +212,7 @@ export function SaaSShowcase() {
               <div data-saas-recede className="mb-3 grid grid-cols-2 gap-2 md:mb-4 md:grid-cols-4 md:gap-3">
                 {STATS.map((s) => (
                   <div key={s.key} className="surface rounded-md p-2.5 md:p-3.5">
-                    <span className="block font-mono text-[7px] uppercase tracking-[0.15em] text-mist md:text-[8px]">
+                    <span className="block font-mono text-[7px] max-md:text-[12px] uppercase tracking-[0.15em] text-mist md:text-[8px]">
                       {s.label}
                     </span>
                     <span
@@ -225,7 +226,7 @@ export function SaaSShowcase() {
                       0
                     </span>
                     <span
-                      className="mt-1 block font-mono text-[7.5px] md:text-[8.5px]"
+                      className="mt-1 block font-mono text-[7.5px] max-md:text-[12px] md:text-[8.5px]"
                       style={{ color: s.delta.startsWith('-') ? '#C8A0A0' : '#A8C0A0' }}
                     >
                       {s.delta}
@@ -243,7 +244,7 @@ export function SaaSShowcase() {
                     </span>
                     <span className="flex items-center gap-1.5">
                       <span className="h-1 w-1 rounded-full bg-[#A8C0A0] anim-pulse" />
-                      <span className="font-mono text-[7px] uppercase tracking-[0.14em] text-mist md:text-[8px]">
+                      <span className="font-mono text-[7px] max-md:text-[12px] uppercase tracking-[0.14em] text-mist md:text-[8px]">
                         REALTIME
                       </span>
                     </span>
@@ -320,7 +321,7 @@ export function SaaSShowcase() {
                         strokeLinecap="round"
                       />
                     </svg>
-                    <span className="absolute inset-0 grid place-items-center font-mono text-[9px] text-bone md:text-[11px]">
+                    <span className="absolute inset-0 grid place-items-center font-mono text-[9px] max-md:text-[12px] text-bone md:text-[11px]">
                       68%
                     </span>
                   </div>
@@ -331,10 +332,10 @@ export function SaaSShowcase() {
                           className="h-1.5 w-1.5 rounded-full"
                           style={{ backgroundColor: [service.accent, '#C8A0A0', '#35353E'][i] }}
                         />
-                        <span className="font-mono text-[7.5px] uppercase tracking-[0.12em] text-mist md:text-[8.5px]">
+                        <span className="font-mono text-[7.5px] max-md:text-[12px] uppercase tracking-[0.12em] text-mist md:text-[8.5px]">
                           {t}
                         </span>
-                        <span className="ml-auto font-mono text-[8px] tabular-nums text-silver md:text-[9px]">
+                        <span className="ml-auto font-mono text-[8px] max-md:text-[12px] tabular-nums text-silver md:text-[9px]">
                           {['68%', '24%', '8%'][i]}
                         </span>
                       </li>
@@ -347,7 +348,7 @@ export function SaaSShowcase() {
               <div data-saas-recede className="surface mt-2 overflow-hidden rounded-md md:mt-3">
                 <div className="grid grid-cols-4 gap-2 border-b border-smoke/70 px-2.5 py-1.5 md:px-3.5 md:py-2">
                   {['UNIT', 'REGION', 'STATUS', 'LATENCY'].map((h) => (
-                    <span key={h} className="font-mono text-[6.5px] uppercase tracking-[0.14em] text-mist md:text-[7.5px]">
+                    <span key={h} className="font-mono text-[6.5px] max-md:text-[12px] uppercase tracking-[0.14em] text-mist md:text-[7.5px]">
                       {h}
                     </span>
                   ))}
@@ -358,10 +359,10 @@ export function SaaSShowcase() {
                     ref={(el) => setRow(el, i)}
                     className="grid grid-cols-4 items-center gap-2 border-b border-smoke/40 px-2.5 py-1.5 last:border-0 will-change-transform md:px-3.5 md:py-2"
                   >
-                    <span className="font-mono text-[7.5px] text-silver md:text-[9px]">{r[0]}</span>
-                    <span className="font-mono text-[7.5px] text-mist md:text-[9px]">{r[1]}</span>
+                    <span className="font-mono text-[7.5px] max-md:text-[12px] text-silver md:text-[9px]">{r[0]}</span>
+                    <span className="font-mono text-[7.5px] max-md:text-[12px] text-mist md:text-[9px]">{r[1]}</span>
                     <span
-                      className="w-fit rounded-full px-1.5 py-0.5 font-mono text-[6.5px] tracking-[0.1em] md:text-[7.5px]"
+                      className="w-fit rounded-full px-1.5 py-0.5 font-mono text-[6.5px] max-md:text-[12px] tracking-[0.1em] md:text-[7.5px]"
                       style={{
                         color: r[2] === 'ONLINE' ? '#A8C0A0' : '#C8A0A0',
                         backgroundColor: r[2] === 'ONLINE' ? 'rgba(168,192,160,0.14)' : 'rgba(200,160,160,0.16)',
@@ -369,7 +370,7 @@ export function SaaSShowcase() {
                     >
                       {r[2]}
                     </span>
-                    <span className="font-mono text-[7.5px] tabular-nums text-silver md:text-[9px]">{r[3]}</span>
+                    <span className="font-mono text-[7.5px] max-md:text-[12px] tabular-nums text-silver md:text-[9px]">{r[3]}</span>
                   </div>
                 ))}
               </div>
@@ -385,10 +386,10 @@ export function SaaSShowcase() {
                 }}
               >
                 <div data-saas-focus-row className="flex items-center justify-between">
-                  <span className="font-mono text-[8px] uppercase tracking-[0.16em]" style={{ color: service.accent }}>
+                  <span className="font-mono text-[8px] max-md:text-[12px] uppercase tracking-[0.16em]" style={{ color: service.accent }}>
                     UNIT-0914 / AP-SOUTH
                   </span>
-                  <span className="font-mono text-[8px] uppercase tracking-[0.14em] text-[#C8A0A0]">
+                  <span className="font-mono text-[8px] max-md:text-[12px] uppercase tracking-[0.14em] text-[#C8A0A0]">
                     ● DEGRADED
                   </span>
                 </div>
@@ -403,7 +404,7 @@ export function SaaSShowcase() {
                     ['LAST SEEN', '3s'],
                   ].map(([k, v]) => (
                     <div key={k} className="rounded border border-smoke/70 p-2 md:p-2.5">
-                      <span className="block font-mono text-[6.5px] uppercase tracking-[0.14em] text-mist md:text-[7.5px]">
+                      <span className="block font-mono text-[6.5px] max-md:text-[12px] uppercase tracking-[0.14em] text-mist md:text-[7.5px]">
                         {k}
                       </span>
                       <span className="mt-1 block font-display text-sm font-bold tabular-nums text-bone md:text-lg">
@@ -438,7 +439,7 @@ export function SaaSShowcase() {
                   {project.technologies.slice(0, 4).map((t) => (
                     <span
                       key={t}
-                      className="rounded-full border border-smoke px-2.5 py-1 font-mono text-[7.5px] uppercase tracking-[0.12em] text-silver md:text-[8.5px]"
+                      className="rounded-full border border-smoke px-2.5 py-1 font-mono text-[7.5px] max-md:text-[12px] uppercase tracking-[0.12em] text-silver md:text-[8.5px]"
                     >
                       {t}
                     </span>

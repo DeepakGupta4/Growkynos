@@ -185,7 +185,7 @@ function WebScene({ active }) {
             {/* The button the cursor presses */}
             <span
               data-web-btn
-              className="absolute left-[8%] top-[62%] rounded-full px-4 py-2 font-mono text-[9px] uppercase tracking-[0.14em] text-void"
+              className="absolute left-[8%] top-[62%] rounded-full px-4 py-2 font-mono text-[9px] max-md:text-[10px] uppercase tracking-[0.14em] text-void"
               style={{ backgroundColor: '#C6A87C' }}
             >
               View work

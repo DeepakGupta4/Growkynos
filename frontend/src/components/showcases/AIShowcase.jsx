@@ -5,6 +5,7 @@ import { ProjectTag, StaticShowcase } from './ui/ShowcaseParts'
 import { getService } from '../../data/services'
 import { projectsByService } from '../../data/projects'
 import { useProjectEntry } from '../projects/ProjectEntryContext'
+import { useExperience } from '../../context/ExperienceContext'
 
 const service = getService('ai')
 
@@ -30,7 +31,32 @@ const EDGES = [
   ['evaluate', 'escalate'],
 ]
 
-const byId = Object.fromEntries(NODES.map((n) => [n.id, n]))
+/**
+ * The same pipeline, laid out for a phone.
+ *
+ * The desktop graph is authored in a 1200-unit-wide viewBox. An SVG with a
+ * viewBox scales to its container, so on a 390px screen that whole board is
+ * squeezed to 367px — a factor of 0.31, which renders the 10-unit node
+ * sublabels at about 3px and the 16-unit titles at 5px. Nothing in the graph
+ * was readable, and no font-size audit catches it because the computed size in
+ * user units is still 10.
+ *
+ * Widening the box or zooming the whole world only pushes it off the side of
+ * the screen. What the phone needs is the pipeline turned vertically, in a
+ * viewBox narrow enough that it barely has to scale at all: 380 units against
+ * 367px of screen, so a 10-unit label lands at 9.7px.
+ */
+const NODES_MOBILE = [
+  { id: 'ticket', x: 8, y: 6, w: 172, h: 78, stage: 'INPUT', label: 'Ticket received', sub: 'Zendesk webhook' },
+  { id: 'docs', x: 200, y: 6, w: 172, h: 78, stage: 'INPUT', label: 'Docs + history', sub: '18k documents' },
+  { id: 'retrieve', x: 104, y: 114, w: 172, h: 82, stage: 'RETRIEVE', label: 'Vector search', sub: 'pgvector · top-k 8' },
+  { id: 'reason', x: 104, y: 222, w: 172, h: 82, stage: 'REASON', label: 'Draft response', sub: 'Claude · tool use' },
+  { id: 'evaluate', x: 104, y: 330, w: 172, h: 82, stage: 'EVALUATE', label: 'Accuracy gate', sub: 'eval harness · 96.2%' },
+  { id: 'resolve', x: 8, y: 438, w: 172, h: 78, stage: 'OUTPUT', label: 'Auto-resolve', sub: '34% of queue' },
+  { id: 'escalate', x: 200, y: 438, w: 172, h: 78, stage: 'OUTPUT', label: 'Escalate', sub: 'with full context' },
+]
+
+const VB_MOBILE = { w: 380, h: 520 }
 
 const STAGE_COLOR = {
   INPUT: '#9FB4C9',
@@ -73,21 +99,34 @@ export function AIShowcase() {
     consoleRef.current[i] = el
   }
 
-  /* Edge geometry — smooth bezier between node ports. */
-  const edgePaths = useMemo(
-    () =>
-      EDGES.map(([a, b]) => {
-        const n1 = byId[a]
-        const n2 = byId[b]
-        const x1 = n1.x + n1.w
-        const y1 = n1.y + n1.h / 2
-        const x2 = n2.x
-        const y2 = n2.y + n2.h / 2
-        const mx = (x1 + x2) / 2
-        return { d: `M ${x1} ${y1} C ${mx} ${y1}, ${mx} ${y2}, ${x2} ${y2}`, from: a, to: b }
-      }),
-    [],
-  )
+  const { isMobile } = useExperience()
+  const nodes = isMobile ? NODES_MOBILE : NODES
+  const vb = isMobile ? VB_MOBILE : VB
+
+  /* Edge geometry — smooth bezier between node ports. The phone layout runs
+     top to bottom, so its ports are on the bottom and top edges rather than
+     the right and left ones. */
+  const edgePaths = useMemo(() => {
+    const byIdActive = Object.fromEntries(nodes.map((n) => [n.id, n]))
+    return EDGES.map(([a, b]) => {
+      const n1 = byIdActive[a]
+      const n2 = byIdActive[b]
+      if (isMobile) {
+        const x1 = n1.x + n1.w / 2
+        const y1 = n1.y + n1.h
+        const x2 = n2.x + n2.w / 2
+        const y2 = n2.y
+        const my = (y1 + y2) / 2
+        return { d: `M ${x1} ${y1} C ${x1} ${my}, ${x2} ${my}, ${x2} ${y2}`, from: a, to: b }
+      }
+      const x1 = n1.x + n1.w
+      const y1 = n1.y + n1.h / 2
+      const x2 = n2.x
+      const y2 = n2.y + n2.h / 2
+      const mx = (x1 + x2) / 2
+      return { d: `M ${x1} ${y1} C ${mx} ${y1}, ${mx} ${y2}, ${x2} ${y2}`, from: a, to: b }
+    })
+  }, [nodes, isMobile])
 
   const build = useCallback((tl, { isMobile: mobile }) => {
     const graph = graphRef.current
@@ -259,7 +298,7 @@ export function AIShowcase() {
 
           <div className="relative">
             <svg
-              viewBox={`0 0 ${VB.w} ${VB.h}`}
+              viewBox={`0 0 ${vb.w} ${vb.h}`}
               className="h-auto w-full"
               role="img"
               aria-label="Support automation workflow: ticket and documents flow into vector search, then response drafting, an accuracy gate, and finally auto-resolve or escalation."
@@ -279,7 +318,7 @@ export function AIShowcase() {
               ))}
 
               {/* Nodes */}
-              {NODES.map((n) => (
+              {nodes.map((n) => (
                 <g
                   key={n.id}
                   ref={(el) => {

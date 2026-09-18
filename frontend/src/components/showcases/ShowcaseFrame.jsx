@@ -26,6 +26,7 @@ export function ShowcaseFrame({
   chromeSide = 'left',
   stageClassName,
   fallback,
+  mobileZoom = 1,
 }) {
   const rootRef = useRef(null)
   const stageRef = useRef(null)
@@ -165,7 +166,39 @@ export function ShowcaseFrame({
           className="relative flex flex-1 items-center justify-center overflow-hidden perspective-far"
           style={{ paddingTop: 'calc(var(--nav-h) + 0.75rem)' }}
         >
-          {children}
+          {/*
+            MOBILE ZOOM.
+            The device mockups carry deliberately tiny type — a phone status bar
+            at 7px, a dashboard legend at 6.5px. On a 390px screen that is below
+            what anyone can read, and the four worlds were measured leaving
+            260px, 62px, -18px and 397px of unused stage height respectively.
+
+            Raising ~60 individual font sizes was the alternative, and it is the
+            wrong one: these mocks are dense, clipped boxes, so a 6.5px legend
+            forced to 10px wraps or gets cut, and the miniature-UI illusion that
+            makes them read as real software breaks. Zooming the whole
+            composition scales every internal proportion by the same factor, so
+            the mock still looks like a device — it is just closer.
+
+            `zoom` rather than `transform: scale()`: a transform would create a
+            new containing block and flatten the 3D context the worlds animate
+            in. The inverse width/height keeps the zoomed box filling exactly
+            the same visual area as the stage.
+          */}
+          {isMobile && mobileZoom !== 1 ? (
+            <div
+              className="relative preserve-3d"
+              style={{
+                zoom: mobileZoom,
+                width: `${100 / mobileZoom}%`,
+                height: `${100 / mobileZoom}%`,
+              }}
+            >
+              {children}
+            </div>
+          ) : (
+            children
+          )}
         </div>
 
         {/* Chrome */}

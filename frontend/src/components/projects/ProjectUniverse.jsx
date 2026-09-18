@@ -56,7 +56,13 @@ export function ProjectUniverse() {
 
       const start = {
         x: Math.cos(angle) * radius * (isMobile ? 0.52 : 1),
-        y: Math.sin(angle) * radius * (isMobile ? 0.46 : 0.72),
+        /* The scatter used to reach y = -354 on a phone and -554 on a desktop,
+           against field half-heights of 330px and 380px once the nav clearance
+           comes off — so the outermost card opened the section behind the bar
+           on both. These keep the spread inside the visible area. The card's
+           own height counts too, which is why the desktop figure had to come
+           down further than the arithmetic on centres alone suggested. */
+        y: Math.sin(angle) * radius * (isMobile ? 0.3 : 0.32),
         z: -1900 + ring * 520 + rand() * 620,
         rotX: (rand() - 0.5) * 26,
         rotY: (rand() - 0.5) * 46,
@@ -352,11 +358,27 @@ export function ProjectUniverse() {
         <div
           className="relative flex flex-1 items-center justify-center overflow-hidden"
           /* Clear of the fixed nav — this stage pins at the top of the
-             viewport, so without it the convergence ran under the bar. */
-          style={{ paddingTop: 'calc(var(--nav-h) + 1.75rem)' }}
-          style={{ perspective: isMobile ? '1200px' : '2000px' }}
+             viewport, so without it the convergence ran under the bar.
+             Both of these used to be separate `style` props on this one
+             element, and JSX keeps only the last: the padding was silently
+             discarded and the stack has been running under the nav since. */
+          style={{
+            paddingTop: 'calc(var(--nav-h) + 1.75rem)',
+            perspective: isMobile ? '1200px' : '2000px',
+          }}
         >
-          <div ref={fieldRef} className="absolute inset-0 preserve-3d will-change-transform">
+          {/*
+            The padding above cannot reach this: an absolutely positioned child
+            resolves `inset-0` against its container's PADDING BOX, so `top: 0`
+            still lands at the very top of the stage. The field carries the nav
+            clearance itself, which also drops its centre — the point the cards
+            converge on — into the middle of the area the reader can see.
+          */}
+          <div
+            ref={fieldRef}
+            className="absolute inset-x-0 bottom-0 preserve-3d will-change-transform"
+            style={{ top: 'calc(var(--nav-h) + 1.75rem)' }}
+          >
             {paths.map(({ project }, i) => (
               <ProjectCard
                 key={project.id}

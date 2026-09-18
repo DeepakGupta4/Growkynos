@@ -20,7 +20,14 @@ export function ProjectTag({ project, accent = '#C6A87C', className }) {
             target="_blank"
             rel="noreferrer noopener"
             data-cursor="link"
-            className="font-mono text-[9px] max-md:text-[10px] uppercase tracking-[0.14em] text-silver underline decoration-smoke underline-offset-4 transition-colors hover:text-brass"
+            /*
+             * Padded into a real tap target on phones. This is a genuine link
+             * out to the live project, not decoration — it measured 15px tall,
+             * which is a third of what a thumb needs. The negative margin keeps
+             * it sitting on the same baseline as the metadata beside it, so the
+             * row does not grow to accommodate the touch area.
+             */
+            className="-my-3 inline-flex min-h-[44px] items-center py-3 font-mono text-[9px] uppercase tracking-[0.14em] text-silver underline decoration-smoke underline-offset-4 transition-colors hover:text-brass max-md:text-[10px] md:-my-0 md:min-h-0 md:py-0"
           >
             Live ↗
           </a>

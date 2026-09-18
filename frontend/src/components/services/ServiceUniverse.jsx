@@ -141,7 +141,7 @@ export function ServiceUniverse() {
       id="services"
       ref={rootRef}
       aria-label="Services"
-      className="section relative border-t border-smoke/40 pb-20 pt-10 md:pb-28 md:pt-14"
+      className="section relative border-t border-smoke/40 pb-20 pt-[calc(var(--nav-h)+1.25rem)] md:pb-28 md:pt-[calc(var(--nav-h)+2rem)]"
     >
       <div className="shell relative z-20 flex flex-col gap-12 md:gap-16">
         {/*

@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "GENTECHNE — digital product studio. Design, code and motion under one roof.",
+  "description": "GENTECHNE \u2014 digital product studio. Design, code and motion under one roof.",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -14,7 +14,9 @@
     "smoke": "node scripts/smoke.mjs",
     "interactions": "node scripts/interactions.mjs",
     "shots": "node scripts/shots.mjs",
-    "verify": "node scripts/smoke.mjs && node scripts/interactions.mjs"
+    "verify": "node scripts/smoke.mjs && node scripts/interactions.mjs",
+    "audit:mobile": "node scripts/mobile-audit.mjs && node scripts/world-fit.mjs --mobile",
+    "audit:layout": "node scripts/world-fit.mjs && node scripts/nav-clearance.mjs && node scripts/contrast-audit.mjs"
   },
   "dependencies": {
     "gsap": "^3.15.0",

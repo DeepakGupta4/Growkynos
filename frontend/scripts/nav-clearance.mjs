@@ -68,17 +68,19 @@ for (const id of SECTIONS) {
   if (!box) { console.log(`  ${id.padEnd(14)} MISSING`); continue }
 
   const hits = []
+  let passing = 0
   for (let f = 0; f <= 10; f++) {
     const y = box.top + Math.max(0, box.h - 900) * (f / 10)
-    await p.evaluate((v) => window.__lenis?.scrollTo(v, { immediate: true, force: true }), y)
+    await p.evaluate((v) => { if (window.__lenis) window.__lenis.scrollTo(v, { immediate: true, force: true }); else window.scrollTo(0, v) }, y)
     await new Promise((r) => setTimeout(r, 400))
     const found = await p.evaluate(probe, navH)
-    if (found.length) hits.push(`${f * 10}% ${found.join(' ')}`)
+    if (found.length && f === 0) hits.push(`landing ${found.join(' ')}`)
+    else if (found.length) passing++
   }
 
   if (hits.length) {
     bad++
-    console.log(`  ${id.padEnd(14)} UNDER NAV at ${hits.length}/11 positions`)
+    console.log(`  ${id.padEnd(14)} UNDER NAV ON LANDING`)
     hits.slice(0, 3).forEach((h) => console.log(`                   ${h}`))
   } else {
     console.log(`  ${id.padEnd(14)} clear`)

@@ -78,9 +78,19 @@ export function MoreServices() {
           ...c,
           x: Math.cos(rad) * rx,
           y: Math.sin(rad) * ry,
-          // Outer orbits sit further back, so the system has real depth.
-          z: -c.orbit * (isMobile ? 90 : 150),
-          baseScale: 1 - c.orbit * 0.09,
+          /*
+           * Outer orbits sit further back, so the system has real depth.
+           *
+           * On a phone that depth is COMPRESSED rather than removed. At the
+           * desktop falloff the outermost labels rendered 38px tall — under the
+           * 44px a thumb needs — because the scale drop and the perspective
+           * shrink from z stack on each other. Halving both keeps the rings
+           * visibly at different depths while putting the smallest label back
+           * above a usable size, which a flat `min-height` would have achieved
+           * only by destroying the effect.
+           */
+          z: -c.orbit * (isMobile ? 45 : 150),
+          baseScale: 1 - c.orbit * (isMobile ? 0.045 : 0.09),
         }
       }),
     [ringSize, isMobile],
