@@ -223,6 +223,8 @@ export function PageField() {
 
     let raf = 0
     let last = 0
+    let stillUnsub = null
+    let stillResize = null
     /* 30fps. The field moves at 0.045 units a second — a dropped frame is not
        perceivable there, and halving the draw rate halves the cost of the most
        expensive thing on the page. */
@@ -259,7 +261,8 @@ export function PageField() {
     resize()
     window.addEventListener('resize', resize)
 
-    if (reducedMotion) {
+    /* One still frame, at whatever colour the page is currently on. */
+    const drawStill = () => {
       cur = hexToRgb(target.key)
       curDeep = hexToRgb(target.deep)
       gl.uniform2f(U.res, w, h)
@@ -269,6 +272,28 @@ export function PageField() {
       gl.uniform2f(U.pointer, 0, 0)
       gl.uniform1f(U.bias, 0.5)
       gl.drawArrays(gl.TRIANGLES, 0, 3)
+    }
+
+    if (reducedMotion) {
+      /*
+       * This used to draw once and stop. The canvas is opaque, so it covers the
+       * CSS fallback underneath — and that one frame was painted at whatever
+       * accent happened to be set at mount, which is the brass default. The
+       * result: the hero cycled through its four worlds, the button and the
+       * type changed colour, and the background stayed the same brown for the
+       * whole page. Reported from a phone, where reduced motion is common.
+       *
+       * Changing colour is not motion. Redrawing the still frame when the
+       * section colour changes keeps the promise reduced motion actually makes
+       * — nothing moves — while letting the page stay one piece.
+       */
+      drawStill()
+      stillUnsub = onAccent((a) => {
+        target = a
+        drawStill()
+      })
+      stillResize = () => drawStill()
+      window.addEventListener('resize', stillResize)
     } else {
       window.addEventListener('pointermove', onMove, { passive: true })
       raf = requestAnimationFrame(frame)
@@ -277,6 +302,8 @@ export function PageField() {
     return () => {
       cancelAnimationFrame(raf)
       unsubscribe()
+      stillUnsub?.()
+      if (stillResize) window.removeEventListener('resize', stillResize)
       window.removeEventListener('resize', resize)
       window.removeEventListener('pointermove', onMove)
       gl.deleteProgram(prog)

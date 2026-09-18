@@ -222,13 +222,12 @@ export function Nav() {
           aria-hidden="true"
           className={cn(
             'pointer-events-none absolute inset-x-0 top-0 transition-all duration-700 ease-out-expo',
-            condensed ? 'h-full opacity-100' : 'h-[160%] opacity-90 max-md:h-full max-md:opacity-100',
+            condensed ? 'h-full opacity-100' : 'h-[160%] opacity-90',
           )}
           style={{
-            background:
-              condensed || isMobile
-                ? 'linear-gradient(180deg, rgba(5,5,7,0.97) 0%, rgba(5,5,7,0.94) 100%)'
-                : 'linear-gradient(180deg, rgba(5,5,7,0.72) 0%, rgba(5,5,7,0.28) 55%, rgba(5,5,7,0) 100%)',
+            background: condensed
+              ? 'linear-gradient(180deg, rgba(5,5,7,0.97) 0%, rgba(5,5,7,0.94) 100%)'
+              : 'linear-gradient(180deg, rgba(5,5,7,0.72) 0%, rgba(5,5,7,0.28) 55%, rgba(5,5,7,0) 100%)',
             /*
              * Blur ONLY when condensed, where this layer is exactly the height
              * of the bar. At rest it is 160% tall so it hangs below the
@@ -236,8 +235,8 @@ export function Nav() {
              * a visibly blurred band sitting under the line with nothing to
              * explain it. The gradient alone fades out cleanly.
              */
-            backdropFilter: condensed || isMobile ? 'blur(14px)' : 'none',
-            WebkitBackdropFilter: condensed || isMobile ? 'blur(14px)' : 'none',
+            backdropFilter: condensed ? 'blur(14px)' : 'none',
+            WebkitBackdropFilter: condensed ? 'blur(14px)' : 'none',
           }}
         />
 
