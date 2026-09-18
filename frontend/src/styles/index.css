@@ -478,3 +478,50 @@ html[data-reduced-motion='true'] .line-mask > * {
     --hero-vw: 16px;
   }
 }
+
+/*
+ * WILL-CHANGE IS OFF ON PHONES
+ * ----------------------------
+ * `will-change: transform` does not make an element cheaper to animate — it
+ * hands it its own compositor layer and KEEPS it there for the element's whole
+ * life, animating or not. Counted at DPR 3 on a 390x844 screen this page was
+ * asking for 180MB of backing store across 149 such elements, and 388MB
+ * document-wide. iOS Safari kills a tab well inside that, which is what the
+ * white screen and the reload were: a renderer crash, worst while scrolling
+ * fast, when the compositor has to rasterise many of those layers at once.
+ *
+ * Dropping the hint does not stop anything animating. A browser still promotes
+ * an element while a transform is actually running; it just stops holding a
+ * layer open for every one of them in advance.
+ *
+ * !important is needed on purpose: several of these are inline styles, and a
+ * stylesheet cannot beat an inline declaration any other way.
+ */
+@media (max-width: 767px) {
+  [class*="will-change"],
+  [style*="will-change"] {
+    will-change: auto !important;
+  }
+}
+
+/*
+ * NO BACKDROP-FILTER ON PHONES
+ * ----------------------------
+ * `backdrop-filter` is not a one-off cost. The compositor has to snapshot
+ * whatever sits behind the element and blur it again every frame the backdrop
+ * moves — which, on a scrolling page, is every frame. There are 37 of these,
+ * and during a fast scroll several are on screen at once.
+ *
+ * On a near-black theme the blur is doing very little work visually: each of
+ * these elements already carries its own translucent background, which is what
+ * actually separates it from the page. Turning the filter off costs a subtle
+ * softening and buys back the most expensive per-frame operation on the page.
+ */
+@media (max-width: 767px) {
+  [class*="backdrop-blur"],
+  [style*="backdrop-filter"],
+  [style*="backdropFilter"] {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+}
