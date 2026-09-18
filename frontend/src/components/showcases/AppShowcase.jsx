@@ -237,7 +237,6 @@ export function AppShowcase() {
       service={service}
       id={service.sectionId}
       beats={5}
-      mobileZoom={1}
       build={build}
       fallback={<StaticShowcase project={project} service={service} aspect="phone" />}
     >
