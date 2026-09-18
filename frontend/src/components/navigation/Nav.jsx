@@ -590,7 +590,7 @@ function MenuButton({ open, onClick }) {
 
 function NavOverlay({ open, onClose, onNavigate, activeId, pathname }) {
   const rootRef = useRef(null)
-  const { reducedMotion } = useExperience()
+  const { reducedMotion, toggleMotion } = useExperience()
   const { enabled: soundOn, toggle: toggleSound } = useSound()
 
   useEffect(() => {
@@ -598,7 +598,23 @@ function NavOverlay({ open, onClose, onNavigate, activeId, pathname }) {
     if (!root) return undefined
 
     if (reducedMotion) {
-      gsap.set(root, { autoAlpha: open ? 1 : 0, clipPath: 'none' })
+      /*
+       * `pointerEvents` matters as much as opacity here. The root carries
+       * `pointer-events-none` in its class list and the animated path turns it
+       * back on; this branch used to set only autoAlpha, so with reduced motion
+       * the menu appeared and every tap went straight through it to the page
+       * underneath. The hamburger opened a menu you could not use.
+       *
+       * The items and the meta block also need their rest state applied, since
+       * the timeline that normally reveals them never runs.
+       */
+      gsap.set(root, {
+        autoAlpha: open ? 1 : 0,
+        clipPath: 'none',
+        pointerEvents: open ? 'auto' : 'none',
+      })
+      gsap.set('[data-overlay-item]', { yPercent: 0, autoAlpha: 1 })
+      gsap.set('[data-overlay-meta]', { autoAlpha: open ? 1 : 0, y: 0 })
       return undefined
     }
 
@@ -730,6 +746,26 @@ function NavOverlay({ open, onClose, onNavigate, activeId, pathname }) {
               style={{ background: soundOn ? 'var(--accent)' : '#35353E' }}
             />
             Sound {soundOn ? 'on' : 'off'}
+          </button>
+          {/*
+            Motion belongs here on a phone. The toggle in the bar is `hidden
+            md:flex`, so a phone whose OS asks for reduced motion got a still
+            background and no way to change it — reported as "background changes
+            colour but does not move". The bar has no room for it at this width;
+            the menu does.
+          */}
+          <button
+            type="button"
+            onClick={toggleMotion}
+            tabIndex={open ? 0 : -1}
+            aria-pressed={!reducedMotion}
+            className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.18em] text-mist transition-colors hover:text-bone md:hidden"
+          >
+            <span
+              className="block h-1.5 w-1.5 rounded-full transition-colors duration-500"
+              style={{ background: reducedMotion ? '#35353E' : 'var(--accent)' }}
+            />
+            Motion {reducedMotion ? 'off' : 'on'}
           </button>
         </div>
       </div>

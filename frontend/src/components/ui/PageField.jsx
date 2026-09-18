@@ -153,12 +153,19 @@ export function PageField() {
     if (!canvas) return undefined
 
     /*
-     * Low-tier devices never start the shader. A full-screen fragment shader is
-     * cheap on any GPU and expensive without one — measured on a software
-     * renderer it held the page to 25fps even after optimisation. Those devices
-     * get the CSS gradient underneath instead: same palette, not moving.
+     * Low tier used to skip the shader entirely, because on a software renderer
+     * a full-screen fragment shader held the page to 25fps. That measurement
+     * still stands — but the tier is guessed from core count and reported
+     * memory, which say nothing about the GPU. Phones land in this tier by
+     * default, so the whole mobile audience got a background that changed
+     * colour and never moved, which is what it was reported as.
+     *
+     * So the tier now picks a cheaper field rather than no field, and the real
+     * device decides: the watchdog below measures actual frame pacing and drops
+     * to the still gradient if this machine cannot keep up. A guess starts it,
+     * a measurement stops it.
      */
-    if (quality.label === 'low') return undefined
+    const LOW = quality.label === 'low'
 
     const gl =
       canvas.getContext('webgl', { alpha: false, antialias: false, powerPreference: 'low-power' }) ||
@@ -194,7 +201,8 @@ export function PageField() {
 
     /* Under half resolution. The field has no hard edges, so the difference is
        not visible, and it roughly quarters the fragment cost on a 4K panel. */
-    const scale = 0.45
+    /* Fewer pixels to shade is the cheapest lever there is. */
+    const scale = LOW ? 0.28 : 0.45
     let w = 0
     let h = 0
     const resize = () => {
@@ -228,13 +236,41 @@ export function PageField() {
     /* 30fps. The field moves at 0.045 units a second — a dropped frame is not
        perceivable there, and halving the draw rate halves the cost of the most
        expensive thing on the page. */
-    const MIN_DT = 1000 / 30
+    const MIN_DT = LOW ? 1000 / 20 : 1000 / 30
     const start = performance.now()
+
+    /*
+     * Watchdog. Counts frames that arrive far later than they were asked for,
+     * which is what a GPU that cannot keep up actually looks like from here.
+     * Enough of them and the field gives up, paints one still frame and leaves
+     * the page to the CSS gradient — the old low-tier behaviour, but reached by
+     * measuring this device instead of guessing from its core count.
+     */
+    let lateFrames = 0
+    let stalled = false
 
     const frame = (now) => {
       raf = requestAnimationFrame(frame)
       if (now - last < MIN_DT) return
+      const gap = now - last
       last = now
+
+      if (!stalled && now - start > 1500) {
+        // Two and a half times the budget is not jitter, it is a device that
+        // cannot afford this. A second's worth of them is the limit.
+        if (gap > MIN_DT * 2.5) lateFrames += 1
+        else lateFrames = Math.max(0, lateFrames - 1)
+        if (lateFrames > 20) {
+          stalled = true
+          cancelAnimationFrame(raf)
+          drawStill()
+          stillUnsub = onAccent((a) => {
+            target = a
+            drawStill()
+          })
+          return
+        }
+      }
 
       const tgt = hexToRgb(target.key)
       const tgtDeep = hexToRgb(target.deep)
