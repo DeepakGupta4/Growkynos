@@ -265,7 +265,7 @@ export function Hero() {
               */}
             </div>
 
-            <div data-hero-actions className="flex flex-wrap items-center gap-3 md:gap-4">
+            <div data-hero-actions className="flex flex-nowrap items-center gap-2.5 max-md:[&>*]:flex-1 md:flex-wrap md:gap-4">
               {/* Both CTAs take the active service colour, so the buttons
                   belong to the same frame as the field and the headline word
                   rather than staying gold on a magenta ground. */}

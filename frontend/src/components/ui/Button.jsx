@@ -58,7 +58,9 @@ export const Button = forwardRef(function Button(
 
   const sizes = {
     sm: 'h-9 px-5 text-[10px]',
-    md: 'h-12 px-7 text-[11px]',
+    /* Narrower below `sm` so two of these fit one phone row; the 48px
+       height — the part a thumb needs — is untouched. */
+    md: 'h-12 px-4 text-[10px] tracking-[0.12em] sm:px-7 sm:text-[11px] sm:tracking-[0.18em]',
     lg: 'h-16 px-10 text-[12px]',
   }
 

@@ -219,7 +219,9 @@ export function HeroVisual({ slideIndex = 0 }) {
       className="pointer-events-none absolute bottom-0 right-0 z-10 w-full overflow-hidden lg:w-[55%] xl:w-[53%]"
       /* On a phone there is no "beside": the panel takes the lower part of the
          frame and the statement keeps the upper one. See --hero-visual-top. */
-      style={{ top: 'var(--hero-visual-top, var(--nav-h))' }}
+      /* A size container, so the card below can be sized against this panel's
+         HEIGHT as well as its width. */
+      style={{ top: 'var(--hero-visual-top, var(--nav-h))', containerType: 'size' }}
     >
       {/*
         Shown at every size now. It used to be hidden below `sm` because the
@@ -231,7 +233,14 @@ export function HeroVisual({ slideIndex = 0 }) {
         <div
           ref={stageRef}
           data-hv
-          className="w-[94%] max-w-[720px] will-change-transform sm:w-[86%]"
+                    /*
+           * `158cqh` is the width a 16:10 card would need in order to be as
+           * tall as this panel, so taking the smaller of that and 94% lets the
+           * card be limited by whichever of the two runs out first. Width alone
+           * was not enough: on a 375x667 phone the panel is 203px tall and a
+           * 94%-wide card wants 220px, so it hung 9px past the fold.
+           */
+          className="w-[min(94%,158cqh)] max-w-[720px] will-change-transform sm:w-[86%]"
         >
           <SceneShell laptop={!isMobile} tint={look.key} video={videoSrc}>
             <div ref={frameRef} className="relative h-full w-full">

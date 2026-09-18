@@ -62,7 +62,11 @@
       /* A plain percentage collided on short phones: 58% of 740px is 429px
          and the text block ends at 482px. The floor keeps the panel below the
          copy on a 360x740 as well as a 430x932. */
-      --hero-visual-top: max(58%, 32.5rem);
+      /* 32.5rem was flat 520px on every phone, so a 667-tall screen gave the
+         scene 147px while an 844-tall one gave it 324px. Leading with the
+         percentage and keeping a floor that still clears the CTAs shares the
+         height out instead. */
+      --hero-visual-top: max(58%, 29rem);
     }
   }
 
@@ -425,4 +429,52 @@ html[data-reduced-motion='true'] .line-mask > * {
 
 .anim-pulse {
   animation: gt-pulse 2.4s var(--ease-swift) infinite;
+}
+
+/*
+ * HERO HEADLINE ON A PHONE
+ * ------------------------
+ * The longest word the cycle plays is "WEBSITES." — nine characters. At 15.5vw
+ * on a 390px screen that sets about 300px of a 350px measure, so the line fills
+ * the frame instead of floating in the middle of it.
+ *
+ * The svh term is the brake for short phones: a 667-tall screen still has to
+ * seat the headline, the meta, both buttons and the scene panel, so there the
+ * height wins and the type comes back down.
+ */
+@media (max-width: 767px) {
+  /* The attribute is repeated on purpose. Tailwind emits the arbitrary-variant
+     utilities on the wrapper AFTER this file's own rules, and at equal
+     specificity the later one wins — so a plain `[data-hero-type] .hero-size`
+     lost to the height-keyed variant and the type stayed at its 2.4rem floor.
+     Doubling the attribute buys one point of specificity, which is cheaper to
+     live with than !important. */
+  [data-hero-type][data-hero-type] .hero-size {
+    font-size: clamp(2.4rem, min(15.5vw, 7.4svh), 5.5rem);
+  }
+}
+
+/*
+ * HERO SCENE WIDTH
+ * ----------------
+ * The four hero scenes size themselves in vw — `min(30vw, 460px)` and friends.
+ * On a desktop the vw term loses to the cap and each scene renders at its
+ * design width. On a 390px phone 30vw is 117px, so the scene collapsed to a
+ * narrow strip: its internals are laid out for the design width, so they
+ * overflowed their own frames and were sliced mid-word, which is what the card
+ * in the hero was showing.
+ *
+ * The fit-scale in HeroVisual cannot undo that, because by the time it measures
+ * the damage is in the layout, not the transform. Pinning the viewport term to
+ * a fixed value on phones makes the cap win instead, so every scene builds at
+ * its design width and the existing scale shrinks the finished thing to fit.
+ */
+:root {
+  --hero-vw: 1vw;
+}
+
+@media (max-width: 767px) {
+  :root {
+    --hero-vw: 16px;
+  }
 }

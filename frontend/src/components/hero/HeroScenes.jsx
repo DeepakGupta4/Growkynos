@@ -75,7 +75,7 @@ function AppScene({ active }) {
     <div
       ref={root}
       className="relative flex items-center justify-center preserve-3d"
-      style={{ width: 'min(30vw, 460px)' }}
+      style={{ width: 'min(calc(30 * var(--hero-vw)), 460px)' }}
     >
       <div data-app-device className="preserve-3d will-change-transform" style={{ transform: 'rotateY(-6deg)' }}>
         <PhoneFrame width={200}>
@@ -165,7 +165,7 @@ function WebScene({ active }) {
       <div
         data-web-device
         className="preserve-3d will-change-transform"
-        style={{ width: 'min(32vw, 520px)', transform: 'rotateY(-8deg) rotateX(3deg)' }}
+        style={{ width: 'min(calc(32 * var(--hero-vw)), 520px)', transform: 'rotateY(-8deg) rotateX(3deg)' }}
       >
         <BrowserFrame url="obsidian.archi" accent="#9FB4C9" className="w-full">
           <div className="relative h-[26vh] overflow-hidden">
@@ -287,7 +287,7 @@ function AIScene({ active }) {
 
   return (
     <div ref={root} className="relative flex items-center justify-center">
-      <PanelFrame label="ORBIT — SUPPORT AUTOMATION" accent="#C6A87C" style={{ width: 'min(30vw, 460px)' }}>
+      <PanelFrame label="ORBIT — SUPPORT AUTOMATION" accent="#C6A87C" style={{ width: 'min(calc(30 * var(--hero-vw)), 460px)' }}>
         <div className="p-4">
           <svg viewBox="0 0 400 240" className="h-auto w-full" aria-hidden="true">
             {AI_EDGES.map(([a, b], i) => {
@@ -414,7 +414,7 @@ function SaaSScene({ active }) {
 
   return (
     <div ref={root} className="relative flex items-center justify-center">
-      <PanelFrame label="SIGNALYARD — OVERVIEW" accent="#C6A87C" style={{ width: 'min(31vw, 480px)' }}>
+      <PanelFrame label="SIGNALYARD — OVERVIEW" accent="#C6A87C" style={{ width: 'min(calc(31 * var(--hero-vw)), 480px)' }}>
         <div className="p-4">
           <div className="mb-3 flex items-end justify-between">
             <div>
