@@ -10,9 +10,7 @@ import { cn } from '../lib/utils'
 /**
  * ALL WORK
  * --------
- * The archive as a browsable index — the counterpart to the Project Universe.
- * Rows are editorial, not cards: the media reveals on hover and follows the
- * pointer, so the list behaves like a physical contact sheet.
+
  */
 export default function WorkPage() {
   const rootRef = useRef(null)
