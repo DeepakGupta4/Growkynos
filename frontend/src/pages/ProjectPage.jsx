@@ -14,10 +14,7 @@ import NotFound from './NotFound'
 /**
  * PROJECT DETAIL
  * --------------
- * The arrival point of the FLIP entry. The hero image is deliberately rendered
- * full-bleed at the top so it lands exactly where the transition layer released
- * it — that continuity is what makes the move read as *entering* the project
- * rather than opening a page about it.
+
  */
 export default function ProjectPage() {
   const { id } = useParams()
