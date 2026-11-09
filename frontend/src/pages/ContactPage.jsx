@@ -9,10 +9,7 @@ import { useExperience } from '../context/ExperienceContext'
 
 /**
  * BEGIN A PROJECT
- * ---------------
- * The command centre at the end of the journey. Deliberately quieter than the
- * worlds that precede it — by this point the visitor has been persuaded; what
- * they need now is a form that is fast, legible and obviously serious.
+ 
  */
 export default function ContactPage() {
   const rootRef = useRef(null)
