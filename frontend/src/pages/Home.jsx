@@ -30,11 +30,7 @@ export default function Home() {
   /*
    * Hand the page's colour over to whichever section the reader is in.
    *
-   * One field sits behind the whole site (see PageField) and everything that
-   * has to agree on colour reads from the same store — the field itself, the
-   * nav's indicator, the scroll progress line, the hero's CTA. Driving it from
-   * here rather than from inside each section keeps the sequence in one place,
-   * next to the section order it belongs to.
+
    *
    * The hero is absent from the map on purpose: it changes colour four times
    * on its own beat, so it owns its own accent while it is on screen.
